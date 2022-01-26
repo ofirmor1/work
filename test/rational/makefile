@@ -12,18 +12,22 @@ CXXFLAGS = $(WARNINGS) $(DEBUG) -std=$(CXX_STD)
 CPPFLAGS = -I$(INC_DIR)
 
 INC_DIR = ../../inc
+SRC_DIR = ../../src
 
 TARGET = utest
-OBJS = utest.o ../../src/Rational_cxx.o
+OBJS = utest.o $(SRC_DIR)/Rational.o
 
 $(TARGET): $(OBJS)
 
-../../src/Rational_cxx.o: ../../inc/Rational.hpp
+$(SRC_DIR)/Rational.o: $(INC_DIR)/Rational.hpp
 
-utest.o: ../../inc/Rational.hpp
+utest.o: $(INC_DIR)/Rational.hpp
 
 check: $(TARGET)
 	./$(TARGET) -v
+
+vala:
+	valgrind -q --leak-check=full	
 	
 clean:
 	@$(RM) $(TARGET) $(OBJS)

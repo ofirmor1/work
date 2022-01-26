@@ -25,6 +25,9 @@ utest.o: $(INC_DIR)/stack.hpp
 
 check: $(TARGET)
 	./$(TARGET) -v
+
+vala:
+	valgrind -q --leak-check=full
 	
 clean:
 	@$(RM) $(TARGET) $(OBJS)

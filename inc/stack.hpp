@@ -5,38 +5,39 @@ class Stack
 public:
 //special member functions
 //Constructor, ctor, initialize the stack 
-    Stack(int _size = 100); 
+    Stack(size_t _size = 100); 
     ~Stack();
-    Stack(int* a_array, int a_arrSize);
-    Stack(int* a_array, int a_arrSize, int a_formSize);
+    Stack(int const* a_array, size_t a_stackSize);
+    Stack(int const* a_array, size_t a_stackSize, size_t a_formSize);
     Stack(const Stack &a_stack);
 
+    void empty();
     void push(int x);
-    int pop(); 
-    int size() const;
+    size_t pop(); 
+    size_t top() const;
+
+    void ensureCapacity(size_t n);    
+    size_t capacity() const;
+    size_t size() const;
     bool isEmpty() const;
     bool isFull() const; 
-    void dump() const;  
-    void empty(); 
 
-    void pushArr(int* a_array, int arrSize);
-    void popIntoArr(int* a_array, int a_arrSize);
+    void dump() const;  
+
+    size_t pushArr(int const* a_array, size_t a_toPush);
+    size_t popIntoArr(int* a_array, size_t a_toPop);
 
 private:
     void dumpElements() const;
     void axioms() const;
 
 private:
-    int m_tos;
-    int m_capacity;
+    size_t m_tos;
+    size_t m_capacity;
     int* m_elements;
-
     
-
-
 };
 
-Stack combineStacks(Stack a, Stack b);
-
+void combineStacks(Stack& a_destination, Stack& a_firstStack, Stack& a_secondStack);
 
 #endif /*ifndef STACK_H*/
