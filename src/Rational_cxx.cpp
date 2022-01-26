@@ -124,7 +124,7 @@ bool Rational::equal(Rational a) const
 
 bool Rational::notEqual(Rational a) const
 {
-    return (!equal(a));
+    return !equal(a);
 }
 int Rational::compare(Rational a) const
 {
@@ -154,44 +154,34 @@ int Rational::compare(Rational a) const
 }
 
 
-/*******************************************************************************************/
+/***********************************Global Functions******************************************/
 
-Rational gAdd(Rational a, Rational b)
+Rational gAdd(Rational first, Rational second)
 {
-    int n = a.getNumerator() * b.getDenominator() +
-            b.getNumerator() * a.getDenominator();
-    int d = a.getDenominator() * b.getDenominator();
-
-    return Rational(n, d);
+    first.add(second);
+    return first;
 }
 
-Rational gSub(Rational a, Rational b)
+Rational gSub(Rational first, Rational second)
 {
-    int n = a.getNumerator() * b.getDenominator() -
-            b.getNumerator() * a.getDenominator();
-    int d = a.getDenominator() * b.getDenominator();
-
-    return Rational(n, d);
+    first.sub(second);
+    return first;
 }
 
-Rational gMul(Rational a, Rational b)
+Rational gMul(Rational first, Rational second)
 {
-    int n = a.getNumerator() * b.getNumerator();
-    int d = a.getDenominator() * b.getDenominator();
-
-    return Rational(n, d);
+    first.mul(second);
+    return first;
 }
 
-Rational gDiv(Rational a, Rational b)
+Rational gDiv(Rational first, Rational second)
 {
-    int n = a.getNumerator() * b.getDenominator();
-    int d = a.getDenominator() * b.getNumerator();
-
-    return Rational(n, d);
+    first.div(second);
+    return first;
 }
 
 void Rational::axioms()
 {
-   assert(getDenominator() > 0); 
+   assert(getDenominator() != 0); 
 }
 

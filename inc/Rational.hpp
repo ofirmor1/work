@@ -1,3 +1,6 @@
+#ifndef RATIONAL_H
+#define RATIONAL_H
+
 enum Compare{A_IS_BIGGER = 1, B_IS_BIGGER = -1 , A_EQUAL_B = 0};
 
 class Rational
@@ -43,3 +46,5 @@ Rational gAdd(Rational a, Rational b);
 Rational gSub(Rational a, Rational b); 
 Rational gMul(Rational a, Rational b); 
 Rational gDiv(Rational a, Rational b); 
+
+#endif /*#ifndef RATIONAL_H*/
