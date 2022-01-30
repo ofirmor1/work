@@ -111,7 +111,13 @@ dkms.conf
 
 # Support for Project snippet scope
 
+
+utest
+
+# Alias
 alias gst='git status'
+alias gl='git log'
 alias gcam='git commit -am'
+alias gcm='git commit -m'
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,c,c++,visualstudiocode

@@ -10,25 +10,30 @@ public:
     Stack(int const* a_array, size_t a_stackSize);
     Stack(int const* a_array, size_t a_stackSize, size_t a_formSize);
     Stack(const Stack &a_stack);
+    Stack& operator=(Stack const& a_stack);
 
+
+    void drain(Stack& a_out);
     void empty();
     void push(int x);
     size_t pop(); 
     size_t top() const;
+    
 
-    void ensureCapacity(size_t n);    
+    void ensureCapacity(size_t n); 
+    int* elements() const;
     size_t capacity() const;
     size_t size() const;
     bool isEmpty() const;
     bool isFull() const; 
 
-    void dump() const;  
+    void dump() const; 
+    void dumpElements() const; 
 
     size_t pushArr(int const* a_array, size_t a_toPush);
     size_t popIntoArr(int* a_array, size_t a_toPop);
 
 private:
-    void dumpElements() const;
     void axioms() const;
 
 private:

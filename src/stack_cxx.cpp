@@ -18,23 +18,45 @@ Stack::Stack(size_t a_capacity)
     printf("ctor of stack [%d]\n", (int)m_capacity);
 }
 
-Stack::Stack(const Stack &a_stack)
+Stack::~Stack()
 {
-    m_tos = a_stack.m_tos;
-    m_capacity = a_stack.m_capacity;
-    m_elements = new int[m_capacity];
+    delete[] m_elements;
+    printf("dtor of stack [%d]\n", (int)m_capacity);
+}
+
+// copy constructor
+Stack::Stack(const Stack &a_stack)
+: m_tos(a_stack.m_tos)
+, m_capacity(a_stack.m_capacity)
+, m_elements(new int[m_capacity])
+{
     for(size_t i = 0; i < m_tos; i++)
     {
         m_elements[i] = a_stack.m_elements[i];
     }
 }
 
+// copy-assingnment operator
+Stack& Stack::operator=(Stack const& a_stack)
+{
+    m_tos = a_stack.m_tos;
+    m_capacity = a_stack.m_capacity;
+
+    int* copy = new int[m_capacity];
+
+    memcpy(copy, a_stack.m_elements, a_stack.m_capacity*sizeof(int));
+
+    delete[] m_elements;
+    m_elements = copy;
+
+    return *this;
+}
+
 Stack::Stack(int const* a_array, size_t a_stackSize)
 : m_tos(0)
-, m_capacity(10)
+, m_capacity(a_stackSize)
 , m_elements(new int [m_capacity])
 {
-    axioms();
     assert(a_array != 0);
     pushArr(a_array, a_stackSize);
     printf("ctor of stack [%d]\n", (int)m_capacity);
@@ -42,30 +64,33 @@ Stack::Stack(int const* a_array, size_t a_stackSize)
 
 Stack::Stack(int const* a_array, size_t a_stackSize, size_t a_formSize)
 : m_tos(0)
-, m_capacity(128)
+, m_capacity(a_stackSize)
 , m_elements(new int [m_capacity])
 {
-    axioms();
     assert(a_array != 0);
     assert(a_formSize >= 0);
-    pushArr(a_array, a_stackSize);
+    pushArr(a_array, a_formSize);
     printf("ctor of stack [%d]\n", (int)m_capacity);
 }
 
-static void drain(Stack& a_destination, Stack& a_source)
+void Stack::drain(Stack& a_source)
 {
-    while(!a_source.isEmpty())
+
+    ensureCapacity(a_source.capacity());
+    while(a_source.m_tos != 0)
     {
-        a_destination.push(a_source.pop());
+        push(a_source.pop());
     }
+        
+    axioms();
 }
 
 void combineStacks(Stack& a_destination, Stack& a_firstStack, Stack& a_secondStack)
 {
-
-    drain(a_destination, a_firstStack);
-
-    drain(a_destination, a_secondStack);
+    size_t totalSize = a_firstStack.size() + a_secondStack.size();
+    a_destination.ensureCapacity(totalSize);
+    a_destination.drain(a_firstStack);
+    a_destination.drain(a_secondStack);
 }
 //fail-fast assert: noisy fail
 // return size_t how much wprk was done
@@ -83,10 +108,13 @@ size_t Stack::pushArr(int const* a_array, size_t a_toPush)
 {
     assert(a_array != 0);
     int pushed = findMin(a_toPush, m_capacity - m_tos);
-    memcpy(m_elements + m_tos, a_array, pushed * sizeof(m_elements[0]));
-    m_tos += pushed;
+    if(pushed > 0)
+    {
+        memcpy(m_elements + m_tos, a_array, pushed * sizeof(m_elements[0]));
+        m_tos += pushed;
+    }
     axioms();
-
+    
     return pushed;
 }
 
@@ -103,12 +131,6 @@ size_t Stack::popIntoArr(int* a_array, size_t a_toPop)
     axioms();
     
     return i;
-}
-
-Stack::~Stack()
-{
-    delete[] m_elements;
-    printf("dtor of stack [%d]\n", (int)m_capacity);
 }
 
 bool Stack::isEmpty() const
@@ -135,28 +157,24 @@ size_t Stack::capacity() const
     return m_capacity;
 }
 
+int* Stack::elements() const
+{
+    axioms();
+    return m_elements;
+}
+
 void Stack::ensureCapacity(size_t n)
 {
     if(capacity() >= n){
         return;
     }
-    int* arr = new int[n];
-    memcpy(arr, m_elements, m_tos * sizeof(m_elements[0]));
-    /*arrCpy(arr, m_elements, m_tos);*/
+    int* copy = new int[n];
+    memcpy(copy, m_elements, m_tos * sizeof(m_elements[0]));
     int* oldArr = m_elements;
-    m_elements = arr;
+    m_elements = copy;
+    m_capacity = n;
     delete[] oldArr;
     axioms();
-    /*
-    int delta = m_capacity - m_tos - n;
-    if(delta < 0)
-    {
-        int* arr = new int[n];
-        popIntoArr(arr, m_tos);
-        m_elements = arr;
-    }
-
-    axioms();*/
 }
 
 size_t Stack::top() const
