@@ -75,7 +75,6 @@ Stack::Stack(int const* a_array, size_t a_stackSize, size_t a_formSize)
 
 void Stack::drain(Stack& a_source)
 {
-
     ensureCapacity(a_source.capacity());
     while(a_source.m_tos != 0)
     {

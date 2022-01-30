@@ -27,8 +27,9 @@ utest.o: $(INC_DIR)/min_stack.hpp $(INC_DIR)/stack.hpp
 check: $(TARGET)
 	./$(TARGET) -v
 	
-#vala:
-#	valgrind -a --leak-check=full $(TARGET)
+vala:
+	valgrind -q --leak-check=full ./${TARGET} -v
+	gdb -q ${TARGET}
 		
 clean:
 	@$(RM) $(TARGET) $(OBJS)
