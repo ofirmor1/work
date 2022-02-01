@@ -2,7 +2,7 @@
 #define SINGLE_LIST_HXX
 
 #include <iostream>
-#include <single_list.hpp>
+
 
 using namespace std;
 
@@ -10,27 +10,38 @@ using namespace std;
 
 inline void LinkedList::initListMemb()
 {
-    m_head->m_next = m_tail;
-    m_tail->m_next = 0;
+    m_head->setNext(m_tail);
+    m_tail->setNext(m_tail);
     m_size = 0;
 }
+
+// inline void LinkedList::printList() const
+// {
+//     ListItr itr = begin();
+//     ListItr itrEnd = end();
+//     while(ListItrEquals(itr,itrEnd))
+//     {
+//         cout << itr.get() << endl;
+//         itr.next();
+//     }
+// }
 
 inline void LinkedList::printList() const
 {
     Node* curr = this->m_head;
-    while(curr->m_next != this->m_tail)
+    while(curr->getNext() != this->m_tail)
     {
-        cout << curr->m_data << endl;
-        curr = curr->m_next;
+        cout << curr->getData() << endl;
+        curr = curr->getNext();
     }
 }
 
 inline void LinkedList::add(int a_val)
 {
-    Node* first = new Node;
-    first->m_data = a_val;
-    first->m_next = m_head;
-    m_head = first;
+    Node* newNode = new Node;
+    newNode->setData(a_val);    
+    newNode->setNext(m_head);
+    m_head = newNode;
     m_size++;
 }
 

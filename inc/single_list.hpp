@@ -1,12 +1,32 @@
 #ifndef SINGLE_LIST
 #define SINGLE_LIST
 
-static int const CAPACITY = 100;
-
-struct Node
+class Node
 {
+public:
+    int getData();
+    Node* getNext();
+    void setData(int a_val);
+    void setNext(Node* a_node);
+
+private:
     int m_data;
     Node* m_next; 
+};
+
+class ListItr
+{
+public:
+    ListItr();
+    ListItr(Node* a_node);
+
+    int get();
+    ListItr next();
+    bool equals(const ListItr &a_first) const;
+
+
+private:
+    Node* m_currNode;
 };
 
 //SingleLinkedList
@@ -14,12 +34,14 @@ class LinkedList
 {
 public:
     LinkedList();
-    /*~LinkedList();*/
+    ~LinkedList();
     LinkedList(const LinkedList &a_list);
     LinkedList& operator=(LinkedList const& a_list);
 
     void add(int a_val);
     void remove();
+    ListItr begin() const;
+    ListItr end() const;
     size_t first() const;
     size_t last() const;
 
@@ -29,20 +51,14 @@ public:
     void printList() const;
     void initListMemb();
 
+    static void copyList();
+
 private:
     Node* m_head;
     Node* m_tail;
     int m_size;
 };
-
-class Itr
-{
-public:
-
-private:
-};
-
-#include "../inc/inl/single_list.hxx"
+// #include "../inc/inl/single_list.hxx"
 #include "single_list.hxx"   
 
 #endif /*ifndef SINGLE_LIST*/

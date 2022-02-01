@@ -3,24 +3,21 @@
 #include "single_list.hxx"
 
 BEGIN_TEST(test1)
-        LinkedList* l = new LinkedList();
-        ASSERT_THAT(l->isEmpty() == true);
-        l->add(1);
-        l->add(3);
-        l->add(5);
-        l->printList();
-        printf("LIST size: %d\n\n" , l->size());
-        ASSERT_EQUAL(l->size(),  3);
-        ASSERT_THAT(l->isEmpty() == false);
-        for(int i = l->size() - 1; i >= 0; i --)
+        LinkedList l;
+        ASSERT_THAT(l.isEmpty() == true);
+        l.add(1);
+        l.add(3);
+        l.add(5);
+        l.printList();
+        printf("LIST size: %d\n\n" , l.size());
+        ASSERT_EQUAL(l.size(),  3);
+        ASSERT_THAT(l.isEmpty() == false);
+        for(int i = l.size() - 1; i >= 0; i --)
         {
-			l->remove();
-			ASSERT_EQUAL(l->size(),  i);
+			l.remove();
+			ASSERT_EQUAL(l.size(),  i);
         }
-		ASSERT_THAT(l->isEmpty() == true);
-
-
-        delete[] l;
+		ASSERT_THAT(l.isEmpty() == true);
         
 END_TEST
 
