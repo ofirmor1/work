@@ -102,7 +102,7 @@ LinkedList& LinkedList::operator=(LinkedList const& a_list)
 //int LinkedList::remove(int& a_val)
 void LinkedList::remove()
 {
-    assert(m_head && m_size);
+    assert(m_size);
     if(m_size == 1)
     {
         delete[] m_head;
@@ -114,55 +114,6 @@ void LinkedList::remove()
         Node* first = m_head;
         m_head = m_head->getNext();
         delete[] first;
-        first = NULL;
         m_size--;
     }
-}
-
-int Node::getData()
-{
-    return m_data;
-}
-
-Node* Node::getNext()
-{
-    return m_next;
-}
-
-void Node::setData(int a_val)
-{
-    m_data = a_val;
-}
-
-void Node::setNext(Node* a_node)
-{
-    m_next = a_node;
-}
-
-ListItr ListItr::next()
-{
-    m_currNode = m_currNode->getNext();
-    return ListItr(m_currNode);
-}
-
-int ListItr::get()
-{
-    return m_currNode->getData();
-}
-
-ListItr LinkedList::begin() const
-{
-    ListItr itr = m_head;
-    return itr;
-}
-
-ListItr LinkedList::end() const
-{
-    ListItr itr = m_tail;
-    return itr;
-}
-
-bool ListItr::equals(const ListItr &a_first) const
-{
-	return a_first == m_currNode;
 }
