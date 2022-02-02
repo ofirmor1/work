@@ -19,29 +19,21 @@ inline void LinkedList::printList() const
 {
     ListItr itr = begin();
     ListItr itrEnd = end();
-    while(itr.equals(itrEnd) == false)
+    while(itr.equal(itrEnd) == false)
     {
         cout << itr.get() << endl;
         itr.next();
     }
 }
 
-// inline void LinkedList::printList() const
-// {
-//     Node* curr = this->m_head;
-//     while(curr->getNext() != this->m_tail)
-//     {
-//         cout << curr->getData() << endl;
-//         curr = curr->getNext();
-//     }
-// }
-
-inline void LinkedList::add(int a_val)
+inline void LinkedList::add(int const a_val)
 {
-    Node* newNode = new Node;
-    newNode->setData(a_val);    
-    newNode->setNext(m_head);
+    Node* newNode = new Node(a_val, m_head);
     m_head = newNode;
+    if(isEmpty())
+    {
+        newNode->setNext(m_tail);
+    }
     m_size++;
 }
 
@@ -85,19 +77,29 @@ inline int ListItr::get()
     return m_currNode->getData();
 }
 
+inline void ListItr::set(int a_val)
+{
+    return m_currNode->setData(a_val);
+}
+
 inline ListItr LinkedList::begin() const
 {
-    return ListItr(m_head);
+    return m_head;
 }
 
 inline ListItr LinkedList::end() const
 {
-    return ListItr(m_tail);
+    return m_tail;
 }
 
-inline bool ListItr::equals(const ListItr &a_first) const
+inline bool ListItr::equal(const ListItr &a_other) const
 {
-	return a_first.m_currNode == m_currNode;
+	return a_other.m_currNode == m_currNode;
+}
+
+inline bool ListItr::notEqual(const ListItr &a_other) const
+{
+	return !equal(a_other);
 }
 
 #endif /*ifndef SINGLE_LIST_HXX*/

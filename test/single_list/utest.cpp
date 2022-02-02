@@ -21,25 +21,49 @@ BEGIN_TEST(test1)
         
 END_TEST
 //code review - check begin & end . works fine for(1..10) but fail on (0..10)
-BEGIN_TEST(test_itr)
-        LinkedList list;
-        int data;
+
+BEGIN_TEST(test_copy)
+        LinkedList a;
+        LinkedList b;
+        // LinkedList c;
         for(int i = 1; i < 10; i++)
         {
-            list.add(i);
+            a.add(i);
         }
-        int r = 9;
-        for(ListItr itr = list.begin(); !itr.equals(list.end()); itr = itr.next())
-        {
-            
-            data = itr.get();
-            printf(" data %d\n", data);
-            ASSERT_EQUAL(data, r--);
-        }
+        ASSERT_THAT(a.size() == 9);
+        b = a;
+        ASSERT_THAT(b.size() == 9);
 END_TEST
+
+BEGIN_TEST(iterate_over_empty_list_test)
+    LinkedList list;
+    ListItr itr = list.begin();
+    ListItr end = list.end();
+    ASSERT_THAT(itr.equal(end));
+END_TEST
+
+BEGIN_TEST(iterate_over_not_empty_list_test)
+    LinkedList list;
+    int data;
+    for(int i = 1; i < 10; i++)
+    {
+        list.add(i);
+    }
+    int r = 9;
+    for(ListItr itr = list.begin(); itr.notEqual(list.end()); itr = itr.next())
+    {
+        
+        data = itr.get();
+        printf(" data %d\n", data);
+        ASSERT_EQUAL(data, r--);
+    }
+END_TEST
+
+
 
 BEGIN_SUITE(single_linked_list_tests)
     TEST(test1)
-    TEST(test_itr)
-
+    TEST(test_copy)
+    // TEST(iterate_over_empty_list_test)
+    // TEST(iterate_over_not_empty_list_test)
 END_SUITE
