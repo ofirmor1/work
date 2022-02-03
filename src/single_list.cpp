@@ -20,12 +20,12 @@ ListItr::ListItr(Node* a_node)
 :m_currNode(a_node){}
 
 LinkedList::LinkedList()
-: m_head(new Node())
-, m_tail(new Node())
-, m_size(0)
+: m_sentinal(new Node(0, m_sentinal))
+, m_head(m_sentinal)
+, m_tail(m_sentinal)
+, m_size()
 {
-    m_head = m_tail;
-    m_tail->setNext(m_tail);
+    m_sentinal->setNext(m_sentinal);
 }
 
 LinkedList::~LinkedList()
@@ -37,6 +37,10 @@ LinkedList::~LinkedList()
 }
 
 LinkedList::LinkedList(const LinkedList &a_source)
+: m_sentinal(new Node(0, m_sentinal))
+, m_head(m_sentinal)
+, m_tail(m_sentinal)
+, m_size()
 {
     initListMemb();
     
@@ -48,12 +52,12 @@ LinkedList::LinkedList(const LinkedList &a_source)
 
     while (itr.notEqual(last))
     {
-        array[--i] = itr.get();
+        array[--i] = itr.getData();
         itr = itr.next();
     }
     for (i = 0; i < a_source.size(); i++)
     {
-        add(array[i]);
+        addFirst(array[i]);
     }
     delete [] array;
 }
@@ -70,12 +74,12 @@ LinkedList& LinkedList::operator=(LinkedList const&a_source)
 
     while (itr.notEqual(last))
     {
-        array[--i] = itr.get();
+        array[--i] = itr.getData();
         itr = itr.next();
     }
     for (i = 0; i < a_source.size(); i++)
     {
-        add(array[i]);
+        addFirst(array[i]);
     }
     delete [] array;
     return *this;
@@ -106,6 +110,37 @@ inline int LinkedList::unbox(Node* const a_node)
     return data;
 }
 
+void LinkedList::addFirst(int const a_val)
+{
+    Node* newNode = new Node(a_val, m_head);
+    m_head = newNode;
+    if(isEmpty())
+    {
+        newNode->setNext(m_tail);
+    }
+    m_size++;
+}
+
+void LinkedList::addLast(int const a_val)
+{
+    if(isEmpty())
+    {
+        this->m_head = new Node();
+        this->m_head->setData(a_val);
+        this->m_head->setNext(m_tail);
+    }
+    Node* curr = this->m_head;
+    while(curr->getNext() != m_tail)
+    {
+        curr = curr->getNext();
+    }
+    Node* newTail = new Node();
+    newTail->setData(a_val);
+    newTail->setNext(m_tail);
+    curr->setNext(newTail);
+    m_size++;
+}
+
 //int LinkedList::remove(int& a_val)
 int LinkedList::remove()
 {
@@ -117,77 +152,46 @@ Node* LinkedList::getHead()
     return m_head;
 }
 
-bool ListItr::search(Node* a_node, int a_key) const{
-  while(a_node!=NULL){
-    int data = a_node->getData();
-    if(data == a_key)
-      return true;
-    a_node = a_node->getNext();
-  }
-  return false;
-}
-BigInteger::BigInteger()
+LinkedList LinkedList::intersection(LinkedList const& a_list) const
 {
-    m_positive = true;
-    m_size = m_digits.size();
-}
-
-BigInteger::BigInteger(const BigInteger& a_bigNum)
-{
-    m_size = a_bigNum.getSize();
-    m_positive = a_bigNum.isPositive();
-
-    LinkedList bigNumDigits = a_bigNum.m_digits;
-
-    for(ListItr itr = bigNumDigits.begin(); itr != bigNumDigits.end(); itr++)
+    LinkedList intersect;
+    Node* node = m_head;
+    while(node != m_sentinal)
     {
-        m_digits.add(itr.get());
+        if(a_list.contains(node->getData() == true))
+        {
+            intersect.addFirst(node->getData());
+        }
+        node = node->getNext();
     }
+    return intersect;
 }
 
-BigInteger::BigInteger add(BigInteger& a_num)
-{
-    
-}
-
-
-// BigInteger::BigInteger(int a_num){}
-
-
-// BigInteger::BigInteger(long a_num)
-// {
-
-// }
-// BigInteger::BigInteger(char a_num)
-// {
-
+// bool LinkedList::contains(int a_val) const
+// { 
+//     Node* a_node = m_head;
+//     while(a_node!=NULL)
+//     {
+//         if(a_node->getData() == a_val)
+//         {
+//             return true;
+//         }
+//         a_node = a_node->getNext();
+//     }
+//     return false;
 // }
 
-void BigInteger::toList(int a_num)
-{
-    int quot, div = a_num, rem;
-
-    do{
-        rem = div % 10;
-        quot = div / 10;
-        div = quot;
-
-        m_digits.getHead()->setData(rem);
-    }while(quot >= 10);
-
-    if(quot > 0)
+bool LinkedList::contains(int a_val) const
+{ 
+    ListItr itr = begin();
+    ListItr itrEnd = end();
+    while(itr.notEqual(itrEnd))
     {
-        m_digits.getHead()->setData(rem);
+        if(itr.getData() == a_val)
+        {
+            return true;
+        }
+        itr.next();
     }
+    return false;
 }
-
-bool BigInteger::isPositive() const
-{
-    return m_size;
-}
-int BigInteger::getSize() const
-{
-    return m_positive;
-}
-
-//idea is to insert to the begining of list the digits of number from last to begin. using % and /.

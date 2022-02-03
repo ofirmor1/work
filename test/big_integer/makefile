@@ -2,7 +2,7 @@ CXX = g++
 CC = $(CXX)
 
 WARNINGS = -pedantic
-WARNINGS += -Wall -Werror
+# WARNINGS += -Wall -Werror
 
 DEBUG = -g3
 CXX_STD = c++03
@@ -16,7 +16,7 @@ INC_DIR = ../../inc
 SRC_DIR = ../../src
 
 TARGET = utest
-OBJS = utest.o $(SRC_DIR)/single_list.o
+OBJS = utest.o $(SRC_DIR)/big_integer.o $(SRC_DIR)/single_list.o
 
 $(TARGET): $(OBJS)
 

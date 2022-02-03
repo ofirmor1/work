@@ -23,12 +23,11 @@ public:
     ListItr(Node* a_node);
     bool operator!=(ListItr that) const;
 
-    int get();
-    void set(int a_val);
+    int getData();
+    void setData(int a_val);
     ListItr next();
     bool equal(const ListItr &a_other) const;
     bool notEqual(const ListItr &a_other) const;
-    bool search(Node* a_node, int a_key) const;
 
 private:
     Node* m_currNode;
@@ -43,19 +42,23 @@ public:
     LinkedList(const LinkedList &a_list);
     LinkedList& operator=(LinkedList const& a_list);
 
-    void add(int a_val);
+    void addFirst(int const a_val);
+    void addLast(int const a_val);
+
+
+    // void add(int a_val);
     int remove();
     Node* getHead();
     ListItr begin() const;
     ListItr end() const;
     size_t first() const;
     size_t last() const;
-    LinkedList intersection(LinkedList& a, LinkedList& b);
-
 
     int size() const;
     bool isEmpty() const;
     void printList() const;
+    bool contains(int a_val) const;
+    LinkedList intersection(LinkedList const& a) const;
     void initListMemb();
 
 private:
@@ -65,43 +68,11 @@ private:
 private:
     Node* m_head;
     Node* m_tail;
+    Node* m_sentinal;
     int m_size;
 };
 
-class BigInteger
-{
-public:
-    BigInteger();
-
-    ~BigInteger();
-    BigInteger(const BigInteger& a_big);
-    BigInteger& operator=(const BigInteger&);
-
-    BigInteger(int a_num);
-    BigInteger(long a_num);
-    BigInteger(char a_num);
-
-private:
-    BigInteger add(BigInteger& a_num);
-    BigInteger sub(BigInteger& a_num);
-    BigInteger mul(BigInteger& a_num);
-
-    void toList(int a_num);
-    void toList(long a_num);
-    void toList(char a_num);
-
-    bool isPositive() const;
-    int getSize() const;
-
-    char* toString();
-    bool isEmpty();
-
-
-private:
-    LinkedList m_digits;
-    bool m_positive;
-    int m_size;
-};
+// LinkedList& intersection(LinkedList const& a, LinkedList const& b, LinkedList& c);
 
 #include "single_list.hxx"   
 

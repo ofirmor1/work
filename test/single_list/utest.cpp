@@ -53,7 +53,7 @@ BEGIN_TEST(iterate_over_not_empty_list_test)
     for(ListItr itr = list.begin(); itr.notEqual(list.end()); itr = itr.next())
     {
         
-        data = itr.get();
+        data = itr.getData();
         printf(" data %d\n", data);
         ASSERT_EQUAL(data, r--);
     }
