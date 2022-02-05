@@ -12,7 +12,7 @@ public:
     BigInteger();
 
     BigInteger(const BigInteger& a_big);
-    BigInteger& operator=(const BigInteger&);
+    BigInteger& operator=(const BigInteger& other);
 
     BigInteger(long a_num);
     BigInteger(char* a_num);
@@ -23,20 +23,28 @@ public:
     void addFirst(const short int a_calc);
     void addLast(const short int a_calc);
 
+    BigInteger add(BigInteger const& a_rhs);
+    BigInteger& sub(BigInteger const& a_rhs);
+    BigInteger& mul(BigInteger const& a_rhs);
 
+    BigInteger& operator=(BigInteger const& a_rhs);
+    BigInteger operator+=(BigInteger const& a_rhs);
+    BigInteger operator+();
+    BigInteger operator-();
+
+    
     string toString();
     bool isEmpty();
 
 private:
-    BigInteger add(BigInteger const& a_rhs);
-    BigInteger& sub(BigInteger const& a_rhs);
-    BigInteger& mul(BigInteger const& a_rhs);
 
     ListItr begin() const;
     ListItr end() const;
 
     void toList(long a_num);
     void toList(string a_num);
+
+    void flip(long &a_num);
 
 private:
     LinkedList m_digits;

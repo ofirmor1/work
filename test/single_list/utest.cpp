@@ -2,13 +2,13 @@
 #include "single_list.hpp"
 #include "single_list.hxx"
 
-BEGIN_TEST(test1)
+BEGIN_TEST(add_remove_items)
         LinkedList l;
         ASSERT_THAT(l.isEmpty() == true);
-        l.add(1);
-        l.add(3);
-        l.add(5);
-        l.printList();
+        l.addFirst(1);
+        l.addFirst(3);
+        l.addFirst(5);
+        l.printList();  
         printf("LIST size: %d\n\n" , l.size());
         ASSERT_EQUAL(l.size(),  3);
         ASSERT_THAT(l.isEmpty() == false);
@@ -26,13 +26,17 @@ BEGIN_TEST(test_copy)
         LinkedList a;
         LinkedList b;
         // LinkedList c;
-        for(int i = 1; i < 10; i++)
+        int i = 1;
+        while(i < 3)
         {
-            a.add(i);
+            a.addFirst(i);
+            i++;
         }
-        ASSERT_THAT(a.size() == 9);
+        ASSERT_EQUAL(a.size(), 2);
         b = a;
-        ASSERT_THAT(b.size() == 9);
+        ASSERT_EQUAL(b.size(), 2);
+        ASSERT_EQUAL(b.first(), a.first());
+        ASSERT_EQUAL(b.last(), a.last());
 END_TEST
 
 BEGIN_TEST(iterate_over_empty_list_test)
@@ -47,7 +51,7 @@ BEGIN_TEST(iterate_over_not_empty_list_test)
     int data;
     for(int i = 1; i < 10; i++)
     {
-        list.add(i);
+        list.addFirst(i);
     }
     int r = 9;
     for(ListItr itr = list.begin(); itr.notEqual(list.end()); itr = itr.next())
@@ -60,10 +64,22 @@ BEGIN_TEST(iterate_over_not_empty_list_test)
 END_TEST
 
 
+BEGIN_TEST(test_contains)
+    LinkedList list;
+    for(int i = 1; i < 10; i++)
+    {
+        list.addFirst(i);
+    }
+    ASSERT_THAT(list.contains(1));
+    ASSERT_THAT(list.contains(9));
+
+END_TEST
+
 
 BEGIN_SUITE(single_linked_list_tests)
-    TEST(test1)
+    TEST(add_remove_items)
     TEST(test_copy)
-    // TEST(iterate_over_empty_list_test)
-    // TEST(iterate_over_not_empty_list_test)
+    TEST(iterate_over_empty_list_test)
+    TEST(iterate_over_not_empty_list_test)
+    TEST(test_contains)
 END_SUITE

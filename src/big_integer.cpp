@@ -16,6 +16,15 @@ BigInteger::BigInteger()
     
 }
 
+BigInteger& BigInteger::operator=(const BigInteger& other)
+{
+    this->m_positive = other.m_positive;
+    this->m_size = other.m_size;
+    this->m_digits = other.m_digits;
+
+    return *this;
+}
+
 BigInteger::BigInteger(char* a_str)
 : m_digits()
 {
@@ -28,9 +37,23 @@ BigInteger::BigInteger(string a_str)
     toList(a_str);
 }
 
+// void BigInteger::flip(long &a_num)
+// {
+//     size_t remainder;
+//     size_t reverseNum = 0;
+//     while(a_num != 0) 
+//     {
+//         remainder = a_num % 10;
+//         reverseNum = reverseNum * 10 + reverseNum;
+//         a_num /= 10;
+//     }
+// }
+
 BigInteger::BigInteger(long a_num)
 : m_digits()
+, m_size()
 {
+    // flip(a_num);
     if(a_num >= 0)
     {
         m_positive = true;
@@ -49,6 +72,8 @@ BigInteger::BigInteger(long a_num)
     {
         toList(a_num);
     }
+
+    m_size = m_digits.size();
 }
 
 bool BigInteger::isEmpty()
@@ -70,7 +95,7 @@ string BigInteger::toString()
     
     for(ListItr itr = m_digits.begin(); itr != m_digits.end(); itr.next())
     {
-        str += itr.getData();
+        str.push_back(itr.getData());
     }
 
     return str;
@@ -101,7 +126,7 @@ ListItr BigInteger::end() const
 
 void BigInteger::addFirst(const short int a_calc)
 {
-    m_digits.addFirst(a_calc);
+    m_digits.addFirst(a_calc);          
     m_size = m_digits.size();
 }
 void BigInteger::addLast(const short int a_calc)
@@ -119,34 +144,43 @@ BigInteger BigInteger::add(BigInteger const& a_rhs)
 
     BigInteger temp;
     ListItr itrSmall, itrBig;
-    if(m_size > a_rhs.m_size)
+    size_t smallSize,bigSize;
+    
+    if(this->m_size > a_rhs.m_digits.size())
     {
-        ListItr itrSmall = a_rhs.begin();
-        ListItr itrBig = m_digits.begin();
+        itrSmall = a_rhs.begin();
+        itrBig = m_digits.begin();
+        smallSize = a_rhs.getSize()-1;
+        bigSize = m_digits.size()-1;
+        
     }
     else
     {
-        ListItr itrSmall = m_digits.begin();
-        ListItr itrBig = a_rhs.begin();
+        itrSmall = m_digits.begin();
+        itrBig = a_rhs.begin().next();
+        smallSize = m_digits.size()-1;
+        bigSize = a_rhs.getSize()-1;
+         
     }
 
     short int carry = 0;
-
-    while(itrSmall != NULL)
+    short int i;
+    while(smallSize > 0)
     {
-        short int i = carry + itrSmall.getData() + itrBig.getData();
+        i = carry + itrSmall.getData() + itrBig.getData();
         carry = i / 10;
         temp.addFirst(i % 10);
         itrSmall.next();
         itrBig.next();
+        smallSize--;
     }
-
-    while(itrBig != NULL)
+    while(bigSize > 0)
     {
-        short int i = carry + itrBig.getData();
+        i = carry + itrBig.getData();
         carry = i / 10;
         temp.addFirst(i % 10);
         itrBig.next();
+        bigSize--;
     }
 
     if(carry)
@@ -162,34 +196,47 @@ BigInteger& BigInteger::sub(BigInteger const& a_rhs)
     return *this;
 }
 
+const BigInteger& BigInteger::operator=(BigInteger const& a_rhs)
+{
+    this->m_positive = a_rhs.m_positive;
+    this->m_size = a_rhs.m_size;
+    this->m_digits = a_rhs.m_digits;
+    return *this;
+}
 
-// BigInteger::BigInteger(int a_num){}
+BigInteger BigInteger::operator+=(BigInteger const& a_rhs)
+{
+    *this = add(a_rhs);
+    return *this;
+}
 
+BigInteger BigInteger::operator+()
+{
+    return *this;
+}
 
-// BigInteger::BigInteger(long a_num)
-// {
-
-// }
-// BigInteger::BigInteger(char a_num)
-// {
-
-// }
+BigInteger BigInteger::operator-(){
+    if (size > 0)
+        n_positive = (isPositive()) ? false : true;
+    return *this;
+}
 
 void BigInteger::toList(long a_num)
 {
-    int quot, div = a_num, rem;
+    int quot, div = a_num;
+    short int rem;
 
     do{
         rem = div % 10;
         quot = div / 10;
         div = quot;
 
-        m_digits.getHead()->setData(rem);
+        m_digits.addLast(rem);
     }while(quot >= 10);
 
     if(quot > 0)
     {
-        m_digits.getHead()->setData(rem);
+        m_digits.addLast((short int)quot);
     }
 }
 
@@ -234,10 +281,9 @@ bool BigInteger::isPositive() const
 {
     return m_positive;
 }
+
 int BigInteger::getSize() const
 {
     return m_size;
     
 }
-
-//idea is to insert to the begining of list the digits of number from last to begin. using % and /.

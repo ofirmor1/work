@@ -48,7 +48,6 @@ public:
 
     // void add(int a_val);
     int remove();
-    Node* getHead();
     ListItr begin() const;
     ListItr end() const;
     size_t first() const;
@@ -59,16 +58,18 @@ public:
     void printList() const;
     bool contains(int a_val) const;
     LinkedList intersection(LinkedList const& a) const;
+    // LinkedList intersection(LinkedList const& a_first, LinkedList const& a_second);
     void initListMemb();
 
 private:
+    void axioms() const;
     Node* cutHead();
     int unbox(Node* const a_node);
 
 private:
+    Node* m_sentinal;
     Node* m_head;
     Node* m_tail;
-    Node* m_sentinal;
     int m_size;
 };
 

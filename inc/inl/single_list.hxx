@@ -6,15 +6,7 @@
 
 using namespace std;
 
-/*INLINE FUNCTIONS*/
-
-inline void LinkedList::initListMemb()
-{
-    m_head->setNext(m_tail);
-    m_tail->setNext(m_tail);
-    m_size = 0;
-}
-
+/*******************************INLINE LINKED LIST FUNCS**********************/
 inline void LinkedList::printList() const
 {
     ListItr itr = begin();
@@ -25,6 +17,7 @@ inline void LinkedList::printList() const
         itr.next();
     }
 }
+
 
 // inline void LinkedList::add(int const a_val)
 // {
@@ -37,24 +30,15 @@ inline void LinkedList::printList() const
 //     m_size++;
 // }
 
+
 inline ListItr LinkedList::begin() const
 {
-    return m_head;
+    return (ListItr)m_head;
 }
 
 inline ListItr LinkedList::end() const
 {
-    return m_tail;
-}
-
-inline bool ListItr::equal(const ListItr &a_other) const
-{
-	return a_other.m_currNode == m_currNode;
-}
-
-inline bool ListItr::notEqual(const ListItr &a_other) const
-{
-	return !equal(a_other);
+    return (ListItr)m_tail;
 }
 
 inline int LinkedList::size() const
@@ -101,6 +85,16 @@ inline int ListItr::getData()
 inline void ListItr::setData(int a_val)
 {
     return m_currNode->setData(a_val);
+}
+
+inline bool ListItr::equal(const ListItr &a_other) const
+{
+	return a_other.m_currNode == m_currNode;
+}
+
+inline bool ListItr::notEqual(const ListItr &a_other) const
+{
+	return !equal(a_other);
 }
 
 #endif /*ifndef SINGLE_LIST_HXX*/
