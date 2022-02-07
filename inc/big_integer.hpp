@@ -11,30 +11,29 @@ class BigInteger
 public:
     BigInteger();
 
-    BigInteger(const BigInteger& a_big);
-    BigInteger& operator=(const BigInteger& other);
-
-    BigInteger(long a_num);
-    BigInteger(char* a_num);
-    BigInteger(string a_str);
+    BigInteger(BigInteger const& a_big);
+    
+    BigInteger(const long a_num);
+    BigInteger(const char* a_num);
+    BigInteger(const string a_str);
 
     bool isPositive() const;
     int getSize() const;
     void addFirst(const short int a_calc);
     void addLast(const short int a_calc);
 
-    BigInteger add(BigInteger const& a_rhs);
+    BigInteger& add(BigInteger const& a_rhs);
     BigInteger& sub(BigInteger const& a_rhs);
     BigInteger& mul(BigInteger const& a_rhs);
 
+    int equals(const BigInteger& other) const;
     BigInteger& operator=(BigInteger const& a_rhs);
     BigInteger operator+=(BigInteger const& a_rhs);
     BigInteger operator+();
     BigInteger operator-();
 
-    
     string toString();
-    bool isEmpty();
+    bool isEmpty() const;
 
 private:
 
@@ -54,5 +53,17 @@ private:
 
 BigInteger add(BigInteger const& a_lhs, BigInteger const& a_rhs);
 void add(BigInteger const& a_lhs, BigInteger const& a_rhs, BigInteger const& a_sum);
+
+bool equal(BigInteger const& bigNum1, BigInteger const& bigNum2);
+bool notEqual(BigInteger const& bigNum1, BigInteger const& bigNum2);
+
+bool equal(BigInteger const& bigNum1, long bigNum2);
+bool notEqual(BigInteger const& bigNum1, long bigNum2);
+
+bool greaterOrEqual(BigInteger const& bigNum1, BigInteger const& bigNum2);
+bool lessOrEqual(BigInteger const& bigNum1, BigInteger const& bigNum2);
+
+bool greaterthan(BigInteger const& bigNum1, BigInteger const& bigNum2);
+bool lessthan(BigInteger const& bigNum1, BigInteger const& bigNum2);
 
 #endif /*BIG_INTEGER_HPP*/

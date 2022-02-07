@@ -57,6 +57,7 @@ public:
     bool isEmpty() const;
     void printList() const;
     bool contains(int a_val) const;
+    
     LinkedList intersection(LinkedList const& a) const;
     // LinkedList intersection(LinkedList const& a_first, LinkedList const& a_second);
     void initListMemb();
@@ -72,6 +73,9 @@ private:
     Node* m_tail;
     int m_size;
 };
+
+bool contains(LinkedList const& a_list, int a_val);
+bool contains(ListItr a_begin, ListItr const a_end , int a_val);
 
 // LinkedList& intersection(LinkedList const& a, LinkedList const& b, LinkedList& c);
 

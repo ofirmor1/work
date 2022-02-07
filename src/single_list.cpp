@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include "single_list.hpp"
+// #include "hash_set.hpp"
 
 using namespace std;
 
@@ -185,20 +186,62 @@ void LinkedList::addLast(int const a_val)
     axioms();
 }
 
-LinkedList LinkedList::intersection(LinkedList const& a_list) const
-{
-    LinkedList intersect;
-    Node* node = m_head;
-    while(node != m_sentinal)
-    {
-        if(a_list.contains(node->getData() == true))
-        {
-            intersect.addFirst(node->getData());
-        }
-        node = node->getNext();
-    }
-    return intersect;
-}
+// staticsize_t myHashFunc(void* a_val)
+// {
+//     size_t data = *(size_t*)a_val;
+//     return data * 2;
+// }
+
+// int myEqualityFunc(void* a_first, void* a_second)
+// {
+//     return (*(int*)a_first == *(int*)a_second) ? true:false;
+// }
+
+// size_t  intersection(LinkedList const& a_first, LinkedList const& a_second, LinkedList& a_list)
+// {
+//     Hash* hs = HashCreate(a_first.size(), myHashFunc, myEqualityFunc);
+//     ListItr itr = a_first.begin();
+//     ListItr end = a_first.end();
+//     while(itr.notEqual(end))
+//     {
+//         int* item = new int;
+//         *item = itr.getData();
+//         HashInsert(hs, item);
+//         itr.next();
+//     }
+
+//     ListItr itrB = a_first.begin();
+//     ListItr endB = a_first.end();
+//     while (itrB.notEqual(endB))
+//     {
+//         int toFind = itrB.getData();
+//         int isFound = HashIsFound(hs, &toFind);
+//         if(isFound)
+//         {
+//             a_list.addFirst(toFind);
+
+//         }
+//         itrB.next();
+//     }
+
+//     return a_list.size();
+// }
+
+
+// LinkedList LinkedList::intersection(LinkedList const& a_list) const
+// {
+//     LinkedList intersect;
+//     Node* node = m_head;
+//     while(node != m_sentinal)
+//     {
+//         if(a_list.contains(node->getData() == true))
+//         {
+//             intersect.addFirst(node->getData());
+//         }
+//         node = node->getNext();
+//     }
+//     return intersect;
+// }
 
 // LinkedList LinkedList::intersection(LinkedList const& a_first, LinkedList const& a_second)
 // {
@@ -217,35 +260,33 @@ LinkedList LinkedList::intersection(LinkedList const& a_list) const
 //         itr.next();
 //     }
 //     return false;
+
+// another opt - return ::contains(*this, a_val);
+// static bool contains_jump(LinkedList const& a_list, int a_val)
+// {
+//     return contains(a_list, a_val);
+// }
+
 bool LinkedList::contains(int a_val) const
 { 
-    ListItr itr = this->begin();   
-    m_tail->setData(a_val);
-    while(itr.getData() != a_val)
-    {
-        itr.next();
-    }
+    return ::contains(*this, a_val);
 
-    return itr.notEqual(this->end()) ? true : false;
 }
 
 bool contains(LinkedList const& a_list, int a_val)
 { 
-    return a_list.contains(a_val);
+    return contains(a_list.begin(), a_list.end(), a_val);
 }
 
-bool contains(ListItr const& a_begin, ListItr const& a_end , int a_val)
+bool contains(ListItr a_begin, ListItr a_end , int a_val)
 { 
-    ListItr itr = a_begin;
-    while(itr.notEqual(a_end))
+    a_end.setData(a_val);
+    while(a_begin.getData() != a_val)
     {
-        if(itr.getData() == a_val)
-        {
-            return true;
-        }
-        itr.next();
+        a_begin.next();
     }
-    return false;
+
+    return a_begin.notEqual(a_end);
 }
 
 void LinkedList::axioms() const

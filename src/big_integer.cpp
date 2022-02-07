@@ -4,6 +4,8 @@
 #include <string>
 #include <math.h>
 #include <cassert>
+#include <stdio.h>
+#include <stdlib.h>
 #include "big_integer.hpp"
 #include "single_list.hpp"
 
@@ -11,47 +13,31 @@
 BigInteger::BigInteger()
 : m_digits()
 , m_positive(true)
-, m_size(m_digits.size())
+{}
+
+BigInteger::BigInteger(BigInteger const& a_bigNum)
 {
-    
+    m_size = a_bigNum.getSize();
+    m_positive = a_bigNum.isPositive();
+
+    LinkedList bigNumDigits = a_bigNum.m_digits;
+    for(ListItr itr = bigNumDigits.begin(); itr != bigNumDigits.end(); itr.next())
+    {
+        m_digits.addLast(itr.getData());
+    }
 }
 
-BigInteger& BigInteger::operator=(const BigInteger& other)
-{
-    this->m_positive = other.m_positive;
-    this->m_size = other.m_size;
-    this->m_digits = other.m_digits;
-
-    return *this;
-}
-
-BigInteger::BigInteger(char* a_str)
-: m_digits()
+BigInteger::BigInteger(const char* a_str)
 {
     toList(string(a_str));
 }
 
-BigInteger::BigInteger(string a_str)
-: m_digits()
+BigInteger::BigInteger(const string a_str)
 {
     toList(a_str);
 }
 
-// void BigInteger::flip(long &a_num)
-// {
-//     size_t remainder;
-//     size_t reverseNum = 0;
-//     while(a_num != 0) 
-//     {
-//         remainder = a_num % 10;
-//         reverseNum = reverseNum * 10 + reverseNum;
-//         a_num /= 10;
-//     }
-// }
-
 BigInteger::BigInteger(long a_num)
-: m_digits()
-, m_size()
 {
     // flip(a_num);
     if(a_num >= 0)
@@ -76,9 +62,28 @@ BigInteger::BigInteger(long a_num)
     m_size = m_digits.size();
 }
 
-bool BigInteger::isEmpty()
+// void BigInteger::flip(long &a_num)
+// {
+//     size_t remainder;
+//     size_t reverseNum = 0;
+//     while(a_num != 0) 
+//     {
+//         remainder = a_num % 10;
+//         reverseNum = reverseNum * 10 + reverseNum;
+//         a_num /= 10;
+//     }
+// }
+
+void BigInteger::flip(long &a_num)
 {
-    return m_size == 0;
+    size_t remainder;
+    size_t reverseNum = 0;
+    while(a_num != 0) 
+    {
+        remainder = a_num % 10;
+        reverseNum = reverseNum * 10 + reverseNum;
+        a_num /= 10;
+    }
 }
 
 string BigInteger::toString()
@@ -95,22 +100,67 @@ string BigInteger::toString()
     
     for(ListItr itr = m_digits.begin(); itr != m_digits.end(); itr.next())
     {
-        str.push_back(itr.getData());
+        str += itr.getData();
+        printf("%s ", str.c_str());
     }
 
     return str;
 }
 
-BigInteger::BigInteger(const BigInteger& a_bigNum)
+void BigInteger::toList(long a_num)
 {
-    m_size = a_bigNum.getSize();
-    m_positive = a_bigNum.isPositive();
+    int quot, div = a_num;
+    short int rem;
 
-    LinkedList bigNumDigits = a_bigNum.m_digits;
+    do{
+        rem = div % 10;
+        quot = div / 10;
+        div = quot;
 
-    for(ListItr itr = bigNumDigits.begin(); itr != bigNumDigits.end(); itr.next())
+        m_digits.addLast(rem);
+    }while(quot >= 10);
+
+    if(quot > 0)
     {
-        m_digits.addLast(itr.getData());
+        m_digits.addLast(quot);
+    }
+}
+
+void BigInteger::toList(string a_str)
+{
+    int strLength = a_str.length();
+    assert(strLength > 0);
+    int zero = int('0');
+    m_size = 0;
+
+    if(strLength == 1)
+    {
+        char c = a_str[0];
+        assert(c > '0' || c < '9');
+        m_digits.addFirst((short int)(c - zero));
+        m_size++;
+        return;
+    }
+
+    if(a_str[0] == '-')
+    {
+        m_positive = false;
+    }
+
+    int begin = m_positive ? 0 : 1;
+
+    for(int i = begin; i < strLength; i++)
+    {
+        char c = a_str[i];
+        assert(c > '0' || c < '9');
+
+        if(m_size == 0 && c == '0')
+        {
+            continue;
+        }
+
+        m_digits.addLast((short int)(c - zero));
+        m_size++;
     }
 }
 
@@ -135,7 +185,7 @@ void BigInteger::addLast(const short int a_calc)
     m_size = m_digits.size();
 }
 
-BigInteger BigInteger::add(BigInteger const& a_rhs)
+BigInteger& BigInteger::add(BigInteger const& a_rhs)
 {
     if(this->isPositive() ^ a_rhs.isPositive())
     {
@@ -188,7 +238,7 @@ BigInteger BigInteger::add(BigInteger const& a_rhs)
         temp.addFirst(carry);
     }
 
-    return temp;
+    return *this;
 }
 
 BigInteger& BigInteger::sub(BigInteger const& a_rhs)
@@ -196,7 +246,58 @@ BigInteger& BigInteger::sub(BigInteger const& a_rhs)
     return *this;
 }
 
-const BigInteger& BigInteger::operator=(BigInteger const& a_rhs)
+
+int BigInteger::equals(const BigInteger& other) const
+{
+    bool sign1 = isPositive();
+    bool sign2 = other.isPositive();
+
+    if(sign1 ^ sign2){
+        if (sign1 && !sign2)
+            return 1;
+        else
+            return -1;
+    }
+    
+    //signs same, size different
+    int size1 = getSize();
+    int size2 = other.getSize();
+    
+    if (size1 ^ size2)
+	{
+        if (size1 > size2)
+		{
+			return (sign1) ? 1 : -1;
+		}
+            
+        else
+		{
+			return (!sign1) ? 1 : -1;
+		}    
+    }
+    
+    //signs and size are the same
+    for(ListItr itr1 = begin(), itr2 = other.begin(); itr1 != end(); itr1.next(), itr2.next())
+	{
+        if (itr1.getData() == itr2.getData())
+		{
+			continue;
+		}
+        if (itr1.getData() > itr2.getData())
+		{
+			return (sign1) ? 1 : -1;
+		}   
+        else
+		{
+			return (!sign1) ? 1 : -1;
+		}
+            
+    }
+	
+    return 0;
+}
+
+BigInteger& BigInteger::operator=(BigInteger const& a_rhs)
 {
     this->m_positive = a_rhs.m_positive;
     this->m_size = a_rhs.m_size;
@@ -216,65 +317,49 @@ BigInteger BigInteger::operator+()
 }
 
 BigInteger BigInteger::operator-(){
-    if (size > 0)
-        n_positive = (isPositive()) ? false : true;
+    if (m_size > 0)
+        m_positive = (isPositive()) ? false : true;
     return *this;
 }
 
-void BigInteger::toList(long a_num)
+bool equal(BigInteger const& bigNum1, BigInteger const& bigNum2)
 {
-    int quot, div = a_num;
-    short int rem;
-
-    do{
-        rem = div % 10;
-        quot = div / 10;
-        div = quot;
-
-        m_digits.addLast(rem);
-    }while(quot >= 10);
-
-    if(quot > 0)
-    {
-        m_digits.addLast((short int)quot);
-    }
+    return (bigNum1.equals(bigNum2) == 0) ? true : false;
 }
 
-void BigInteger::toList(string a_str)
+bool notEqual(BigInteger const& bigNum1, BigInteger const& bigNum2)
 {
-    int strLength = a_str.length();
-    assert(strLength > 0);
-    m_size = 0;
+    return (bigNum1.equals(bigNum2) != 0) ? true : false;
+}
 
-    if(strLength == 1)
-    {
-        char c = a_str[0];
-        assert(c > '0' || c < '9');
-        m_digits.addFirst((short int)(c - '0'));
-        m_size++;
-        return;
-    }
+bool equal(BigInteger const& bigNum1, long bigNum2)
+{
+    return (bigNum1.equals(bigNum2) == 0) ? true : false;
+}
 
-    if(a_str[0] == '-')
-    {
-        m_positive = false;
-    }
+bool notEqual(BigInteger const& bigNum1, long bigNum2)
+{
+    return (bigNum1.equals(bigNum2) != 0) ? true : false;
+}
 
-    int begin = m_positive ? 0 : 1;
+bool greaterthan(BigInteger const& bigNum1, BigInteger const& bigNum2)
+{
+    return (bigNum1.equals(bigNum2) > 0) ? true : false;
+}
 
-    for(int i = begin; i < strLength; i++)
-    {
-        char c = a_str[i];
-        assert(c > '0' || c < '9');
+bool lessthan(BigInteger const& bigNum1, BigInteger const& bigNum2)
+{
+    return (bigNum1.equals(bigNum2) < 0) ? true : false;
+}
 
-        if(m_size == 0 && c == '0')
-        {
-            continue;
-        }
+bool greaterOrEqual(BigInteger const& bigNum1, BigInteger const& bigNum2)
+{
+    return (bigNum1.equals(bigNum2) >= 0) ? true : false;
+}
 
-        m_digits.addLast((short int)(c - '0'));
-        m_size++;
-    }
+bool lessOrEqual(BigInteger const& bigNum1, BigInteger const& bigNum2)
+{
+    return (bigNum1.equals(bigNum2) <= 0) ? true : false;
 }
 
 bool BigInteger::isPositive() const
@@ -285,5 +370,9 @@ bool BigInteger::isPositive() const
 int BigInteger::getSize() const
 {
     return m_size;
-    
+}
+
+bool BigInteger::isEmpty() const
+{
+    return m_size == 0;
 }
