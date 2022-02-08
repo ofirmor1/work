@@ -75,15 +75,8 @@ BigInteger::BigInteger(long a_num)
 // }
 
 void BigInteger::flip(long &a_num)
-{
-    size_t remainder;
-    size_t reverseNum = 0;
-    while(a_num != 0) 
-    {
-        remainder = a_num % 10;
-        reverseNum = reverseNum * 10 + reverseNum;
-        a_num /= 10;
-    }
+{   
+    return flip(a_num * 10) + flip(a_num % 10);
 }
 
 string BigInteger::toString()
@@ -307,8 +300,7 @@ BigInteger& BigInteger::operator=(BigInteger const& a_rhs)
 
 BigInteger BigInteger::operator+=(BigInteger const& a_rhs)
 {
-    *this = add(a_rhs);
-    return *this;
+    return add(a_rhs);
 }
 
 BigInteger BigInteger::operator+()
@@ -316,50 +308,54 @@ BigInteger BigInteger::operator+()
     return *this;
 }
 
-BigInteger BigInteger::operator-(){
+BigInteger BigInteger::operator-()
+{
     if (m_size > 0)
+    {
         m_positive = (isPositive()) ? false : true;
+    }
+
     return *this;
 }
 
-bool equal(BigInteger const& bigNum1, BigInteger const& bigNum2)
+bool equal(BigInteger const& a_lhs, BigInteger const& a_rhs)
 {
-    return (bigNum1.equals(bigNum2) == 0) ? true : false;
+    return a_lhs.equals(a_rhs) == 0;
 }
 
-bool notEqual(BigInteger const& bigNum1, BigInteger const& bigNum2)
+bool notEqual(BigInteger const& a_lhs, BigInteger const& a_rhs)
 {
-    return (bigNum1.equals(bigNum2) != 0) ? true : false;
+    return !equal(a_lhs, a_rhs);
 }
 
-bool equal(BigInteger const& bigNum1, long bigNum2)
+bool equal(BigInteger const& a_lhs, long a_rhs)
 {
-    return (bigNum1.equals(bigNum2) == 0) ? true : false;
+    return a_lhs.equals(a_rhs) == 0;
 }
 
-bool notEqual(BigInteger const& bigNum1, long bigNum2)
+bool notEqual(BigInteger const& a_lhs, long a_rhs)
 {
-    return (bigNum1.equals(bigNum2) != 0) ? true : false;
+    return !equal(a_lhs, a_rhs);
 }
 
-bool greaterthan(BigInteger const& bigNum1, BigInteger const& bigNum2)
+bool greaterthan(BigInteger const& a_lhs, BigInteger const& a_rhs)
 {
-    return (bigNum1.equals(bigNum2) > 0) ? true : false;
+    return lessthan(a_rhs, a_lhs);
 }
 
-bool lessthan(BigInteger const& bigNum1, BigInteger const& bigNum2)
+bool lessthan(BigInteger const& a_lhs, BigInteger const& a_rhs)
 {
-    return (bigNum1.equals(bigNum2) < 0) ? true : false;
+    return (a_lhs.equals(a_rhs) < 0) ? true : false;
 }
 
-bool greaterOrEqual(BigInteger const& bigNum1, BigInteger const& bigNum2)
+bool greaterOrEqual(BigInteger const& a_lhs, BigInteger const& a_rhs)
 {
-    return (bigNum1.equals(bigNum2) >= 0) ? true : false;
+    return !lessthan(a_lhs, a_rhs);
 }
 
-bool lessOrEqual(BigInteger const& bigNum1, BigInteger const& bigNum2)
+bool lessOrEqual(BigInteger const& a_lhs, BigInteger const& a_rhs)
 {
-    return (bigNum1.equals(bigNum2) <= 0) ? true : false;
+    return !greaterthan(a_lhs, a_rhs);
 }
 
 bool BigInteger::isPositive() const

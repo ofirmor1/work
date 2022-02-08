@@ -1,8 +1,9 @@
 #include <cassert>
-#include "../inc/Rational.hpp"
+#include "rational.hpp"
 #include <cassert>
 #include <cstdlib>
 #include <stdio.h>
+
 
 Rational::Rational(int _numerator, int _denominator, bool _reduced)
 {
@@ -92,14 +93,14 @@ void Rational::reduce()
     }
     else
     {
-       int smaller = getNumerator() > getDenominator() ? abs(getDenominator()) : abs(getNumerator());
+       int smaller = abs(getNumerator()) > abs(getDenominator()) ? abs(getDenominator()) : abs(getNumerator());
         for (int i = smaller; i >= 2; i--)
         {
             if (abs(getNumerator()) % i == 0 && abs(getDenominator()) % i == 0)
             {
                 display();
-                setNumerator(abs(getNumerator()) / i);
-                setDenominator(abs(getDenominator()) / i);
+                setNumerator(getNumerator() / i);
+                setDenominator(getDenominator() / i);
                 break;
             }
         }
@@ -107,6 +108,10 @@ void Rational::reduce()
         {
             setNumerator(getNumerator() * -1);
             setDenominator(getDenominator() * -1);
+        }
+        if (getNumerator() == 0 && getDenominator() != 0)
+        {
+            getDenominator() > 0 ? setDenominator(1) : setDenominator(-1);
         }
     } 
 }
@@ -180,8 +185,164 @@ Rational gDiv(Rational first, Rational second)
     return first;
 }
 
+void Rational::neg()
+{
+    Rational r(*this);
+    r * -1;
+}
+
 void Rational::axioms()
 {
    assert(getDenominator() != 0); 
+}
+
+//Operators
+
+Rational& Rational::operator=(Rational const& a_rational)
+{
+    Rational r(*this);
+    r = a_rational;
+    return *this;
+}
+
+Rational& Rational::operator-(Rational const& a_rhs) const
+{
+    return sub(a_rhs);
+}
+
+Rational operator-(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r = r - a_second;
+    r.reduce();
+    
+    return r;
+}
+
+Rational operator-(Rational const& a_first, int a_second)
+{
+    Rational r(a_first);
+    r = r - a_second;
+    r.reduce();
+    
+    return r;
+}   
+
+Rational operator-(int a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r = r - a_first;
+    r.reduce();
+    
+    return r;
+}
+
+Rational operator+(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r = r + a_second;
+    r.reduce();
+    
+    return r;
+}
+
+Rational operator*(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r = r * a_second;
+    r.reduce();
+    
+    return r;
+}
+
+Rational operator/(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r = r / a_second;
+    r.reduce();
+    
+    return r;
+}
+
+Rational operator+=(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r += a_second;
+    r.reduce();
+
+    return r;
+}
+
+Rational operator-=(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r -= a_second;
+    r.reduce();
+    
+    return r;
+}
+
+Rational operator*=(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r *= a_second;
+    r.reduce();
+    
+    return r;
+}
+
+// Rational& operator*=(Rational const& a_rational)
+// {
+//     Rational r(a_first);
+//     r *= a_second;
+//     return r;
+// }
+
+Rational operator/=(Rational& a_first, Rational const& a_second)
+{
+    Rational r(a_first);
+    r /= a_second;
+    r.reduce();
+    
+    return r;
+}
+
+//prefix
+Rational& Rational::operator++()
+{
+    m_elm[0]++;
+    m_elm[1]++;
+    reduce();
+    
+    return *this;
+}
+
+//postfix
+Rational Rational::operator++(int)
+{
+    Rational r(*this);
+    ++ *this;
+    reduce();
+    
+    return r;
+}
+//prefix
+Rational& Rational::operator--()
+{
+    m_elm[0]--;
+    m_elm[1]--;
+    reduce();
+
+    return *this;   
+}
+
+//postfix
+Rational Rational::operator--(int)
+{
+    Rational r(*this);
+    -- *this;
+    reduce();
+    
+    return r;
 }
 
