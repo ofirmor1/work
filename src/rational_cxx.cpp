@@ -1,8 +1,9 @@
 #include <cassert>
-#include "rational.hpp"
 #include <cassert>
 #include <cstdlib>
-#include <stdio.h>
+#include <cstdio>
+#include <iostream>
+#include "rational.hpp"
 
 
 Rational::Rational(int _numerator, int _denominator, bool _reduced)
@@ -36,37 +37,52 @@ void Rational::setDenominator(int den)
 {
     m_elm[1] = den;
 }
-void Rational::add(Rational _item)
+Rational& Rational::add(Rational const& _item)
 {
     setNumerator(getNumerator() * _item.getDenominator() + getDenominator() * _item.getNumerator());
     setDenominator(getDenominator() * _item.getDenominator());
 
     axioms();
+    return *this;
 }
 
-void Rational::sub(Rational _item)
+Rational& Rational::sub(Rational const& _item)
 {
     setNumerator(getNumerator() * _item.getDenominator() - getDenominator() * _item.getNumerator());
     setDenominator(getDenominator() * _item.getDenominator());
 
     axioms();
+    return *this;
 }
 
-void Rational::mul(Rational _item)
+Rational& Rational::mul(Rational const& _item)
 {
     setNumerator(getNumerator() * _item.getNumerator());
     setDenominator(getDenominator() * _item.getDenominator());
 
     axioms();
+    return *this;
 }
 
-void Rational::div(Rational _item)
+Rational& Rational::div(Rational const& _item)
 {
     assert(_item.getNumerator() == 0);
     setNumerator(getNumerator() * _item.getDenominator());
     setDenominator(getDenominator() * _item.getNumerator());
 
     axioms();
+    return *this;
+}
+
+void Rational::neg()
+{
+    Rational r(*this);
+    r * -1;
+}
+
+void Rational::axioms()
+{
+   assert(getDenominator() != 0); 
 }
 
 void Rational::swap()
@@ -98,7 +114,6 @@ void Rational::reduce()
         {
             if (abs(getNumerator()) % i == 0 && abs(getDenominator()) % i == 0)
             {
-                display();
                 setNumerator(getNumerator() / i);
                 setDenominator(getDenominator() / i);
                 break;
@@ -116,38 +131,68 @@ void Rational::reduce()
     } 
 }
 
+std::ostream& Rational::print(std::ostream& os) const
+{
+    os << "numerator: " << m_elm[0] << "\ndenomerator: " << m_elm[1] << '\n';
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, Rational const& a_rational)
+{
+ return a_rational.print(os);
+}
+
 void Rational::display()
 {
     printf("The numerator is %d\n", getNumerator());
     printf("The denominator is %d", getDenominator());
 }
-
-bool Rational::equal(Rational a) const
+//comperison member functions
+bool Rational::equal(Rational const& a_rational) const
 {
-    return (getNumerator() == a.getNumerator() && getDenominator() == a.getDenominator());
+    return compare(a_rational) == 0;
 }
 
-bool Rational::notEqual(Rational a) const
+bool Rational::notEqual(Rational const& a_rational) const
 {
-    return !equal(a);
+    return !equal(a_rational);
 }
-int Rational::compare(Rational a) const
+
+bool Rational::less(Rational const& a_rational) const
 {
-    if (a. getDenominator() > getDenominator())
+    return compare(a_rational) == -1;
+}
+bool Rational::greater(Rational const& a_rational) const
+{
+    return a_rational.less(*this);
+}
+bool Rational::lessOrEqual(Rational const& a_rational) const
+{   
+    return !greater(a_rational);
+}
+bool Rational::greaterOrEqual(Rational const& a_rational) const
+{
+    return !less(a_rational);
+}
+
+int Rational::compare(Rational const& a_rational) const
+{
+    if (a_rational. getDenominator() > getDenominator())
     {
         return A_IS_BIGGER;
     }
-    else if (a.getDenominator() < getDenominator())
+    else if (a_rational.getDenominator() < getDenominator())
     {
         return B_IS_BIGGER;
     }
     else
     {
-        if (a.getNumerator() > getNumerator())
+        if (a_rational.getNumerator() > getNumerator())
         {
             return A_IS_BIGGER;
         }
-        else if (a.getNumerator() < getNumerator())
+        else if (a_rational.getNumerator() < getNumerator())
         {
             return A_IS_BIGGER;
         }
@@ -158,160 +203,134 @@ int Rational::compare(Rational a) const
     }
 }
 
-
 /***********************************Global Functions******************************************/
 
-Rational gAdd(Rational first, Rational second)
+Rational gAdd(Rational const& a_lhs, Rational const& a_rhs)
 {
-    first.add(second);
-    return first;
+   Rational r(a_lhs);
+   r.add(a_rhs);
+   return r; 
 }
 
-Rational gSub(Rational first, Rational second)
+Rational gSub(Rational const& a_lhs, Rational const& a_rhs)
 {
-    first.sub(second);
-    return first;
+    Rational r(a_lhs);
+    r.sub(a_rhs);
+    return r;
 }
 
-Rational gMul(Rational first, Rational second)
+Rational gMul(Rational const& a_lhs, Rational const& a_rhs)
 {
-    first.mul(second);
-    return first;
+    Rational r(a_lhs);
+    r.mul(a_rhs);
+    return r;
 }
 
-Rational gDiv(Rational first, Rational second)
+Rational gDiv(Rational const& a_lhs, Rational const& a_rhs)
 {
-    first.div(second);
-    return first;
+    Rational r(a_lhs);
+    r.div(a_rhs);
+    return r;
 }
-
-void Rational::neg()
+//global comparison
+bool equal(Rational const& a_lhs, Rational const& a_rhs)
 {
-    Rational r(*this);
-    r * -1;
+    return a_lhs.equal(a_rhs);
 }
-
-void Rational::axioms()
+bool notEqual(Rational const& a_lhs, Rational const& a_rhs)
 {
-   assert(getDenominator() != 0); 
+    return a_lhs.notEqual(a_rhs);
+}
+bool less(Rational const& a_lhs, Rational const& a_rhs)
+{
+    return a_lhs.less(a_rhs);
+}
+bool greater(Rational const& a_lhs, Rational const& a_rhs)
+{
+    return a_lhs.greater(a_rhs);
+}
+bool lessOrEqual(Rational const& a_lhs, Rational const& a_rhs)
+{
+    return a_lhs.lessOrEqual(a_rhs);
+}
+bool greaterOrEqual(Rational const& a_lhs, Rational const& a_rhs)
+{
+    return a_lhs.equal(a_rhs);
+}
+bool compare(Rational const& a_lhs, Rational const& a_rhs)
+{
+    return a_lhs.compare(a_rhs);
 }
 
 //Operators
 
 Rational& Rational::operator=(Rational const& a_rational)
 {
-    Rational r(*this);
-    r = a_rational;
+    m_elm[0] = a_rational.getNumerator();
+    m_elm[1] = a_rational.getDenominator();
+
     return *this;
 }
 
-Rational& Rational::operator-(Rational const& a_rhs) const
+Rational operator-(Rational const& a_lhs, Rational const& a_rhs)
 {
-    return sub(a_rhs);
+    return gSub(a_lhs, a_rhs);
 }
 
-Rational operator-(Rational& a_first, Rational const& a_second)
+Rational operator-(Rational const& a_lhs, int a_rhs)
 {
-    Rational r(a_first);
-    r = r - a_second;
-    r.reduce();
-    
-    return r;
-}
-
-Rational operator-(Rational const& a_first, int a_second)
-{
-    Rational r(a_first);
-    r = r - a_second;
-    r.reduce();
-    
-    return r;
+    Rational r(a_rhs);
+    return a_lhs - r;
 }   
 
-Rational operator-(int a_first, Rational const& a_second)
+Rational operator-(int a_lhs, Rational const& a_rhs)
 {
-    Rational r(a_first);
-    r = r - a_first;
-    r.reduce();
-    
-    return r;
+    return operator-(a_rhs, a_lhs);
 }
 
-Rational operator+(Rational& a_first, Rational const& a_second)
+Rational operator+(Rational const& a_lhs, Rational const& a_rhs)
 {
-    Rational r(a_first);
-    r = r + a_second;
-    r.reduce();
-    
-    return r;
+    return gAdd(a_lhs, a_rhs);
 }
 
-Rational operator*(Rational& a_first, Rational const& a_second)
+Rational operator*(Rational const& a_lhs, Rational const& a_rhs)
 {
-    Rational r(a_first);
-    r = r * a_second;
-    r.reduce();
-    
-    return r;
+    return gMul(a_lhs, a_rhs);
 }
 
-Rational operator/(Rational& a_first, Rational const& a_second)
+Rational operator/(Rational const& a_lhs, Rational const& a_rhs)
 {
-    Rational r(a_first);
-    r = r / a_second;
-    r.reduce();
-    
-    return r;
+    return gDiv(a_lhs, a_rhs);
 }
 
-Rational operator+=(Rational& a_first, Rational const& a_second)
-{
-    Rational r(a_first);
-    r += a_second;
-    r.reduce();
-
-    return r;
+Rational const& Rational::operator+=(Rational const& a_rational)
+{   
+    add(a_rational);
+    return *this;
 }
 
-Rational operator-=(Rational& a_first, Rational const& a_second)
+Rational const& Rational::operator-=(Rational const& a_rational)
 {
-    Rational r(a_first);
-    r -= a_second;
-    r.reduce();
-    
-    return r;
+    sub(a_rational);
+    return *this;
 }
 
-Rational operator*=(Rational& a_first, Rational const& a_second)
+Rational const& Rational::operator*=(Rational const& a_rational)
 {
-    Rational r(a_first);
-    r *= a_second;
-    r.reduce();
-    
-    return r;
+    mul(a_rational);
+    return *this;
 }
 
-// Rational& operator*=(Rational const& a_rational)
-// {
-//     Rational r(a_first);
-//     r *= a_second;
-//     return r;
-// }
-
-Rational operator/=(Rational& a_first, Rational const& a_second)
+Rational const& Rational::operator/=(Rational const& a_rational)
 {
-    Rational r(a_first);
-    r /= a_second;
-    r.reduce();
-    
-    return r;
+    div(a_rational);
+    return *this;
 }
 
 //prefix
 Rational& Rational::operator++()
 {
-    m_elm[0]++;
-    m_elm[1]++;
+    m_elm[0] += m_elm[1];
     reduce();
     
     return *this;
@@ -320,17 +339,16 @@ Rational& Rational::operator++()
 //postfix
 Rational Rational::operator++(int)
 {
-    Rational r(*this);
+    Rational prev(*this);
     ++ *this;
     reduce();
-    
-    return r;
+
+    return prev;
 }
 //prefix
 Rational& Rational::operator--()
 {
-    m_elm[0]--;
-    m_elm[1]--;
+    m_elm[0] -= m_elm[1];
     reduce();
 
     return *this;   
@@ -339,10 +357,23 @@ Rational& Rational::operator--()
 //postfix
 Rational Rational::operator--(int)
 {
-    Rational r(*this);
+    Rational prev(*this);
     -- *this;
     reduce();
     
-    return r;
+    return prev;
 }
 
+/*********************************************/
+
+Rational const& Rational::operator+() const
+{
+    return *this;
+}
+
+Rational Rational::operator-() const
+{
+    Rational r(*this);
+    r.m_elm[0] = -r.m_elm[0];
+    return *this;
+}
