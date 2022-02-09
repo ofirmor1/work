@@ -2,13 +2,13 @@
 #define ARRAY_INT_H
 
 #include <stddef.h>
+#include<iostream>
 
 const int ARRAY_LENGTH = 10;
 class ArrayOfInt
 {
 public:
-    ArrayOfInt();
-    ArrayOfInt(int* a_array, size_t a_size);
+    ArrayOfInt(size_t a_size);
 
     ~ArrayOfInt();
     ArrayOfInt(ArrayOfInt const& a_arr);
@@ -21,10 +21,17 @@ public:
     bool isEmpty() const;
     void print() const;
 
+    void axioms();
+
+    std::ostream& print(std::ostream& os) const;
+
 private:
-    int* m_array[ARRAY_LENGTH];
     bool m_isFull;
     size_t m_size; //num of items
+    int* m_array[ARRAY_LENGTH];
+
 };
+
+std::ostream& operator<<(std::ostream& os, Rational const& a_array);
 
 #endif /*ARRAY_INT_H*/
