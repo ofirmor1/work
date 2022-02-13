@@ -3,19 +3,19 @@
 #include "single_list.hxx"
 
 BEGIN_TEST(add_remove_items)
-        LinkedList l;
+        LinkedList<int> l;
         ASSERT_THAT(l.isEmpty() == true);
         l.addFirst(1);
         l.addFirst(3);
         l.addFirst(5);
         l.printList();  
-        printf("LIST size: %d\n\n" , l.size());
+        printf("LIST size: %ld\n\n" , l.size());
         ASSERT_EQUAL(l.size(),  3);
         ASSERT_THAT(l.isEmpty() == false);
         for(int i = l.size() - 1; i >= 0; i --)
         {
 			l.remove();
-			ASSERT_EQUAL(l.size(),  i);
+			ASSERT_EQUAL((int)l.size(),  i);
         }
 		ASSERT_THAT(l.isEmpty() == true);
         
@@ -23,8 +23,8 @@ END_TEST
 //code review - check begin & end . works fine for(1..10) but fail on (0..10)
 
 BEGIN_TEST(test_copy)
-        LinkedList a;
-        LinkedList b;
+        LinkedList<int> a;
+        LinkedList<int> b;
         // LinkedList c;
         int i = 1;
         while(i < 3)
@@ -40,21 +40,21 @@ BEGIN_TEST(test_copy)
 END_TEST
 
 BEGIN_TEST(iterate_over_empty_list_test)
-    LinkedList list;
-    ListItr itr = list.begin();
-    ListItr end = list.end();
+    LinkedList<int> list;
+    ListItr<int> itr = list.begin();
+    ListItr<int> end = list.end();
     ASSERT_THAT(itr.equal(end));
 END_TEST
 
 BEGIN_TEST(iterate_over_not_empty_list_test)
-    LinkedList list;
+    LinkedList<int> list;
     int data;
     for(int i = 1; i < 10; i++)
     {
         list.addFirst(i);
     }
     int r = 9;
-    for(ListItr itr = list.begin(); itr.notEqual(list.end()); itr = itr.next())
+    for(ListItr<int> itr = list.begin(); itr.notEqual(list.end()); itr = itr.next())
     {
         
         data = itr.getData();
@@ -65,7 +65,7 @@ END_TEST
 
 
 BEGIN_TEST(test_contains)
-    LinkedList list;
+    LinkedList<int> list;
     for(int i = 1; i < 10; i++)
     {
         list.addFirst(i);

@@ -7,13 +7,14 @@
 using namespace std;
 
 /*******************************INLINE LINKED LIST FUNCS**********************/
-inline void LinkedList::printList() const
+template <typename T>
+inline void LinkedList<T>::printList() const
 {
-    ListItr itr = begin();
-    ListItr itrEnd = end();
+    ListItr<T> itr = begin();
+    ListItr<T> itrEnd = end();
     while(itr.equal(itrEnd) == false)
     {
-        cout << itr.getData() << endl;
+        cout << itr.getData() << " ";
         itr.next();
     }
 }
@@ -30,69 +31,80 @@ inline void LinkedList::printList() const
 //     m_size++;
 // }
 
-
-inline ListItr LinkedList::begin() const
+template <typename T>
+inline ListItr<T> LinkedList<T>::begin() const
 {
-    return (ListItr)m_head;
+    return (ListItr<T>)m_head;
 }
 
-inline ListItr LinkedList::end() const
+template <typename T>
+inline ListItr<T> LinkedList<T>::end() const
 {
-    return (ListItr)m_tail;
+    return (ListItr<T>)m_tail;
 }
 
-inline int LinkedList::size() const
+template <typename T>
+inline size_t LinkedList<T>::size() const
 {
     return m_size;
 }
 
-inline bool LinkedList::isEmpty() const
+template <typename T>
+inline bool LinkedList<T>::isEmpty() const
 {
     return m_size == 0;
 }
 /*******************************INLINE NODE FUNCS**********************/
-inline int Node::getData()
+template <typename T>
+inline T Node<T>::getData()
 {
     return m_data;
 }
 
-inline Node* Node::getNext()
+template <typename T>
+inline Node<T>* Node<T>::getNext()
 {
     return m_next;
 }
 
-inline void Node::setData(int a_val)
+template <typename T>
+inline void Node<T>::setData(T a_val)
 {
     m_data = a_val;
 }
-
-inline void Node::setNext(Node* a_node)
+template <typename T>
+inline void Node<T>::setNext(Node* a_node)
 {
     m_next = a_node;
 }
 /*******************************INLINE LIST_ITERATOR FUNCS**********************/
-inline ListItr ListItr::next()
+template <typename T>
+inline ListItr<T> ListItr<T>::next()
 {
     m_currNode = m_currNode->getNext();
     return ListItr(m_currNode);
 }
 
-inline int ListItr::getData()
+template <typename T>
+inline T ListItr<T>::getData()
 {
     return m_currNode->getData();
 }
 
-inline void ListItr::setData(int a_val)
+template <typename T>
+inline void ListItr<T>::setData(T a_val)
 {
     return m_currNode->setData(a_val);
 }
 
-inline bool ListItr::equal(const ListItr &a_other) const
+template <typename T>
+inline bool ListItr<T>::equal(const ListItr &a_other) const
 {
 	return a_other.m_currNode == m_currNode;
 }
 
-inline bool ListItr::notEqual(const ListItr &a_other) const
+template <typename T>
+inline bool ListItr<T>::notEqual(const ListItr &a_other) const
 {
 	return !equal(a_other);
 }
