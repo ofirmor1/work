@@ -9,8 +9,9 @@ CXX_STD = c++03
 
 CXXFLAGS = $(WARNINGS) $(DEBUG) -std=$(CXX_STD)
 
-CPPFLAGS = -I$(INC_DIR)
+CPPFLAGS = -I$(INC_DIR) -I$(INL_DIR)
 
+INL_DIR = ../../inc/inl
 INC_DIR = ../../inc
 SRC_DIR = ../../src
 
@@ -19,7 +20,7 @@ OBJS = utest.o
 
 $(TARGET): $(OBJS)
 
-utest.o: $(INC_DIR)/queue.hpp
+utest.o: $(INC_DIR)/queue.hpp $(INC_DIR)/single_list.hpp $(INL_DIR)/single_list.hxx
 
 check: $(TARGET)
 	./$(TARGET) -v
