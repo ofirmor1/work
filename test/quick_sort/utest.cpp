@@ -1,13 +1,14 @@
-#include "quick_sort.hpp"
 #include "ball.hpp"
 #include "point.hpp"
+#include "quick_sort.hpp"
 #include "mu_test.h"
 #include <iostream>
 #include <cassert>
 
 BEGIN_TEST(quick_sort_int)
-    int v[] = {1, 3, 7, 11, 5, -8, 2, 9};
-    int e[] = {-8, 1, 2, 3, 5, 7, 9, 11};
+    int v[] = {1, 3, 7, 11, 5, 8, 2, 9};
+    int e[] = {1, 2, 3, 5, 7, 8, 9, 11};
+    (void)e;
     const size_t n = sizeof(v)/sizeof(*v);
     std::cout << "\n\nbefore sorting: "<< std::endl;
     cpp::printArray(v, n);   
@@ -35,84 +36,70 @@ BEGIN_TEST(quick_sort_char)
 
     cpp::quickSort(word, strlen(word));
    
-    std::cout << "after sorting: "<< std::endl;
-    cpp::printArray(word, strlen(word)); 
-    printf("string length: %ld\n\n", strlen(word));
-    for(size_t i = 0; i < strlen(sortedWord); i++)
-    {
-        ASSERT_EQUAL(word[i], sortedWord[i]);
-    }
+    // std::cout << "after sorting: "<< std::endl;
+    // cpp::printArray(word, strlen(word)); 
+    // printf("string length: %ld\n\n", strlen(word));
+    // for(size_t i = 0; i < strlen(sortedWord); i++)
+    // {
+    //     ASSERT_EQUAL(word[i], sortedWord[i]);
+    // }
 
     ASSERT_PASS();
 
 END_TEST   
 
 
+
 BEGIN_TEST(quick_sort_array_of_points_by_radius)
-    Ball b1, b2, b3;
-    b1.m_color = "red";
-    b1.m_radius = 2.3;
-    b2.m_color = "blue";
-    b2.m_radius = 3.3;
-    b3.m_color = "green";
-    b3.m_radius = 1.7;
+    using cpp::Ball;
+
+    Ball b1("red", 2.3);
+    Ball b2("blue", 3.3);
+    Ball b3("green", 1.7);
     Ball balls[] = {b1, b2, b3};
-    cpp::quickSort(balls, 3);
-    ASSERT_EQUAL(balls[0].m_radius, 1.7);
-    ASSERT_EQUAL(balls[1].m_radius, 2.3);
-    ASSERT_EQUAL(balls[2].m_radius, 3.3);
-    std::cout << balls[0].m_radius << std::endl;
-    std::cout << balls[1].m_radius << std::endl;
-    std::cout << balls[2].m_radius << std::endl;
+    quickSort(balls, 3);
+    ASSERT_EQUAL(balls[0].getRadius(), 1.7);
+    ASSERT_EQUAL(balls[1].getRadius(), 2.3);
+    ASSERT_EQUAL(balls[2].getRadius(), 3.3);
+    std::cout << balls[0].getRadius() << std::endl;
+    std::cout << balls[1].getRadius() << std::endl;
+    std::cout << balls[2].getRadius() << std::endl;
     
 END_TEST
 
 BEGIN_TEST(quick_sort_array_of_coordinates_in_the_plane)
-    Point<double> p1, p2, p3;
+    using cpp::Point;
 
-    p1.x = 12.0;
-    p1.y = 5.0;
-
-    p2.x = 4.0;
-    p2.y = 3.0;
-
-    p3.x = 8.0;
-    p3.y = 6.0;
-    
-    Point<double> zero;
-    zero.x = 0;
-    zero.y = 0;
+    Point<double> p1(12.0, 5.0);
+    Point<double> p2(4.0, 3.0);
+    Point<double> p3(8.0, 6.0);
+    Point<double> zero(0.0, 0.0);
 
     Point<double> arr[] = {p1, p2, p3};
 
     std::cout << "\nbefore sorting \n" << std::endl;
-
-    std::cout << arr[0].x << " " << arr[0].y << " distance from (0.0): " << distance(arr[0], zero) << std::endl;
-    std::cout << arr[1].x << " " << arr[1].y << " distance from (0.0): " << distance(arr[1], zero) << std::endl;
-    std::cout << arr[2].x << " " << arr[2].y << " distance from (0.0): " << distance(arr[2], zero) << std::endl;
     
-    ASSERT_EQUAL (distance(arr[0], zero), 13.0);
-    ASSERT_EQUAL (distance(arr[1], zero), 5.0);
-    ASSERT_EQUAL (distance(arr[2], zero), 10.0);
+    std::cout << arr[0].getX() << " " << arr[0].getY() << " distance from (0.0): " << p1.distance(arr[0], zero) << std::endl;
+    std::cout << arr[1].getX() << " " << arr[1].getY() << " distance from (0.0): " << p2.distance(arr[1], zero) << std::endl;
+    std::cout << arr[2].getX() << " " << arr[2].getY() << " distance from (0.0): " << p3.distance(arr[2], zero) << std::endl;
+
+    ASSERT_EQUAL (p1.distance(arr[0], zero), 13.0);
+    ASSERT_EQUAL (p2.distance(arr[1], zero), 5.0);
+    ASSERT_EQUAL (p3.distance(arr[2], zero), 10.0);
 
     cpp::quickSort(arr, 3);
 
     std::cout << "\nafter sorting \n" << std::endl;
 
-    std::cout << arr[0].x << " " << arr[0].y << " distance from (0.0): " << distance(arr[0], zero) << std::endl;
-    std::cout << arr[1].x << " " << arr[1].y << " distance from (0.0): " << distance(arr[1], zero) << std::endl;
-    std::cout << arr[2].x << " " << arr[2].y << " distance from (0.0): " << distance(arr[2], zero) << std::endl;
+    std::cout << arr[0].getX() << " " << arr[0].getY() << " distance from (0.0): " << p1.distance(arr[0], zero) << std::endl;
+    std::cout << arr[1].getX() << " " << arr[1].getY() << " distance from (0.0): " << p2.distance(arr[1], zero) << std::endl;
+    std::cout << arr[2].getX() << " " << arr[2].getY() << " distance from (0.0): " << p3.distance(arr[2], zero) << std::endl;
         
-    ASSERT_EQUAL (distance(arr[0], zero), 5.0);
-    ASSERT_EQUAL (distance(arr[1], zero), 10.0);
-    ASSERT_EQUAL (distance(arr[2], zero), 13.0);
+    ASSERT_EQUAL (p1.distance(arr[0], zero), 5.0);
+    ASSERT_EQUAL (p2.distance(arr[1], zero), 10.0);
+    ASSERT_EQUAL (p3.distance(arr[2], zero), 13.0);
     (void)arr;
     ASSERT_PASS();
-    // ASSERT_EQUAL(balls[1].m_radius, 2.3);
-    // ASSERT_EQUAL(balls[2].m_radius, 3.3);
-    // std::cout << balls[0].m_radius << std::endl;
-    // std::cout << balls[1].m_radius << std::endl;
-    // std::cout << balls[2].m_radius << std::endl;
     
 END_TEST
 

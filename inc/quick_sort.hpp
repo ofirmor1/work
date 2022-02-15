@@ -6,8 +6,10 @@
 namespace cpp
 {
     template <typename T>
-    void quickSort(T* a_arr, int a_size);
+    void quickSort(T* a_arr, size_t a_size);
+
 } //cpp namespace
+
 
 #include "inl/quick_sort.hxx"
 
