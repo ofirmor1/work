@@ -64,7 +64,7 @@ bool Point<T>::compareX(T const& point1 , T const& point2)
 template <typename T>
 bool Point<T>::operator<(Point<T> const& a_rhs) const
 {
-    return this->m_x < a_rhs.getX();
+    return (m_x*m_x + m_y*m_y < a_rhs.m_x*a_rhs.getX() + a_rhs.m_y*getY());
 }
 
 template <typename T>

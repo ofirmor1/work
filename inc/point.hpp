@@ -34,6 +34,6 @@ private:
 } // namespace name
 
 
-#include "point.hxx"
+#include "inl/point.hxx"
 
 #endif /*POINT_HPP*/

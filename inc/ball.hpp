@@ -23,6 +23,6 @@ private:
 
 } // namespace cpp
 
-#include "ball.hxx"
+#include "inl/ball.hxx"
 
 #endif /*BALL_HPP*/
