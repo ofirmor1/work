@@ -12,8 +12,8 @@ namespace cpp
 namespace detail_imp
 {
 
-template <typename T>
-size_t scanRight(const T* a_arr, size_t a_first, const size_t a_last, T const& a_pivot)
+template <typename LessComparator, typename T>
+size_t scanRight(const T* a_arr, size_t a_first, const size_t a_last, T const& a_pivot, LessComparator less)
 {
     while(!(a_pivot < a_arr[a_first]) && a_first <= a_last)
     {
@@ -23,8 +23,8 @@ size_t scanRight(const T* a_arr, size_t a_first, const size_t a_last, T const& a
     return a_first;
 }
 
-template <typename T>
-size_t scanLeft(const T* a_arr, size_t a_last, T const& a_pivot)
+template <typename LessComparator, typename T>
+size_t scanLeft(const T* a_arr, size_t a_last, T const& a_pivot, LessComparator less)
 {
     while(a_pivot < a_arr[a_last])
     {
@@ -55,14 +55,14 @@ T& selectPivot(T* a_arr, size_t a_first, size_t a_last)
     return a_arr[a_first];
 }
 
-template <typename T>
-size_t partition(T* a_arr, size_t a_first , size_t a_last, T& a_pivot)
+template <typename LessComparator, typename T>
+size_t partition(T* a_arr, size_t a_first , size_t a_last, T& a_pivot, LessComparator less)
 {
     
     for(size_t i = a_first; i < a_last; ++i)
     {
-        a_last = scanLeft(a_arr, a_last, a_pivot);
-        a_first = scanRight(a_arr, a_first, a_last, a_pivot);
+        a_last = scanLeft(a_arr, a_last, a_pivot, less);
+        a_first = scanRight(a_arr, a_first, a_last, a_pivot, less);
         
         if(a_first < a_last)
         {
@@ -75,48 +75,53 @@ size_t partition(T* a_arr, size_t a_first , size_t a_last, T& a_pivot)
     return a_last;	
 }
 
-template <typename T>
-void bubbleSort(T* a_arr, size_t a_start , size_t a_last)
+template <typename LessComparator, typename T>
+void insertion(T* a_arr, size_t a_start , size_t a_last, LessComparator less)
 {
-    for (size_t i = a_start; i < a_last; i++)
+    size_t i, j;
+    (void)j;
+    i = a_start;
+    while(i < a_start)
     {
-        if(a_arr[i+1] < a_arr[i])
+        for (size_t j = i+1; j > 0; --j)
         {
-            printf("1 ");
-            using std::swap;
-            swap(a_arr[i], a_arr[i+1]);
-        }   
+            if(less(a_arr[j], a_arr[j-1]))
+            {
+                using std::swap;
+                swap(a_arr[j], a_arr[j-1]);
+            } 
+            else
+            {
+                break;  
+            }  
+        }
+        ++i;
     }
 }
 
-template <typename T>
-void quickSortRec(T* a_arr, size_t a_start , size_t a_last)
+template <typename LessComparator, typename T>
+void quickSortRec(T* a_arr, size_t a_start , size_t a_last, LessComparator less)
 {
     if(a_start < a_last)
     {
-         
-        T& pivot = selectPivot(a_arr, a_start, a_last);
-        size_t posOfPivot = partition (a_arr, a_start , a_last, pivot); 
-        
+        if(a_last - a_start == THRESHOLD)
         {
+             insertion(a_arr, a_start, a_last, less);
+        }
+
+        T& pivot = selectPivot(a_arr, a_start, a_last);
+        size_t posOfPivot = partition (a_arr, a_start , a_last, pivot, less); 
+ 
             if(posOfPivot > 0)
             {
-                if(posOfPivot > THRESHOLD)
-                {
-                    quickSortRec(a_arr , a_start , posOfPivot - 1);
-                }
-                bubbleSort(a_arr, a_start, posOfPivot);
-                
+
+                quickSortRec(a_arr , a_start , posOfPivot - 1, less);
             }
+
             if(posOfPivot < a_last)
             {
-                if(posOfPivot < a_last - THRESHOLD)
-                {
-                    quickSortRec(a_arr , posOfPivot + 1 , a_last);
-                }
-                bubbleSort(a_arr, posOfPivot, a_last);
+                quickSortRec(a_arr , posOfPivot + 1 , a_last, less);
             }
-        }
     }		
 }
 
@@ -138,15 +143,15 @@ void printArray(T* a_arr, size_t a_size)
 namespace cpp
 {
 
-template <typename T>
-void quickSort(T* a_arr, size_t a_size)
+template <typename LessComparator, typename T>
+void quickSort(T* a_arr, size_t a_size, LessComparator less)
 {
     if(!a_arr || a_size <= 1)
     {
         return;
     }
     
-	detail_imp::quickSortRec(a_arr, 0, a_size - 1);
+	detail_imp::quickSortRec(a_arr, 0, a_size - 1, less);
 } 
 
 } // namespace cpp

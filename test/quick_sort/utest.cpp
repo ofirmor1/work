@@ -14,7 +14,7 @@ BEGIN_TEST(quick_sort_int)
     std::cout << "\n\nbefore sorting: "<< std::endl;
     cpp::printArray(v, n);   
     printf("array length: %ld\n\n", n);
-    cpp::quickSort(v, n);
+    cpp::quickSort(v, n, LessOp<int> ());
     std::cout << "after sorting: "<< std::endl;
     cpp::printArray(v, n); 
 
@@ -35,7 +35,7 @@ BEGIN_TEST(quick_sort_char)
     printf("word length: %ld\n\n", strlen(word));
     printf("sortedWord length: %ld\n\n", strlen(sortedWord));
 
-    cpp::quickSort(word, strlen(word));
+    cpp::quickSort(word, strlen(word), LessOp<int> ());
    
     std::cout << "after sorting: "<< std::endl;
     cpp::printArray(word, strlen(word)); 
@@ -51,14 +51,14 @@ END_TEST
 
 
 
-BEGIN_TEST(quick_sort_array_of_points_by_radius)
+BEGIN_TEST(quick_sort_array_of_balls)
     using cpp::Ball;
 
     Ball b1("red", 2.3);
     Ball b2("blue", 3.3);
     Ball b3("green", 1.7);
     Ball balls[] = {b1, b2, b3};
-    quickSort(balls, 3);
+    cpp::quickSort(balls, 3, LessOp<Ball> ());
     ASSERT_EQUAL(balls[0].getRadius(), 1.7);
     ASSERT_EQUAL(balls[1].getRadius(), 2.3);
     ASSERT_EQUAL(balls[2].getRadius(), 3.3);
@@ -88,7 +88,7 @@ BEGIN_TEST(quick_sort_array_of_coordinates_in_the_plane)
     ASSERT_EQUAL (p2.distance(arr[1], zero), 5.0);
     ASSERT_EQUAL (p3.distance(arr[2], zero), 10.0);
 
-    cpp::quickSort(arr, 3);
+    cpp::quickSort(arr, 3, LessOp<Point<double> > ());
 
     std::cout << "\nafter sorting \n" << std::endl;
 
@@ -147,8 +147,8 @@ BEGIN_TEST(my_quick_sort_int_with_rand_num)
         copy[i] = arr[i] = rand();
     }
 
-    cpp::quickSort<int>(arr, N);
-    cpp::quickSort<int>(copy, N);
+    cpp::quickSort(arr, N, LessOp<int> ());
+    cpp::quickSort(copy, N, LessOp<int> ());
 
     for(size_t i = 0; i < N; ++i)
     {
@@ -166,7 +166,7 @@ END_TEST
 BEGIN_SUITE(quick_sort_unit_tests)
     TEST(quick_sort_int)
     TEST(quick_sort_char)
-    TEST(quick_sort_array_of_points_by_radius)
+    TEST(quick_sort_array_of_balls)
     TEST(quick_sort_array_of_coordinates_in_the_plane)
     TEST(library_quick_sort_int_with_rand_num)
     TEST(my_quick_sort_int_with_rand_num)

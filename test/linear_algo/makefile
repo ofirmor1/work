@@ -19,7 +19,6 @@ OBJS = utest.o
 
 $(TARGET): $(OBJS)
 
-# $(INC_DIR)/quick_sort.hpp: $(INC_DIR)/ball.hpp $(INC_DIR)/point.hpp
 check: $(TARGET)
 	./$(TARGET) -v
 	

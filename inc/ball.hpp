@@ -7,6 +7,7 @@ namespace cpp
 class Ball
 {
 public:
+    Ball();
     Ball(const char* a_color, double a_radius);
     // const char *m_color();
     double getRadius() const;

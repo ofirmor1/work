@@ -2,6 +2,9 @@
 
 using cpp::Ball;
 
+Ball::Ball()
+{}
+
 Ball::Ball(const char* a_color, double a_radius)
 : m_color(a_color)
 , m_radius(a_radius)
