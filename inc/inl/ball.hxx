@@ -27,4 +27,8 @@ bool Ball::operator<(Ball const& a_rhs) const
     return this->m_radius < a_rhs.m_radius;
 }
 
+bool Ball::operator==(Ball const& a_rhs) const
+{
+    return this->m_radius == a_rhs.m_radius;
+}
 

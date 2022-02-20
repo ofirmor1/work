@@ -19,9 +19,6 @@ void swap(T& a_first, T& a_second)
     T temp = a_first;
     a_first = a_second;
     a_second = temp;
-    // a_first = a_first + a_second;
-    // a_second = a_first - a_second;
-    // a_first = a_first - a_second;
 }
 
 int* randIntArr(const size_t N)
@@ -56,6 +53,8 @@ struct RandomGenerator
         return (T(rand())/RAND_MAX)*(maxValue-minValue)+minValue;
     }
 };
+
+std::map<char, int> letterFrequency(const char* a_filename);
   
 
 #endif /*ifndef UTILS_HPP*/

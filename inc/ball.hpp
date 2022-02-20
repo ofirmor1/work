@@ -13,6 +13,7 @@ public:
     double getRadius() const;
     const char* getColor() const;
     bool operator<(Ball const &a_rhs) const;
+    bool operator==(Ball const& a_rhs) const;
 
 private:
     void axioms() const;

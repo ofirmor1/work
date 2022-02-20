@@ -12,73 +12,33 @@
 namespace cpp
 {
 
-using namespace std;
+template <typename T>
+void Chaos(std::vector<T> &a_vec);
 
 template <typename T>
-void Chaos(vector<T> &a_vec)
-{
-    generate(a_vec.begin(), a_vec.end(), RandomGenerator<T>(2,100));
-
-}
+T sumElements(std::vector<T> &a_vec);
 
 template <typename T>
-T sumElements(vector<T> &a_vec)
-{
-    T sum = 0;
-    for (size_t i = 0; i < a_vec.size(); i++)
-    {
-        sum += a_vec[i];
-    }
-
-    return sum;
-}
-
+T simpleSum(std::vector<T> &a_vec);
 
 template <typename T>
-T simpleSum(vector<T> &a_vec)
-{
-    T sum = 0;
-    sum = accumulate(a_vec.begin(), a_vec.end(), 0.0);
-    
-    return sum;
-}
+void oddsOut(std::vector<T> &a_vec);
 
 template <typename T>
-void oddsOut(vector<T> &a_vec)
-{
-    for (size_t i = 0; i < a_vec.size(); i++)
-    {
-        if(a_vec[i] % 2 == 0)
-        {
-            a_vec.erase(a_vec.begin()+i);
-        }
-    }   
-}
+std::pair<size_t, size_t> extremes(std::vector<T> const& a_vec);
 
-pair<int, int> extremes(vector<int> &a_vec)
-{
-    int minVal = a_vec[0];
-    int maxVal = a_vec[0];
-    for (size_t i = 0; i < a_vec.size(); i++)
-    {
-        if(a_vec[i] < minVal)
-        {
-            minVal = a_vec[i];
-        }
-        if(a_vec[i] > maxVal)
-        {
-            maxVal = a_vec[i];
-        }
-    }
+template <typename T>
+std::pair<size_t, size_t> extremes2(std::vector<T> const& a_vec);
 
-    return make_pair(minVal, maxVal);
-}
+template<typename T>
+// size_t firstDuplicate(std::vector<T> const& a_vec);
+size_t firstDuplicate(std::vector<T> const& a_vec);
 
+} // namespace cpp  
 
+#include "./inl/linear_algo.hxx"
 
 #endif /*LINEAR_ALGO_HPP*/
-
-} // namespace cpp
 
 
 
