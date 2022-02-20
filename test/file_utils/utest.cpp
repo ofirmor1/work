@@ -9,16 +9,16 @@ using std::setw;
 BEGIN_TEST(file_utils_check_frequency_print_table)
     std::map<char, int> frequency;
     frequency = letterFrequency("/home/ofir/work/test/file_utils/book.txt");
-    cout << "The Frequency of the capital letters are: \n" << endl;
+    std::cout << "The Frequency of the capital letters are: \n" << std::endl;
 	for(char caps = 'A'; caps <= 'Z'; caps++)
 	{
-		cout << "Letter " << caps << " is " << setw(4) << frequency[caps] << " times." << endl;
+		std::cout << "Letter " << caps << " is " << setw(4) << frequency[caps] << " times." << std::endl;
 	}
 
-	cout << "The Frequency of the lower case letters are: \n" << endl;
+	std::cout << "The Frequency of the lower case letters are: \n" << std::endl;
 	for(char lower = 'a'; lower <= 'z'; lower++)
 	{
-		cout << "Letter " << lower << " is " << setw(4) << frequency[lower] << " times." << endl;
+		std::cout << "Letter " << lower << " is " << setw(4) << frequency[lower] << " times." << std::endl;
 	}
 
     ASSERT_EQUAL(frequency['Q'], 34);
