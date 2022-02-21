@@ -23,28 +23,29 @@ BEGIN_TEST(file_utils_frequency_print_table)
 END_TEST   
 
 BEGIN_TEST(count_word_frequency)
-    wordMap w;
+    WordMap w;
     std::ifstream file("./book.txt");
     size_t count = countWords(file, w);
 
-    for (wordMap::iterator it = w.begin();it != w.end(); ++it) 
+    for (WordMap::iterator it = w.begin();it != w.end(); ++it) 
     {
         std::cout << it->first << " occurred "
         << it->second << " times.\n";
     }
 
-    std::cout << "number of words in the book \n" << count << endl;
+    std::cout << "number of words in the book \n" << count << std::endl;
     ASSERT_PASS();
 
 END_TEST
 
 
 BEGIN_TEST(count_N_most_frequncy)
+
     const size_t K = 3;
 
-    wordMap w;
+    WordMap w;
     std::ifstream file("./book.txt");
-    vector<pair<string,size_t> > vec;
+    std::vector<std::pair<std::string,size_t> > vec;
 
     vec = topNWords(file, K);
 

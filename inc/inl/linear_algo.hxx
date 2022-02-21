@@ -137,7 +137,7 @@ size_t countCommontStrange(std::vector<T> const& a_first, std::vector<T> const& 
 template<typename T>
 size_t countCommontStrange2(std::vector<T> const& a_first, std::vector<T> const& a_second, std::vector<T> const& a_third)
 {
-    std::set<T const*, CompareByPointer<T> > c;
+    std::set<T const*, LessCompareByPointer<T> > c;
 
     for (size_t i = 0; i < a_second.size(); ++i)
     {
@@ -164,7 +164,7 @@ size_t countCommontStrange2(std::vector<T> const& a_first, std::vector<T> const&
 template<typename T>
 int findFirstUnique(std::vector<T> const& a_vec)
 {
-    std::map<T, int> uniqMap;
+    std::map<const T, int> uniqMap;
     std::vector<int>::const_iterator it;
     std::pair<typename std::map<T, int>::iterator, bool> ret;
 

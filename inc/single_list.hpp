@@ -5,6 +5,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <iterator>
 #include "single_list.hpp"
 // #include "hash_set.hpp"
 
@@ -27,18 +28,35 @@ private:
 };
 
 template <typename T>
-class ListItr
+class ListItr: public std::iterator<std::input_iterator_tag, int>
 {
+
 public:
     ListItr();
     ListItr(Node<T>* a_node);
-    bool operator!=(ListItr<T> that) const;
 
     T getData();
     void setData(T a_val);
     ListItr next();
+
     bool equal(const ListItr<T> &a_other) const;
     bool notEqual(const ListItr<T> &a_other) const;
+
+    ListItr& operator=(Node<T>* a_node);
+
+    ListItr& operator++();
+    ListItr operator++(T);
+
+    bool operator==(const ListItr& a_that);
+    bool operator!=(const ListItr& a_that);
+    
+    int operator*() const;
+    Node<T>* operator->() const;
+// a->m
+// *a = t
+// ++a
+// a++
+// *a++
 
 private:
     Node<T>* m_currNode;
@@ -48,6 +66,7 @@ private:
 template <typename T>
 class LinkedList
 {
+
 public:
     LinkedList();
     ~LinkedList();
@@ -57,8 +76,6 @@ public:
     void addFirst(T const& a_val);
     void addLast(T const& a_val);
 
-
-    // void add(int a_val);
     T remove();
     ListItr<T> begin() const;
     ListItr<T> end() const;
@@ -178,21 +195,17 @@ LinkedList<T>& LinkedList<T>::operator=(LinkedList<T> const&a_source)
         array[--i] = itr.getData();
         itr = itr.next();
     }
+
     for (i = 0; i < a_source.size(); i++)
     {
         addFirst(array[i]);
     }
+
     delete[] array;
 
     axioms();
 
     return *this;
-}
-
-template <typename T>
-bool ListItr<T>::operator!=(ListItr<T> that) const
-{
-    return (this->m_currNode != that.m_currNode);
 }
 
 template <typename T>

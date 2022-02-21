@@ -32,7 +32,7 @@ std::map<char, size_t> letterFrequency(std::ifstream& a_file)
     return frequency;
 }
 
-size_t countWords(std::istream& a_file, wordMap& a_words) 
+size_t countWords(std::istream& a_file, WordMap& a_words) 
 {
     std::string s;
 
@@ -53,7 +53,7 @@ std::vector<std::pair<std::string,size_t> > topNWords(std::ifstream& a_file, siz
     //TODO: insertion sort if k is small, if k ~ totalWords -> reverse insertion
     using namespace std;
 
-    wordMap w;
+    WordMap w;
     size_t totalWords = countWords(a_file, w);
 
     if(k == totalWords)
@@ -83,6 +83,52 @@ std::vector<std::pair<std::string,size_t> > topNWords(std::ifstream& a_file, siz
     }
 
     return top;
+}
+
+typedef std::pair<std::string const, size_t>* WordPair;
+typedef std::pair<std::string const, size_t> WordPairInMap;
+typedef std::priority_queue<WordPair, std::vector<WordPair>, GreaterPairCompare<std::string, size_t> > WordFrequencyHeap;
+
+WordFrequencyHeap topNWords2(std::map<std::string, size_t>& a_map, size_t a_numWords)
+{
+    using std::vector;
+    using std::map;
+    using std::string;
+
+    vector<WordPair> v;
+
+    map<string, size_t>::iterator itr = a_map.begin();
+    map<string, size_t>::iterator end = a_map.end();
+
+    const size_t k = std::min(a_map.size(), a_numWords);
+    v.reserve(k);
+
+    for(size_t i = 0; i < k; ++i){
+        WordPairInMap* w = &*itr;
+        v.push_back(w);
+        ++itr;
+    }
+
+    assert(v.size()==3);
+
+    GreaterPairCompare<string, size_t> cmp;
+    WordFrequencyHeap minHeap(cmp, v);
+
+    assert(minHeap.size() == 3);
+    
+    while(itr != end)
+    {
+        WordPairInMap* w = &*itr;
+        if( cmp(w, minHeap.top()))
+        {
+            minHeap.pop();          
+            minHeap.push(w);    
+        }
+
+        ++itr;
+    }
+    
+	return minHeap;
 }
 
 } // namespace cpp

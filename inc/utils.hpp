@@ -5,7 +5,7 @@
 
 template <typename T>
 //require: <
-struct LessOp
+struct LessElementsCompare
 {
     bool operator()(T const& a_first, T const& a_second)
     {
@@ -21,8 +21,26 @@ struct Comparator
     }
 };
 
+template<typename T, typename U>
+struct GreaterPairCompare
+{
+      bool operator()(const std::pair<const T,U>* a,const std::pair<const T,U>* b) const
+      {
+            return a->second > b->second;
+      }
+};
+
+template<typename T, typename U>
+struct LessPairCompare
+{
+      bool operator()(const std::pair<const T,U>* a,const std::pair<const T,U>* b) const
+      {
+            return a->second < b->second;
+      }
+};
+
 template <typename T>
-struct CompareByPointer
+struct LessCompareByPointer
 {
     bool operator() (const T* lhs, const T* rhs) const
     {
@@ -49,9 +67,10 @@ int* randIntArr(const size_t N)
     return arr;
 }
 
-double fRand(double fMin, double fMax)
+template <typename T>
+T fRand(T fMin, double fMax)
 {
-    double f = (double)rand() / RAND_MAX;
+    T f = (T)rand() / RAND_MAX;
     return fMin + f * (fMax - fMin);
 }
 

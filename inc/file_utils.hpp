@@ -3,7 +3,7 @@
 
 #include <map>
 
-typedef std::map<std::string, size_t> wordMap;
+typedef std::map<std::string, size_t> WordMap;
 
 namespace cpp
 {

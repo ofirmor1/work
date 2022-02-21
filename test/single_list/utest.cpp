@@ -1,6 +1,7 @@
 #include "mu_test.h"
 #include "single_list.hpp"
 #include "single_list.hxx"
+#include <list>
 
 BEGIN_TEST(add_remove_items)
         LinkedList<int> l;
@@ -20,7 +21,7 @@ BEGIN_TEST(add_remove_items)
 		ASSERT_THAT(l.isEmpty() == true);
         
 END_TEST
-//code review - check begin & end . works fine for(1..10) but fail on (0..10)
+
 
 BEGIN_TEST(test_copy)
         LinkedList<int> a;
@@ -39,12 +40,14 @@ BEGIN_TEST(test_copy)
         ASSERT_EQUAL(b.last(), a.last());
 END_TEST
 
+
 BEGIN_TEST(iterate_over_empty_list_test)
     LinkedList<int> list;
     ListItr<int> itr = list.begin();
     ListItr<int> end = list.end();
     ASSERT_THAT(itr.equal(end));
 END_TEST
+
 
 BEGIN_TEST(iterate_over_not_empty_list_test)
     LinkedList<int> list;
@@ -76,10 +79,62 @@ BEGIN_TEST(test_contains)
 END_TEST
 
 
+BEGIN_TEST(iterator_operators_test)
+    const size_t N = 1000;
+    LinkedList<int> list;
+
+    for(size_t i = 1; i < N; i++)
+    {
+        list.addLast(i);
+    }
+
+    ListItr<int> it = list.begin();
+    
+    ASSERT_EQUAL(*it, 1);
+
+    it++;
+
+    ASSERT_EQUAL(*it, 2);
+
+    int data = *it++;
+    ASSERT_EQUAL(data, 2);
+    ASSERT_EQUAL(*it, 3);
+
+    data = *++it;
+    ASSERT_EQUAL(data, 4);
+    ASSERT_EQUAL(*it, 4);
+
+    it->setData(13);
+    ASSERT_EQUAL(it->getData(), 13);
+
+END_TEST
+
+
+bool IsDevidedBy3 (int i) {
+  return i%3 == 0;
+}
+
+BEGIN_TEST(find_if_test)
+    const size_t N = 1000;
+    LinkedList<int> list;
+
+    for(size_t i = 1; i < N; i+=22)
+    {
+        list.addLast(i);
+    }
+
+    ListItr<int> it = std::find_if (list.begin(), list.end(), IsDevidedBy3);
+    ASSERT_EQUAL(*it, 45);
+
+END_TEST
+
+
 BEGIN_SUITE(single_linked_list_tests)
     TEST(add_remove_items)
     TEST(test_copy)
     TEST(iterate_over_empty_list_test)
     TEST(iterate_over_not_empty_list_test)
     TEST(test_contains)
+    TEST(iterator_operators_test)
+    TEST(find_if_test)
 END_SUITE

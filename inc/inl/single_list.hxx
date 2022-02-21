@@ -3,33 +3,19 @@
 
 #include <iostream>
 
-
 using namespace std;
 
-/*******************************INLINE LINKED LIST FUNCS**********************/
 template <typename T>
 inline void LinkedList<T>::printList() const
 {
     ListItr<T> itr = begin();
     ListItr<T> itrEnd = end();
-    while(itr.equal(itrEnd) == false)
+    while (itr.equal(itrEnd) == false)
     {
         cout << itr.getData() << " ";
         itr.next();
     }
 }
-
-
-// inline void LinkedList::add(int const a_val)
-// {
-//     Node* newNode = new Node(a_val, m_head);
-//     m_head = newNode;
-//     if(isEmpty())
-//     {
-//         newNode->setNext(m_tail);
-//     }
-//     m_size++;
-// }
 
 template <typename T>
 inline ListItr<T> LinkedList<T>::begin() const
@@ -54,7 +40,7 @@ inline bool LinkedList<T>::isEmpty() const
 {
     return m_size == 0;
 }
-/*******************************INLINE NODE FUNCS**********************/
+
 template <typename T>
 inline T Node<T>::getData()
 {
@@ -62,7 +48,7 @@ inline T Node<T>::getData()
 }
 
 template <typename T>
-inline Node<T>* Node<T>::getNext()
+inline Node<T> *Node<T>::getNext()
 {
     return m_next;
 }
@@ -73,11 +59,11 @@ inline void Node<T>::setData(T a_val)
     m_data = a_val;
 }
 template <typename T>
-inline void Node<T>::setNext(Node* a_node)
+inline void Node<T>::setNext(Node *a_node)
 {
     m_next = a_node;
 }
-/*******************************INLINE LIST_ITERATOR FUNCS**********************/
+
 template <typename T>
 inline ListItr<T> ListItr<T>::next()
 {
@@ -100,13 +86,60 @@ inline void ListItr<T>::setData(T a_val)
 template <typename T>
 inline bool ListItr<T>::equal(const ListItr &a_other) const
 {
-	return a_other.m_currNode == m_currNode;
+    return a_other.m_currNode == m_currNode;
 }
 
 template <typename T>
 inline bool ListItr<T>::notEqual(const ListItr &a_other) const
 {
-	return !equal(a_other);
+    return !equal(a_other);
 }
+
+//Prefix
+template <typename T>
+ListItr<T>& ListItr<T>::operator++()
+{
+    if(m_currNode)
+    {
+        m_currNode = m_currNode->getNext();
+    }
+
+    return *this;
+}
+
+//Postfix
+template <typename T>
+ListItr<T> ListItr<T>::operator++(T)
+{
+    ListItr it = *this;
+    ++*this;
+    return it;
+}
+
+template <typename T>
+bool ListItr<T>::operator==(const ListItr& a_that)
+{
+    return !operator!=(a_that);
+}
+
+template <typename T>
+bool ListItr<T>::operator!=(const ListItr& a_that)
+{
+    return this->m_currNode != a_that.m_currNode;
+}
+
+template <typename T>
+int ListItr<T>::operator*() const
+{
+    return m_currNode->getData();
+}
+
+template <typename T>
+Node<T>* ListItr<T>::operator->() const
+{
+    return m_currNode;
+}
+
+
 
 #endif /*ifndef SINGLE_LIST_HXX*/
