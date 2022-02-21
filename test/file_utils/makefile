@@ -19,9 +19,15 @@ OBJS = utest.o
 
 $(TARGET): $(OBJS)
 
-check: $(TARGET)
+check: $(TARGET) book.txt
 	./$(TARGET) -v
-	
+
+warnpeace:
+	wget https://raw.githubusercontent.com/mmcky/nyu-econ-370/master/notebooks/data/book-war-and-peace.txt
+
+book.txt: warnpeace
+	 cat book-war-and-peace.txt| tr -d '[:punct:]' > book.txt
+
 prod: CXXFLAGS += -02 -DNDEBUG
 prod: $(TARGET)
 	./$(TARGET) -v
@@ -31,6 +37,6 @@ debug:
 	gdb -q ${TARGET}
 		
 clean:
-	@$(RM) $(TARGET) $(OBJS)
+	@$(RM) $(TARGET) $(OBJS) book*
 	
-.PHONY: clean check (edited) 
+.PHONY: clean check 

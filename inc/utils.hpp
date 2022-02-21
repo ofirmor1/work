@@ -13,6 +13,23 @@ struct LessOp
     }
 };
 
+struct Comparator
+{
+    bool operator()(std::pair <std::string ,size_t> const& a, std::pair <std::string, size_t> const& b) const
+    {
+        return a.second < b.second;
+    }
+};
+
+template <typename T>
+struct CompareByPointer
+{
+    bool operator() (const T* lhs, const T* rhs) const
+    {
+        return *lhs < *rhs;
+    }
+};
+
 template <typename T>
 void swap(T& a_first, T& a_second)
 {

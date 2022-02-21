@@ -2,38 +2,67 @@
 #include "file_utils.hpp"
 #include <iostream>
 #include <iomanip>
+#include <map>
 
 using namespace cpp;
 using std::setw;
 
-BEGIN_TEST(file_utils_check_frequency_print_table)
-    std::map<char, int> frequency;
-    frequency = letterFrequency("/home/ofir/work/test/file_utils/book.txt");
-    std::cout << "The Frequency of the capital letters are: \n" << std::endl;
-	for(char caps = 'A'; caps <= 'Z'; caps++)
-	{
-		std::cout << "Letter " << caps << " is " << setw(4) << frequency[caps] << " times." << std::endl;
-	}
+BEGIN_TEST(file_utils_frequency_print_table)
+    std::map<char, size_t> frequency;
+    std::ifstream file("./book.txt");
+    frequency = letterFrequency(file);
 
-	std::cout << "The Frequency of the lower case letters are: \n" << std::endl;
+	std::cout << "The Frequency of the lower and upper letters are: \n" << std::endl;
 	for(char lower = 'a'; lower <= 'z'; lower++)
 	{
 		std::cout << "Letter " << lower << " is " << setw(4) << frequency[lower] << " times." << std::endl;
 	}
 
-    ASSERT_EQUAL(frequency['Q'], 34);
+    ASSERT_PASS();
 
 END_TEST   
 
-// BEGIN_TEST(count_N_most_frequncy)
-//     std::map<char, int> frequency;
-    
+BEGIN_TEST(count_word_frequency)
+    wordMap w;
+    std::ifstream file("./book.txt");
+    size_t count = countWords(file, w);
 
-// END_TEST
+    for (wordMap::iterator it = w.begin();it != w.end(); ++it) 
+    {
+        std::cout << it->first << " occurred "
+        << it->second << " times.\n";
+    }
+
+    std::cout << "number of words in the book \n" << count << endl;
+    ASSERT_PASS();
+
+END_TEST
+
+
+BEGIN_TEST(count_N_most_frequncy)
+    const size_t K = 3;
+
+    wordMap w;
+    std::ifstream file("./book.txt");
+    vector<pair<string,size_t> > vec;
+
+    vec = topNWords(file, K);
+
+    std::cout << "\n Top |"<< K << "| words frequency:" << std::endl;
+    for (size_t i = 0; i < vec.size(); ++i)
+    {
+        std::cout << "\n the word: |" << vec[i].first << "| occurred "
+        << vec[i].second << " times.\n";
+    }
+    
+    ASSERT_PASS();
+
+END_TEST
 
 
 BEGIN_SUITE(file_utils_tests)
-    TEST(file_utils_check_frequency_print_table)
-    // TEST(count_N_most_frequncy)
+    TEST(file_utils_frequency_print_table)
+    TEST(count_word_frequency)
+    TEST(count_N_most_frequncy)
 
 END_SUITE

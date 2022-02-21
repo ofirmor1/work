@@ -85,7 +85,7 @@ BEGIN_TEST(extreme_find_min_and_max_values_in_vector)
     }
 
     myvec[500] = 1000;
-    
+
     std::pair<int,int> vecElements = extremes(myvec);
     ASSERT_EQUAL(vecElements.first, 1);
     ASSERT_EQUAL(vecElements.second, 1000);
@@ -143,9 +143,38 @@ BEGIN_TEST(common_elements_in_v1_and_v2_not_v3_vectors)
     size_t common = countCommontStrange(vec1, vec2, vec3);
 
     ASSERT_EQUAL(common, 10);
+
+    std::vector<int> vec4(0);
+
+    for (size_t i = 3; i < N; i++)
+    {
+        vec2.push_back(i);
+    }
+
+    size_t common2 = countCommontStrange2(vec1, vec2, vec3);
+
+    ASSERT_EQUAL(common2, 10);
     
 END_TEST
 
+
+BEGIN_TEST(first_unique_in_vector)
+    const size_t N = 10;
+
+    std::vector<int> v;
+
+    for (size_t i = 0; i < N; i++)
+    {
+        v.push_back(i);
+    }
+
+    v[5] = 3;
+    v[7] = 4;
+
+    size_t first = findFirstUnique(v);
+    ASSERT_EQUAL(first, 3);
+
+END_TEST
 BEGIN_SUITE(linear_algo_tests)
     TEST(chaos_with_rand_double)
     TEST(sum_of_double_elements_in_vector)
@@ -153,5 +182,6 @@ BEGIN_SUITE(linear_algo_tests)
     TEST(extreme_find_min_and_max_values_in_vector)
     TEST(find_first_duplicate_element_in_vector)
     TEST(common_elements_in_v1_and_v2_not_v3_vectors)
+    TEST(first_unique_in_vector)
     
 END_SUITE

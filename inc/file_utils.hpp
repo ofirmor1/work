@@ -3,16 +3,12 @@
 
 #include <map>
 
+typedef std::map<std::string, size_t> wordMap;
+
 namespace cpp
 {
 
-using std::string;   
-using std::map;  
-using std::pair;
-
-map<char, int> letterFrequency(const char* a_filename);
-
-bool cmp(pair <string, int> a_firstPair, pair <string, int> a_secondPair);
+std::map<char, size_t> letterFrequency(std::ifstream &a_file);
 
 } // namespace cpp
 

@@ -10,64 +10,84 @@
 #include <iterator>
 #include <queue>
 
+#include "utils.hpp"
+
 namespace cpp
 {
 
-using std::string;   
-using std::map;  
-using std::pair;
+std::map<char, size_t> letterFrequency(std::ifstream& a_file)
+{ 
+    using namespace std;
 
-map<char, int> letterFrequency(const char* a_filename)
-{
-    std::fstream book;
-	book.open(a_filename, std::ios::in);
-	assert(!book.fail());
-
-    map<char, int> frequency;
-    char oneChar;
-    oneChar = book.get();
-    while(!book.eof())
+    map<char, size_t> frequency;
+    char c;
+    while(a_file >> c && !a_file.fail())
     {
-        if(oneChar != ' ')
+        if(isalpha(c))
         {
-            ++frequency[oneChar];
+            ++frequency[std::tolower(c)];
         }
-        oneChar = book.get();
     }
 
-    book.close();
-    
     return frequency;
 }
 
-struct Comparator
+size_t countWords(std::istream& a_file, wordMap& a_words) 
 {
-    bool operator()(pair <string ,int> a, pair <string, int> b)
-    {
-        if(a.second != b.second) 
-            return !(a.second < b.second);
-        return !(a.first > b.first);
-    }
-};
+    std::string s;
 
-bool cmp(pair <string, int> a_firstPair, pair <string, int> a_secondPair)
-{
-    if(a_firstPair.second != a_secondPair.second)
+    while (a_file >> s) 
     {
-        return a_firstPair.second > a_secondPair.second;
-    } 
-        
-    return a_firstPair.first < a_secondPair.first;
+        if(a_file.good())
+        {
+            ++a_words[s];
+        }   
+    }
+
+    return a_words.size();
+}  
+
+
+std::vector<std::pair<std::string,size_t> > topNWords(std::ifstream& a_file, size_t k)
+{
+    //TODO: insertion sort if k is small, if k ~ totalWords -> reverse insertion
+    using namespace std;
+
+    wordMap w;
+    size_t totalWords = countWords(a_file, w);
+
+    if(k == totalWords)
+    {
+        vector<pair<string,size_t> > vec;
+        vec.assign(w.begin(), w.end());
+        return vec;
+    }
+
+    priority_queue<pair<string, size_t>, vector<pair<string,size_t> > , Comparator> v;
+
+    map<string, size_t> :: iterator it = w.begin();
+
+    for(; it != w.end(); ++it)
+    {
+        v.push(make_pair((*it).first, (*it).second));
+    }
+
+    vector<pair<string, size_t> > top;
+    top.reserve(k);
+
+    while(k > 0)
+    {      
+        top.push_back(v.top());
+        v.pop();
+        --k;
+    }
+
+    return top;
 }
 
 } // namespace cpp
 
-// using map to map the wrods in file, and priority_queue to find the k most frequent.
-// void topNWords(const char* a_filename, int a_top)
-// {
-// 	std::ifstream book(a_filename);
-// 	assert(!book.fail());
-// }
+
 
 #endif /*FILE_UTILS_HXX*/
 
