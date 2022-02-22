@@ -3,6 +3,8 @@
 #include "single_list.hxx"
 #include <list>
 
+using namespace cpp;
+
 BEGIN_TEST(add_remove_items)
         LinkedList<int> l;
         ASSERT_THAT(l.isEmpty() == true);
