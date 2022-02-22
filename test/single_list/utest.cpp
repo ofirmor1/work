@@ -1,7 +1,9 @@
 #include "mu_test.h"
+#include <algorithm>
+#include "ball.hpp"
 #include "single_list.hpp"
 #include "single_list.hxx"
-#include <list>
+
 
 using namespace cpp;
 
@@ -11,7 +13,7 @@ BEGIN_TEST(add_remove_items)
         l.addFirst(1);
         l.addFirst(3);
         l.addFirst(5);
-        l.printList();  
+        l.printList();
         printf("LIST size: %ld\n\n" , l.size());
         ASSERT_EQUAL(l.size(),  3);
         ASSERT_THAT(l.isEmpty() == false);
@@ -21,7 +23,7 @@ BEGIN_TEST(add_remove_items)
 			ASSERT_EQUAL((int)l.size(),  i);
         }
 		ASSERT_THAT(l.isEmpty() == true);
-        
+
 END_TEST
 
 
@@ -61,7 +63,7 @@ BEGIN_TEST(iterate_over_not_empty_list_test)
     int r = 9;
     for(ListItr<int> itr = list.begin(); itr.notEqual(list.end()); itr = itr.next())
     {
-        
+
         data = itr.getData();
         printf(" data %d\n", data);
         ASSERT_EQUAL(data, r--);
@@ -90,12 +92,19 @@ BEGIN_TEST(iterator_operators_test)
         list.addLast(i);
     }
 
+
+
     ListItr<int> it = list.begin();
-    
-    ASSERT_EQUAL(*it, 1);
+    ListItr<int> end = list.end();
 
+    int e = *it;
+    int i = e;
+    while(it != end){
+        ASSERT_EQUAL(*it++, i++);
+    }
+
+    it = list.begin();
     it++;
-
     ASSERT_EQUAL(*it, 2);
 
     int data = *it++;
@@ -106,28 +115,55 @@ BEGIN_TEST(iterator_operators_test)
     ASSERT_EQUAL(data, 4);
     ASSERT_EQUAL(*it, 4);
 
-    it->setData(13);
-    ASSERT_EQUAL(it->getData(), 13);
-
 END_TEST
 
 
-bool IsDevidedBy3 (int i) {
-  return i%3 == 0;
-}
+struct BallFancyComp {
+    BallFancyComp(int t) : threshold(t) {}
+    bool operator()(Ball const& b) const{
+        int r = b.getRadius();
+        return r % 2 == 0 &&  r > threshold;
+    }
+private:
+    int threshold;
+};
 
 BEGIN_TEST(find_if_test)
     const size_t N = 1000;
-    LinkedList<int> list;
+    LinkedList<Ball> list;
 
-    for(size_t i = 1; i < N; i+=22)
+    for(size_t i = 0; i < N; i+=22)
     {
-        list.addLast(i);
+        list.addLast(Ball("red", i));
     }
 
-    ListItr<int> it = std::find_if (list.begin(), list.end(), IsDevidedBy3);
-    ASSERT_EQUAL(*it, 45);
+    ListItr<Ball> it = list.begin();
 
+
+    Ball b = *it;
+    ASSERT_EQUAL(b.getRadius(), 0);
+
+    //ASSERT_EQUAL((*it).getColor(), "red");
+    const char* c = (*it).getColor();
+    ASSERT_EQUAL_STR(c, "red");
+    ++it;
+    int r = it++->getRadius();
+    ASSERT_EQUAL(r, 22);
+
+    ListItr<Ball> end = list.end();
+    it = std::find_if(list.begin(), list.end(), BallFancyComp(23));
+    ASSERT_THAT(it != end);
+    TRACE(*it);
+
+    it = std::find_if(list.begin(), list.end(), BallFancyComp(51));
+    ASSERT_THAT(it != end);
+    TRACE(*it);
+
+    it = std::find_if(list.begin(), list.end(), BallFancyComp(98978));
+    ASSERT_THAT(it == end);
+
+
+    ASSERT_PASS();
 END_TEST
 
 

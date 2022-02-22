@@ -18,14 +18,16 @@ class Node
 public:
     Node();
     Node(T a_data, Node* a_next);
-    T getData();
+    T& getData();
+    //T getData() const;
+
     Node* getNext();
     void setData(T a_val);
     void setNext(Node* a_node);
 
 private:
     T m_data;
-    Node* m_next; 
+    Node* m_next;
 };
 
 template <typename T>
@@ -36,7 +38,7 @@ public:
     ListItr();
     ListItr(Node<T>* a_node);
 
-    T getData();
+    T& getData();
     void setData(T a_val);
     ListItr next();
 
@@ -46,13 +48,16 @@ public:
     ListItr& operator=(Node<T>* a_node);
 
     ListItr& operator++();
-    ListItr operator++(T);
+    ListItr operator++(int);
 
-    bool operator==(const ListItr& a_that);
-    bool operator!=(const ListItr& a_that);
+    bool operator==(const ListItr& a_that) const;
+    bool operator!=(const ListItr& a_that) const;
 
-    int operator*() const;
-    ListItr* operator->();
+    T& operator*();
+    T* operator->();
+
+    const T& operator*() const;
+    const T* operator->() const;
 
 private:
     Node<T>* m_currNode;
@@ -73,8 +78,13 @@ public:
     void addLast(T const& a_val);
 
     T remove();
+
+    ListItr<T> begin();
+    ListItr<T> end();
+
     ListItr<T> begin() const;
     ListItr<T> end() const;
+
     T first() const;
     T last() const;
 
@@ -82,7 +92,7 @@ public:
     bool isEmpty() const;
     void printList() const;
     bool contains(T a_val) const;
-    
+
     LinkedList intersection(LinkedList<T> const& a) const;
 
     void initListMemb();
@@ -103,7 +113,7 @@ template <typename T>
 bool contains(LinkedList<T> const& a_list, T a_val);
 template <typename T>
 bool contains(ListItr<T> a_begin, ListItr<T> const a_end , T a_val);
-    
+
 } // namespace cpp
 
 #include "single_list.hxx"

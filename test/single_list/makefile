@@ -18,18 +18,20 @@ SRC_DIR = ../../src
 TARGET = utest
 OBJS = utest.o
 
+check: $(TARGET)
+	./$(TARGET) -v
+
 $(TARGET): $(OBJS)
 
 utest.o: $(INC_DIR)/single_list.hpp $(INL_DIR)/single_list.hxx
 
-check: $(TARGET)
-	./$(TARGET) -v
+
 
 vala:
 	valgrind --log-file=V1.log./${TARGET} -v
 	valgrind --log-file=V1.log --leak-check=full --track-origins=yes ./${TARGET}
-	
+
 clean:
 	@$(RM) $(TARGET) $(OBJS)
-	
-.PHONY: clean check (edited) 
+
+.PHONY: clean check (edited)

@@ -23,6 +23,11 @@ private:
     double m_radius;
 };
 
+std::ostream& operator<<(std::ostream& os, Ball const& ball)
+{
+    return os << "(" << ball.getRadius() << ", " << ball.getColor() << ")";
+}
+
 } // namespace cpp
 
 #include "inl/ball.hxx"

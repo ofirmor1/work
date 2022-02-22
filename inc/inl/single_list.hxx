@@ -50,13 +50,13 @@ LinkedList<T>::LinkedList(LinkedList const& a_source)
 , m_head(m_sentinal)
 , m_tail(m_sentinal)
 , m_size()
-{    
+{
 
     m_sentinal->setNext(m_sentinal);
 
     size_t i = a_source.size();;
     T * array = new int[m_size];
-   
+
     ListItr<T> itr = a_source.begin();
     ListItr<T> last = a_source.end();
 
@@ -80,7 +80,7 @@ LinkedList<T>& LinkedList<T>::operator=(LinkedList<T> const&a_source)
 {
     size_t i = a_source.size();;
     T * array = new T[m_size];
-   
+
     ListItr<T> itr = a_source.begin();
     ListItr<T> last = a_source.end();
 
@@ -127,7 +127,7 @@ template <typename T>
 inline Node<T>* LinkedList<T>::cutHead()
 {
     assert(m_size);
-    
+
     Node<T>* removeHead = m_head;
     m_head = m_head->getNext();
     m_size--;
@@ -190,7 +190,7 @@ void LinkedList<T>::addLast(T const& a_val)
         newTail->setNext(m_sentinal);
         curr->setNext(newTail);
     }
-    
+
     m_size++;
 
     axioms();
@@ -198,20 +198,20 @@ void LinkedList<T>::addLast(T const& a_val)
 
 template <typename T>
 bool LinkedList<T>::contains(T a_val) const
-{ 
+{
     return cpp::contains(*this, a_val);
 
 }
 
 template <typename T>
 bool contains(LinkedList<T> const& a_list, T a_val)
-{ 
+{
     return contains(a_list.begin(), a_list.end(), a_val);
 }
 
 template <typename T>
 bool contains(ListItr<T> a_begin, ListItr<T> a_end , T a_val)
-{ 
+{
     a_end.setData(a_val);
     while(a_begin.getData() != a_val)
     {
@@ -245,15 +245,27 @@ inline void LinkedList<T>::printList() const
 }
 
 template <typename T>
+inline ListItr<T> LinkedList<T>::begin()
+{
+    return m_head;
+}
+
+template <typename T>
+inline ListItr<T> LinkedList<T>::end()
+{
+    return ListItr<T>(m_tail);
+}
+
+template <typename T>
 inline ListItr<T> LinkedList<T>::begin() const
 {
-    return (ListItr<T>)m_head;
+    return m_head;
 }
 
 template <typename T>
 inline ListItr<T> LinkedList<T>::end() const
 {
-    return (ListItr<T>)m_tail;
+    return ListItr<T>(m_tail);
 }
 
 template <typename T>
@@ -269,7 +281,7 @@ inline bool LinkedList<T>::isEmpty() const
 }
 
 template <typename T>
-inline T Node<T>::getData()
+inline T& Node<T>::getData()
 {
     return m_data;
 }
@@ -299,7 +311,7 @@ inline ListItr<T> ListItr<T>::next()
 }
 
 template <typename T>
-inline T ListItr<T>::getData()
+T& ListItr<T>::getData()
 {
     return m_currNode->getData();
 }
@@ -336,7 +348,7 @@ ListItr<T>& ListItr<T>::operator++()
 
 //Postfix
 template <typename T>
-ListItr<T> ListItr<T>::operator++(T)
+ListItr<T> ListItr<T>::operator++(int)
 {
     ListItr it = *this;
     ++*this;
@@ -344,30 +356,29 @@ ListItr<T> ListItr<T>::operator++(T)
 }
 
 template <typename T>
-bool ListItr<T>::operator==(const ListItr& a_that)
+bool ListItr<T>::operator==(const ListItr& a_that) const
 {
-    return !operator!=(a_that);
+    return this->m_currNode == a_that.m_currNode;
 }
 
 template <typename T>
-bool ListItr<T>::operator!=(const ListItr& a_that)
+bool ListItr<T>::operator!=(const ListItr& a_that) const
 {
-    return this->m_currNode != a_that.m_currNode;
+    return !(*this == a_that);
 }
 
 template <typename T>
-int ListItr<T>::operator*() const
+T& ListItr<T>::operator*()
 {
-    return m_currNode->getData();
+    return getData();
 }
 
 template <typename T>
-ListItr<T>* ListItr<T>::operator->()
+T* ListItr<T>::operator->()
 {
-    return this;
+    return &getData();
 }
 
 } // namespace name
 
 #endif /*ifndef SINGLE_LIST_HXX*/
-
