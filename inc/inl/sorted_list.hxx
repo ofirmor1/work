@@ -1,17 +1,18 @@
-#include "sorted_list.hpp"
 #include <list>
 
 namespace cpp
 {
 
-SortedList::SortedList()
+template <typename T>
+SortedList<T>::SortedList()
 {}
 
-void SortedList::insert(int a_val)
+template <typename T>
+void SortedList<T>::insert(T a_element)
 {
     if(m_elements.empty())
     {
-        m_elements.push_back(a_val);
+        m_elements.push_back(a_element);
     }
 
     else
@@ -19,27 +20,28 @@ void SortedList::insert(int a_val)
         Itr it = m_elements.begin();
         Itr end = m_elements.end();
 
-        while (it != end && *it < a_val)
+        while (it != end && *it < a_element)
         {   
             it++;
         }
 
-        m_elements.insert(it, a_val);
+        m_elements.insert(it, a_element);
     }        
 }
 
-size_t SortedList::contains(int a_val) const
+template <typename T>
+size_t SortedList<T>::contains(T a_element) const
 {
     ConstItr it = m_elements.begin();
     ConstItr end = m_elements.end();
 
-    while (it != end && *it < a_val)
+    while (it != end && *it < a_element)
     {
         ++it;
     }
 
     size_t count = 0;
-    while (it != end && *it == a_val)
+    while (it != end && *it == a_element)
     {
         ++it;
         ++count;
@@ -48,17 +50,18 @@ size_t SortedList::contains(int a_val) const
     return count;   
 }
 
-size_t SortedList::remove(int a_val)
+template <typename T>
+size_t SortedList<T>::remove(T a_element)
 {
     Itr it = m_elements.begin();
     Itr end = m_elements.end();
-    while (it != end && *it < a_val)
+    while (it != end && *it < a_element)
     {
         ++it;
     }
 
     size_t count = 0;
-    while (it != end && *it == a_val)
+    while (it != end && *it == a_element)
     {
         it = m_elements.erase(it);
         ++count;
@@ -67,17 +70,20 @@ size_t SortedList::remove(int a_val)
     return count;   
 }
 
-int SortedList::front() const
+template <typename T>
+T SortedList<T>::front() const
 {
     return m_elements.front();
 }
 
-int SortedList::back() const
+template <typename T>
+T SortedList<T>::back() const
 {
     return m_elements.back();
 }
 
-std::ostream& SortedList::print(std::ostream& a_os) const
+template <typename T>
+std::ostream& SortedList<T>::print(std::ostream& a_os) const
 {
     ConstItr it = m_elements.begin();
     ConstItr end = m_elements.end();
@@ -91,11 +97,10 @@ std::ostream& SortedList::print(std::ostream& a_os) const
     return a_os;
 }
 
-size_t SortedList::size() const
+template <typename T>
+size_t SortedList<T>::size() const
 {
     return m_elements.size();
 }
-
-
 
 }// end of namespace cpp

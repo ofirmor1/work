@@ -7,28 +7,31 @@
 namespace cpp
 {
 
-class SortedList : public SortedContainer
+template <typename T>
+class SortedList : public SortedContainer<T>
 {
 
 public:
     SortedList();
 
-    void insert(int a_val);
-    size_t contains(int a_val) const;
-    size_t remove(int a_val);
-    int front() const;
-    int back() const;
+    void insert(T a_element);
+    size_t contains(T a_element) const;
+    size_t remove(T a_element);
+    T front() const;
+    T back() const;
     std::ostream& print(std::ostream& a_os) const;
 
     size_t size() const;
 
 private:
-    typedef std::list<int> Container;
-    typedef Container::iterator Itr;
-    typedef Container::const_iterator ConstItr;
+    typedef typename std::list<T> Container;
+    typedef typename Container::iterator Itr;
+    typedef typename Container::const_iterator ConstItr;
     Container m_elements;
 };
 
 } // namespace cpp
+
+#include "./inl/sorted_list.hxx"
 
 #endif /*#ifndef SORTED_LIST_HPP*/

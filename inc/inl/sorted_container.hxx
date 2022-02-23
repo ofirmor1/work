@@ -6,18 +6,22 @@
 namespace cpp
 {
 
-inline SortedContainer::SortedContainer()
+template <typename T>
+inline SortedContainer<T>::SortedContainer()
 {}
 
-inline SortedContainer::~SortedContainer()
+template <typename T>
+inline SortedContainer<T>::~SortedContainer()
 {}
 
-inline std::ostream& operator<<(std::ostream& a_os, SortedContainer const& a_container)
+template <typename T>
+inline std::ostream& operator<<(std::ostream& a_os, SortedContainer<T> const& a_container)
 {
     return a_container.print(a_os);
 }
 
-inline void fill(SortedContainer& a_container, int a_start, int a_end, int a_delta)
+template <typename T>
+inline void fill(SortedContainer<T>& a_container, int a_start, int a_end, int a_delta)
 {
     assert((a_start < a_end && a_delta > 0) || (a_start > a_end && a_delta < 0));
     for (int i = a_start; i < a_end; i+=a_delta)
@@ -26,21 +30,24 @@ inline void fill(SortedContainer& a_container, int a_start, int a_end, int a_del
     }
 }
 
-inline bool SortedContainer::empty() const
+template <typename T>
+inline bool SortedContainer<T>::empty() const
 {
     return size() == 0;
 }
 
-inline bool empty(SortedContainer const& a_container)
+template <typename T>
+inline bool empty(SortedContainer<T> const& a_container)
 {
     return a_container.empty();
 }
 
-inline void SortedContainer::fill(int a_val, size_t a_times)
+template <typename T>
+inline void SortedContainer<T>::fill(int a_element, size_t a_times)
 {
     while(a_times --> 0)
     {
-        insert(a_val);
+        insert(a_element);
     }
 }
 

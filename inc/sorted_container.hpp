@@ -6,6 +6,7 @@
 namespace cpp
 {
 
+template <typename T>
 class SortedContainer
 {
 
@@ -13,9 +14,9 @@ public:
     SortedContainer();
     virtual ~SortedContainer() = 0;
 
-	virtual void insert(int a_val) = 0;
-    virtual size_t contains(int a_val) const = 0;
-    virtual size_t remove(int a_val) = 0;
+	virtual void insert(T a_element) = 0;
+    virtual size_t contains(T a_element) const = 0;
+    virtual size_t remove(T a_element) = 0;
     virtual int front() const = 0;
     virtual int back() const = 0;
 
@@ -27,14 +28,19 @@ public:
     virtual void fill(int a_val, size_t times);
 	
 private:
-	SortedContainer(const SortedContainer& a_container);
-	SortedContainer& operator=(const SortedContainer& a_container); 
+	SortedContainer<T>(const SortedContainer<T>& a_container);
+	SortedContainer<T>& operator=(const SortedContainer<T>& a_container); 
 
 };
 
-std::ostream& operator<<(std::ostream& a_os, SortedContainer const& a_container);
-bool empty(SortedContainer const& a_container);
-void fill(SortedContainer& a_container, int a_start, int a_end, int a_delta = 1);
+template <typename T>
+std::ostream& operator<<(std::ostream& a_os, SortedContainer<T> const& a_container);
+
+template <typename T>
+bool empty(SortedContainer<T> const& a_container);
+
+template <typename T>
+void fill(SortedContainer<T>& a_container, int a_start, int a_end, int a_delta = 1);
 
 
 } // namespace name

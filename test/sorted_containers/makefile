@@ -15,7 +15,7 @@ INC_DIR = ../../inc
 INC_SRC = ../../src
 
 TARGET = utest
-OBJS = utest.o $(INC_SRC)/sorted_vector.o $(INC_SRC)/sorted_list.o
+OBJS = utest.o
 
 VALGRIND = valgrind --log-file=V3.log --leak-check=full --track-origins=yes -s 
 

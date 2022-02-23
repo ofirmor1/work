@@ -6,30 +6,33 @@
 
 namespace cpp
 {
-    
-class SortedVector : public SortedContainer
+
+template <typename T>
+class SortedVector : public SortedContainer<T>
 {
 
 public:
     SortedVector(size_t a_size = 0);
 
-    void insert(int a_val);
-    size_t contains(int a_val) const;
-    size_t remove(int a_val);
-    int front() const;
-    int back() const;
+    void insert(T a_val);
+    size_t contains(T a_val) const;
+    size_t remove(T a_val);
+    T front() const;
+    T back() const;
     std::ostream& print(std::ostream& a_os) const;
 
     size_t size() const;
-    void fill(int a_val, size_t a_times);
+    void fill(T a_elem, size_t a_times);
 
 private:
-    typedef std::vector<int> Container;
-    typedef Container::iterator Itr;
-    typedef Container::const_iterator ConstItr;
+    typedef std::vector<T> Container;
+    typedef typename Container::iterator Itr;
+    typedef typename Container::const_iterator ConstItr;
     Container m_elements;
 };
 
 } // namespace name
+
+#include "./inl/sorted_vector.hxx"
 
 #endif /*#ifndef SORTED_VECTOR_HPP*/
