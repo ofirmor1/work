@@ -199,6 +199,7 @@ BEGIN_TEST(sorted_list_front_and_back)
 
 END_TEST 
 
+
 BEGIN_TEST(sorted_container)
     const size_t N = 1000;
     const size_t E = 2000;
@@ -232,7 +233,6 @@ BEGIN_TEST(sorted_container)
     vector<SortedContainer*>::const_iterator it = sc.begin();
     vector<SortedContainer*>::const_iterator end = sc.end();
 
-    // size_t totalSize = 0;
     bool isNumFound;
     int n1 = 666;
     while(it != end)
