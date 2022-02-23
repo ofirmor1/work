@@ -1,0 +1,14 @@
+==90865== Memcheck, a memory error detector
+==90865== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==90865== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==90865== Command: ./utest -v
+==90865== Parent PID: 90852
+==90865== 
+==90865== 
+==90865== HEAP SUMMARY:
+==90865==     in use at exit: 0 bytes in 0 blocks
+==90865==   total heap usage: 5,054 allocs, 5,054 frees, 218,804 bytes allocated
+==90865== 
+==90865== All heap blocks were freed -- no leaks are possible
+==90865== 
+==90865== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

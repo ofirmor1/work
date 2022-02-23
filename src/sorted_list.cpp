@@ -9,88 +9,93 @@ SortedList::SortedList()
 
 void SortedList::insert(int a_val)
 {
-    if(m_list.empty())
+    if(m_elements.empty())
     {
-        m_list.push_back(a_val);
+        m_elements.push_back(a_val);
     }
 
     else
     {
-        std::list<int>::iterator it = m_list.begin();
-        std::list<int>::iterator end = m_list.end();
+        Itr it = m_elements.begin();
+        Itr end = m_elements.end();
 
         while (it != end && *it < a_val)
         {   
             it++;
         }
 
-        m_list.insert(it, a_val);
+        m_elements.insert(it, a_val);
     }        
 }
 
-bool SortedList::contains(int a_val) const
+size_t SortedList::contains(int a_val) const
 {
-    std::list<int>::const_iterator it = m_list.begin();
-    std::list<int>::const_iterator end = m_list.end();
+    ConstItr it = m_elements.begin();
+    ConstItr end = m_elements.end();
 
-    while (it != end)
+    while (it != end && *it < a_val)
     {
-        if(*it == a_val)
-        {
-            return true;
-        }
-        it++;
+        ++it;
     }
 
-    return false;   
+    size_t count = 0;
+    while (it != end && *it == a_val)
+    {
+        ++it;
+        ++count;
+    }
+
+    return count;   
 }
 
-void SortedList::remove(int a_val)
+size_t SortedList::remove(int a_val)
 {
-    if(m_list.empty())
+    Itr it = m_elements.begin();
+    Itr end = m_elements.end();
+    while (it != end && *it < a_val)
     {
-        return;
+        ++it;
     }
-    
-    std::list<int>::iterator it = m_list.begin();
-    std::list<int>::iterator end = m_list.end();
 
-    while (it != end)
+    size_t count = 0;
+    while (it != end && *it == a_val)
     {
-        if(*it == a_val)
-        {
-            m_list.erase(it);
-            break;
-        }
-        it++;
+        it = m_elements.erase(it);
+        ++count;
     }
+
+    return count;   
 }
 
 int SortedList::front() const
 {
-    return m_list.front();
+    return m_elements.front();
 }
 
 int SortedList::back() const
 {
-    return m_list.back();
+    return m_elements.back();
 }
 
-void SortedList::print(std::ostream& os) const
+std::ostream& SortedList::print(std::ostream& a_os) const
 {
-    std::list<int>::const_iterator it = m_list.begin();
-    std::list<int>::const_iterator end = m_list.end();
+    ConstItr it = m_elements.begin();
+    ConstItr end = m_elements.end();
 
     while(it != end)
     {
-        os << *it << ", ";
+        a_os << *it << ", ";
         it++;
     }
+    
+    return a_os;
 }
 
 size_t SortedList::size() const
 {
-    return m_list.size();
+    return m_elements.size();
 }
+
+
 
 }// end of namespace cpp

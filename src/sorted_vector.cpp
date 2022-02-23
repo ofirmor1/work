@@ -6,20 +6,20 @@ namespace cpp
 
 SortedVector::SortedVector(size_t a_size)
 {
-    m_vec.reserve(a_size);
+    m_elements.reserve(a_size);
 }
 
 void SortedVector::insert(int a_val)
 {
-    if(m_vec.empty())
+    if(m_elements.empty())
     {
-        m_vec.push_back(a_val);
+        m_elements.push_back(a_val);
     }
 
     else
     {
-        std::vector<int>::iterator it = m_vec.begin();
-        std::vector<int>::iterator end = m_vec.end();
+        Itr it = m_elements.begin();
+        Itr end = m_elements.end();
 
         while (it != end)
         {
@@ -29,68 +29,78 @@ void SortedVector::insert(int a_val)
             }
             it++;
         }
-        m_vec.insert(it, a_val);
-    }        
+        m_elements.insert(it, a_val);
+    }
 }
 
-bool SortedVector::contains(int a_val) const
+size_t SortedVector::contains(int a_val) const
 {
-    for (size_t i = 0; i < m_vec.size(); i++)
+    ConstItr it = std::lower_bound(m_elements.begin(), m_elements.end(), a_val);
+    ConstItr end = m_elements.end();
+
+    size_t count = 0;
+    while(it != end && (*it) == a_val)
     {
-        if(m_vec[i] == a_val)
-        {
-            return true;
-        }
+        ++count;
+        ++it;
     }
 
-    return false;   
+    return count;
 }
 
-void SortedVector::remove(int a_val)
+size_t SortedVector::remove(int a_val)
 {
-    if(m_vec.empty())
+    size_t count = 0;
+    if(m_elements.empty())
     {
-        return;
+        return count;
+    }
+    
+    Itr it = std::lower_bound(m_elements.begin(), m_elements.end(), a_val);
+    Itr end = m_elements.end();
+
+    while(it != end && *it == a_val)
+    {
+        it = m_elements.erase(it);
+        end = m_elements.end();
+        ++count;
     }
 
-    std::vector<int>::iterator it = m_vec.begin();
-    std::vector<int>::iterator end = m_vec.begin();
-
-    while (it != end)
-    {
-        if(*it == a_val)
-        {
-            m_vec.erase(it);
-            break;
-        }
-        it++;
-    }
+    return count;
 }
 
 int SortedVector::front() const
 {
-    return m_vec.front();
+    return m_elements.front();
 }
 
 int SortedVector::back() const
 {
-    return m_vec.back();
+    return m_elements.back();
 }
 
-void SortedVector::print(std::ostream& os) const
+std::ostream& SortedVector::print(std::ostream& a_os) const
 {
-    std::vector<int>::const_iterator it = m_vec.begin();
-    std::vector<int>::const_iterator end = m_vec.end();
+    ConstItr it = m_elements.begin();
+    ConstItr end = m_elements.end();
 
     while (it != end)
     {
-        os << *it++ << ", ";
+        a_os << *it++ << ", ";
     }
+
+    return a_os;
 }
 
 size_t SortedVector::size() const
 {
-    return m_vec.size();
+    return m_elements.size();
+}
+
+void SortedVector::fill(int a_val, size_t a_times)
+{
+    Itr it = std::lower_bound(m_elements.begin(), m_elements.end(), a_val);
+    m_elements.insert(it, a_times, a_val);
 }
 
 } // end of namespace cpp

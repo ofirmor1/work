@@ -21,7 +21,7 @@ END_TEST
 
 
 BEGIN_TEST(sorted_vector_insert)
-    const size_t N = 1000;
+    const size_t N = 10;
 
     cpp::SortedVector v(1000);
 
@@ -32,13 +32,13 @@ BEGIN_TEST(sorted_vector_insert)
         v.insert(i);
     }
 
-    ASSERT_EQUAL(v.size(), 1000);
+    ASSERT_EQUAL(v.size(), 10);
 
 END_TEST  
 
 
 BEGIN_TEST(sorted_vector_random_int_sort)
-    const size_t N = 1000;
+    const size_t N = 10;
 
     cpp::SortedVector v(1000);
 
@@ -60,7 +60,7 @@ BEGIN_TEST(sorted_vector_random_int_sort)
         second = v.front();
     }
 
-    ASSERT_EQUAL(v.size(), 1000);
+    ASSERT_EQUAL(v.size(), 0);
 
 END_TEST  
 
@@ -138,28 +138,30 @@ END_TEST
 BEGIN_TEST(sorted_list_random_int_sort)
     const size_t N = 1000;
 
-    cpp::SortedList l;
+    cpp::SortedContainer* l = new cpp::SortedList;
 
-    ASSERT_EQUAL(l.size(), 0);
+    ASSERT_EQUAL(l->size(), 0);
 
+    srand(time(NULL));
     for (size_t i = 1; i <= N; ++i)
     {
-        l.insert(rand() % 100);
+        l->insert((std::rand() % 100) +1);
     }
+
+    ASSERT_EQUAL(l->size(), 1000);
 
     int first;
     int second;
     for (size_t i = 1; i < N-1; ++i)
     {
-        first = l.front();
-        l.remove(first);
-        second = l.front();
-        l.remove(second);
-        
+        first = l->front();
+        l->remove(first);
+        second = l->front();
+        l->remove(second);
         ASSERT_THAT(first <= second);
     }
 
-    ASSERT_EQUAL(l.size(), 0);
+    ASSERT_EQUAL(l->size(), 0);
 
 END_TEST  
 
@@ -272,6 +274,62 @@ BEGIN_TEST(sorted_container)
 END_TEST 
 
 
+BEGIN_TEST(test_heap_allocated)
+    using cpp::SortedContainer;
+    using cpp::SortedVector;
+
+    SortedContainer* container = new cpp::SortedList();
+
+    ASSERT_THAT(container->empty());
+    fill(*container, -10, 28, 4);
+
+    cpp::SortedList list;
+    ASSERT_THAT(list.empty());
+
+    SortedContainer& cr = list;
+    fill(cr, 56, -10, -3);
+
+    TRACER << *container << "\n";
+    TRACER << cr << "\n";
+    delete container;
+
+    container = new SortedVector();
+    fill(*container, 10, 150, 10);
+
+    TRACER << *container << "\n";
+    delete container;
+
+END_TEST
+
+
+BEGIN_TEST(sorted_vector_fill)
+    const size_t N = 1000;
+
+    using cpp::SortedContainer;
+    using cpp::SortedVector;
+
+    SortedContainer* container = new SortedVector();
+
+    for (size_t i = 1; i <= N; ++i)
+    {
+        container->fill(i, 2);    
+    }
+
+    ASSERT_EQUAL(container->size(), N*2);
+    size_t count = 0;
+    for (size_t i = 0; i <= N; ++i)
+    {
+        count += container->remove(i);
+    }
+
+    ASSERT_EQUAL(count, 2000);
+    ASSERT_EQUAL(container->size(), 0);
+    
+    delete container;
+
+END_TEST
+
+
 BEGIN_SUITE(sorted_list_tests)
     TEST(sorted_vector_print)
     TEST(sorted_vector_insert)
@@ -286,5 +344,8 @@ BEGIN_SUITE(sorted_list_tests)
     TEST(sorted_list_front_and_back)
 
     TEST(sorted_container)
+    TEST(test_heap_allocated)
+
+    TEST(sorted_vector_fill)
     
 END_SUITE
