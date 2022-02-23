@@ -17,10 +17,10 @@ INC_SRC = ../../src
 TARGET = utest
 OBJS = utest.o
 
-$(TARGET): $(OBJS)
-
 check: $(TARGET)
 	./$(TARGET) -v
+	
+$(TARGET): $(OBJS)
 	
 prod: CXXFLAGS += -02 -DNDEBUG
 prod: $(TARGET)

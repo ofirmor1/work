@@ -25,8 +25,6 @@ $(TARGET): $(OBJS)
 
 utest.o: $(INC_DIR)/single_list.hpp $(INL_DIR)/single_list.hxx
 
-
-
 vala:
 	valgrind --log-file=V1.log./${TARGET} -v
 	valgrind --log-file=V1.log --leak-check=full --track-origins=yes ./${TARGET}

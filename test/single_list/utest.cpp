@@ -4,44 +4,43 @@
 #include "single_list.hpp"
 #include "single_list.hxx"
 
-
 using namespace cpp;
 
 BEGIN_TEST(add_remove_items)
-        LinkedList<int> l;
-        ASSERT_THAT(l.isEmpty() == true);
-        l.addFirst(1);
-        l.addFirst(3);
-        l.addFirst(5);
-        l.printList();
-        printf("LIST size: %ld\n\n" , l.size());
-        ASSERT_EQUAL(l.size(),  3);
-        ASSERT_THAT(l.isEmpty() == false);
-        for(int i = l.size() - 1; i >= 0; i --)
-        {
-			l.remove();
-			ASSERT_EQUAL((int)l.size(),  i);
-        }
-		ASSERT_THAT(l.isEmpty() == true);
+    LinkedList<int> l;
+    ASSERT_THAT(l.isEmpty() == true);
+    l.addFirst(1);
+    l.addFirst(3);
+    l.addFirst(5);
+    l.printList();
+    printf("LIST size: %ld\n\n" , l.size());
+    ASSERT_EQUAL(l.size(),  3);
+    ASSERT_THAT(l.isEmpty() == false);
+    for(int i = l.size() - 1; i >= 0; i --)
+    {
+        l.remove();
+        ASSERT_EQUAL((int)l.size(),  i);
+    }
+    ASSERT_THAT(l.isEmpty() == true);
 
 END_TEST
 
 
 BEGIN_TEST(test_copy)
-        LinkedList<int> a;
-        LinkedList<int> b;
-        // LinkedList c;
-        int i = 1;
-        while(i < 3)
-        {
-            a.addFirst(i);
-            i++;
-        }
-        ASSERT_EQUAL(a.size(), 2);
-        b = a;
-        ASSERT_EQUAL(b.size(), 2);
-        ASSERT_EQUAL(b.first(), a.first());
-        ASSERT_EQUAL(b.last(), a.last());
+    LinkedList<int> a;
+    LinkedList<int> b;
+    // LinkedList c;
+    int i = 1;
+    while(i < 3)
+    {
+        a.addFirst(i);
+        i++;
+    }
+    ASSERT_EQUAL(a.size(), 2);
+    b = a;
+    ASSERT_EQUAL(b.size(), 2);
+    ASSERT_EQUAL(b.first(), a.first());
+    ASSERT_EQUAL(b.last(), a.last());
 END_TEST
 
 
