@@ -43,7 +43,7 @@ inline bool empty(SortedContainer<T> const& a_container)
 }
 
 template <typename T>
-inline void SortedContainer<T>::fill(int a_element, size_t a_times)
+inline void SortedContainer<T>::fill(T a_element, size_t a_times)
 {
     while(a_times --> 0)
     {

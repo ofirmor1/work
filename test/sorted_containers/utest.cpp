@@ -1,6 +1,7 @@
 #include "mu_test.h"
 #include "sorted_vector.hpp"
 #include "sorted_list.hpp"
+#include "ball.hpp"
 #include <iostream>
 
 BEGIN_TEST(sorted_vector_print)
@@ -330,6 +331,46 @@ BEGIN_TEST(sorted_vector_fill)
 END_TEST
 
 
+BEGIN_TEST(test_sortedlist_ball_sorted)
+    const size_t N = 1000;
+
+    cpp::SortedList<Ball> balls;
+    
+
+    ASSERT_EQUAL(balls.size(), 0);
+    ASSERT_EQUAL(balls.empty(), true);
+
+    for (size_t i = 1; i <= N; ++i)
+    {
+        balls.insert(Ball("white", i));
+    }
+
+    ASSERT_EQUAL(balls.size(), 1000);
+    ASSERT_EQUAL(balls.empty(), false);
+
+    for (size_t i = 1; i <= N; ++i)
+    {
+        balls.remove(Ball("white,", i));
+    }
+
+    ASSERT_EQUAL(balls.size(), 0);
+    ASSERT_EQUAL(balls.empty(), true);
+
+    balls.fill(Ball("white", 10), 1);
+    balls.fill(Ball("white", 4), 3);
+    balls.fill(Ball("white", 16), 2);
+
+    std::cout << balls << std::endl;
+
+    cpp::SortedVector<Ball> b;
+    Ball median = b.median();
+    std::cout << median << std::endl;
+
+
+END_TEST
+
+
+
 BEGIN_SUITE(sorted_list_tests)
     TEST(sorted_vector_print)
     TEST(sorted_vector_insert)
@@ -347,5 +388,7 @@ BEGIN_SUITE(sorted_list_tests)
     TEST(test_heap_allocated)
 
     TEST(sorted_vector_fill)
+
+    TEST(test_sortedlist_ball_sorted)
     
 END_SUITE

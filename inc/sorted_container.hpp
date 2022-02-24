@@ -17,15 +17,17 @@ public:
 	virtual void insert(T a_element) = 0;
     virtual size_t contains(T a_element) const = 0;
     virtual size_t remove(T a_element) = 0;
-    virtual int front() const = 0;
-    virtual int back() const = 0;
+    virtual T front() const = 0;
+    virtual T back() const = 0;
 
     virtual size_t size() const = 0;
     bool empty() const;
 
     virtual std::ostream& print(std::ostream& = std::cout) const = 0;
 
-    virtual void fill(int a_val, size_t times);
+    virtual void fill(T a_val, size_t times);
+
+    // virtual T& median(SortedVector<T> const& a_container);
 	
 private:
 	SortedContainer<T>(const SortedContainer<T>& a_container);

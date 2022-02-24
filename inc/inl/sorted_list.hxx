@@ -88,11 +88,19 @@ std::ostream& SortedList<T>::print(std::ostream& a_os) const
     ConstItr it = m_elements.begin();
     ConstItr end = m_elements.end();
 
+    a_os << "{";
+
+    if(it != end)
+    {
+        a_os << *it++;
+    }
+
     while(it != end)
     {
-        a_os << *it << ", ";
-        it++;
+        a_os << ", " << *it++;
     }
+
+    a_os << "}\n";
     
     return a_os;
 }

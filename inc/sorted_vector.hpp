@@ -24,6 +24,8 @@ public:
     size_t size() const;
     void fill(T a_elem, size_t a_times);
 
+    T& median();
+
 private:
     typedef std::vector<T> Container;
     typedef typename Container::iterator Itr;

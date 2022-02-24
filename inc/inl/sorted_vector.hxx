@@ -1,4 +1,8 @@
 #include <vector>
+#include <numeric>
+#include <algorithm>
+
+#include "ball.hpp"
 
 namespace cpp
 {
@@ -90,11 +94,20 @@ std::ostream& SortedVector<T>::print(std::ostream& a_os) const
     ConstItr it = m_elements.begin();
     ConstItr end = m_elements.end();
 
-    while (it != end)
+    a_os << "{";
+
+    if(it != end)
     {
-        a_os << *it++ << ", ";
+        a_os << *it++;
     }
 
+    while(it != end)
+    {
+        a_os << ", " << *it++;
+    }
+
+    a_os << "}\n";
+    
     return a_os;
 }
 
@@ -109,6 +122,26 @@ void SortedVector<T>::fill(T a_element, size_t a_times)
 {
     Itr it = std::lower_bound(m_elements.begin(), m_elements.end(), a_element);
     m_elements.insert(it, a_times, a_element);
+}
+// SortedVector<T> const& a_container
+
+inline bool cmp(Ball const& a, Ball const& b)
+{
+    return a < b;
+}
+
+template <typename T>
+inline T& SortedVector<T>::median()
+{
+    Itr it = m_elements.begin();
+    Itr end = m_elements.end();
+
+    std::nth_element(it, it+2, end, cmp);
+    std::cout << "\nThe median is " << m_elements[m_elements.size()/2] << '\n';
+    // The consequence of the inequality of elements before/after the Nth one:
+    // assert(std::accumulate(it, it+2, 0) < std::accumulate(it+2, end, 0));
+
+    return m_elements[m_elements.size()/2];
 }
 
 } // end of namespace cpp
