@@ -218,6 +218,8 @@ BEGIN_TEST(sorted_container)
         v.insert(i);
     }
 
+    // ContainerMedian(v);
+
     ASSERT_EQUAL(v.size(), 1000);
 
     SortedList<int> l;
@@ -331,44 +333,158 @@ BEGIN_TEST(sorted_vector_fill)
 END_TEST
 
 
-BEGIN_TEST(test_sortedlist_ball_sorted)
-    const size_t N = 1000;
+// BEGIN_TEST(test_sortedlist_ball_sorted)
+//     const size_t N = 1000;
 
-    cpp::SortedList<Ball> balls;
+//     cpp::SortedList<Ball> balls;
     
 
-    ASSERT_EQUAL(balls.size(), 0);
-    ASSERT_EQUAL(balls.empty(), true);
+//     ASSERT_EQUAL(balls.size(), 0);
+//     ASSERT_EQUAL(balls.empty(), true);
 
-    for (size_t i = 1; i <= N; ++i)
+//     for (size_t i = 1; i <= N; ++i)
+//     {
+//         balls.insert(Ball("white", i));
+//     }
+
+//     ASSERT_EQUAL(balls.size(), 1000);
+//     ASSERT_EQUAL(balls.empty(), false);
+
+//     for (size_t i = 1; i <= N; ++i)
+//     {
+//         balls.remove(Ball("white,", i));
+//     }
+
+//     ASSERT_EQUAL(balls.size(), 0);
+//     ASSERT_EQUAL(balls.empty(), true);
+
+//     balls.fill(Ball("white", 10), 1);
+//     balls.fill(Ball("white", 4), 3);
+//     balls.fill(Ball("white", 16), 2);
+
+//     std::cout << balls << std::endl;
+
+//     // cpp::SortedVector<Ball> b;
+//     // Ball median = b.median();
+//     // std::cout << median << std::endl;
+
+
+// END_TEST
+
+BEGIN_TEST(test_sorterd_vector_function_isSorted)
+    const size_t N = 1000;
+
+    cpp::SortedVector<int> v;
+
+    ASSERT_EQUAL(v.size(), 0);
+
+    for (size_t i = 1; i < N; ++i)
     {
-        balls.insert(Ball("white", i));
+        v.insert(rand() % 100);
     }
 
-    ASSERT_EQUAL(balls.size(), 1000);
-    ASSERT_EQUAL(balls.empty(), false);
+    ASSERT_EQUAL(v.isSorted(), true);
 
-    for (size_t i = 1; i <= N; ++i)
-    {
-        balls.remove(Ball("white,", i));
-    }
+    v.insert(56);
+    ASSERT_EQUAL(v.isSorted(), true);
 
-    ASSERT_EQUAL(balls.size(), 0);
-    ASSERT_EQUAL(balls.empty(), true);
-
-    balls.fill(Ball("white", 10), 1);
-    balls.fill(Ball("white", 4), 3);
-    balls.fill(Ball("white", 16), 2);
-
-    std::cout << balls << std::endl;
-
-    cpp::SortedVector<Ball> b;
-    Ball median = b.median();
-    std::cout << median << std::endl;
-
+    v.remove(56);
+    ASSERT_EQUAL(v.isSorted(), true);
 
 END_TEST
 
+
+BEGIN_TEST(test_sorterd_vector_function_isUniform)
+    const size_t N = 1000;
+
+    cpp::SortedVector<int> v;
+
+    ASSERT_EQUAL(v.size(), 0);
+
+    for (size_t i = 1; i <= N; ++i)
+    {
+        v.insert(7);
+    }
+
+    ASSERT_EQUAL(v.isUniform(), true);
+
+    v.insert(8);
+
+    ASSERT_EQUAL(v.isUniform(), false);
+
+END_TEST
+
+
+BEGIN_TEST(test_sorterd_list_function_isSorted)
+    const size_t N = 1000;
+
+    cpp::SortedList<int> l;
+
+    ASSERT_EQUAL(l.size(), 0);
+
+    for (size_t i = 1; i <= N; ++i)
+    {
+        l.insert(rand() % 100);
+    }
+    
+    ASSERT_EQUAL(l.isSorted(), true);
+
+END_TEST
+
+
+BEGIN_TEST(test_sorterd_list_function_isUniform)
+    const size_t N = 1000;
+
+    cpp::SortedList<int> l;
+
+    ASSERT_EQUAL(l.size(), 0);
+
+    for (size_t i = 1; i <= N; ++i)
+    {
+        l.insert(7);
+    }
+
+    ASSERT_EQUAL(l.isUniform(), true);
+
+    l.insert(8);
+
+    ASSERT_EQUAL(l.isUniform(), false);
+
+END_TEST
+
+
+BEGIN_TEST(test_sorterd_vector_function_median)
+    const size_t N = 11;
+
+    cpp::SortedVector<int> v;
+
+    ASSERT_EQUAL(v.size(), 0);
+
+    for (size_t i = 1; i < N; ++i)
+    {
+        v.insert(i);
+    }
+
+    ASSERT_EQUAL(v.median(), 6);
+
+END_TEST
+
+
+BEGIN_TEST(test_sorterd_list_function_median)
+    const size_t N = 11;
+
+    cpp::SortedVector<int> l;
+
+    ASSERT_EQUAL(l.size(), 0);
+
+    for (size_t i = 1; i < N; ++i)
+    {
+        l.insert(i);
+    }
+
+    ASSERT_EQUAL(l.median(), 6);
+
+END_TEST
 
 
 BEGIN_SUITE(sorted_list_tests)
@@ -388,7 +504,13 @@ BEGIN_SUITE(sorted_list_tests)
     TEST(test_heap_allocated)
 
     TEST(sorted_vector_fill)
+    TEST(test_sorterd_vector_function_isSorted)
+    TEST(test_sorterd_vector_function_isUniform)
+    TEST(test_sorterd_list_function_isSorted)
+    TEST(test_sorterd_list_function_isUniform)
+    TEST(test_sorterd_vector_function_median)
+    TEST(test_sorterd_list_function_median)
 
-    TEST(test_sortedlist_ball_sorted)
+    // TEST(test_sortedlist_ball_sorted)
     
 END_SUITE

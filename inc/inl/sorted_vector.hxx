@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "ball.hpp"
+#include "my_iterator.hpp"
 
 namespace cpp
 {
@@ -89,26 +90,23 @@ T SortedVector<T>::back() const
 }
 
 template <typename T>
+MyIterator<T> SortedVector<T>::begin() 
+{
+   MyIterator<T> first(&m_elements[0]);
+   return first;
+}
+
+template <typename T>
+MyIterator<T> SortedVector<T>::end() 
+{
+   MyIterator<T> last(&m_elements[size()]);
+   return last;
+}
+
+template <typename T>
 std::ostream& SortedVector<T>::print(std::ostream& a_os) const
 {
-    ConstItr it = m_elements.begin();
-    ConstItr end = m_elements.end();
-
-    a_os << "{";
-
-    if(it != end)
-    {
-        a_os << *it++;
-    }
-
-    while(it != end)
-    {
-        a_os << ", " << *it++;
-    }
-
-    a_os << "}\n";
-    
-    return a_os;
+    return printContainer(m_elements, a_os);
 }
 
 template <typename T>
@@ -131,17 +129,22 @@ inline bool cmp(Ball const& a, Ball const& b)
 }
 
 template <typename T>
-inline T& SortedVector<T>::median()
+T SortedVector<T>::median() const
 {
-    Itr it = m_elements.begin();
-    Itr end = m_elements.end();
-
-    std::nth_element(it, it+2, end, cmp);
-    std::cout << "\nThe median is " << m_elements[m_elements.size()/2] << '\n';
-    // The consequence of the inequality of elements before/after the Nth one:
-    // assert(std::accumulate(it, it+2, 0) < std::accumulate(it+2, end, 0));
-
-    return m_elements[m_elements.size()/2];
+    return containerMedian(m_elements);
 }
+
+template <typename T>
+bool SortedVector<T>::isSorted() const
+{
+    return isContainerSorted(m_elements);
+}
+
+template <typename T>
+bool SortedVector<T>::isUniform() const
+{
+    return isContainerUniformed(m_elements);
+}
+
 
 } // end of namespace cpp

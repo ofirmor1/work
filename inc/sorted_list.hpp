@@ -2,6 +2,7 @@
 #define SORTED_LIST_HPP
 
 #include "sorted_container.hpp"
+#include "my_iterator.hpp"
 #include <list>
 
 namespace cpp
@@ -12,16 +13,25 @@ class SortedList : public SortedContainer<T>
 {
 
 public:
-    SortedList();
+    // SortedList();
 
     void insert(T a_element);
     size_t contains(T a_element) const;
     size_t remove(T a_element);
+
     T front() const;
     T back() const;
+
+    MyIterator<T> begin();
+    MyIterator<T> end();
+    
     std::ostream& print(std::ostream& a_os) const;
 
     size_t size() const;
+
+    T median() const;
+    bool isSorted() const;
+    bool isUniform() const;
 
 private:
     typedef typename std::list<T> Container;

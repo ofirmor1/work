@@ -2,6 +2,7 @@
 #define SORTED_VECTOR_HPP
 
 #include "sorted_container.hpp"
+#include "my_iterator.hpp"
 #include <vector>
 
 namespace cpp
@@ -17,15 +18,22 @@ public:
     void insert(T a_val);
     size_t contains(T a_val) const;
     size_t remove(T a_val);
+
     T front() const;
     T back() const;
-    std::ostream& print(std::ostream& a_os) const;
+
+    MyIterator<T> begin();
+    MyIterator<T> end();
+
+    std::ostream& print(std::ostream& a_os = std::cout) const;
 
     size_t size() const;
     void fill(T a_elem, size_t a_times);
 
-    T& median();
-
+    T median() const;
+    bool isSorted() const;
+    bool isUniform() const;
+    
 private:
     typedef std::vector<T> Container;
     typedef typename Container::iterator Itr;
