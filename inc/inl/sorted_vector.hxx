@@ -1,7 +1,9 @@
+#ifndef SORTED_VECTOR_HXX
+#define SORTED_VECTOR_HXX
+
 #include <vector>
 #include <numeric>
 #include <algorithm>
-
 #include "ball.hpp"
 #include "my_iterator.hpp"
 
@@ -146,5 +148,6 @@ bool SortedVector<T>::isUniform() const
     return isContainerUniformed(m_elements);
 }
 
-
 } // end of namespace cpp
+
+#endif /*#ifndef SORTED_VECTOR_HXX*/

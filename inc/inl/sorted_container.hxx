@@ -116,8 +116,6 @@ bool isContainerUniformed(T const& a_container)
     return true;
 }
 
-
 }// namespace cpp 
-
 
 #endif /*#ifndef SORTED_CONTAINER_HXX*/

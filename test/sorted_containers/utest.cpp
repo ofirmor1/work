@@ -1,6 +1,7 @@
 #include "mu_test.h"
 #include "sorted_vector.hpp"
 #include "sorted_list.hpp"
+#include "sorted_unique_vector.hpp"
 #include "ball.hpp"
 #include <iostream>
 
@@ -487,6 +488,22 @@ BEGIN_TEST(test_sorterd_list_function_median)
 END_TEST
 
 
+BEGIN_TEST(test_sorterd_unique_vector)
+    const size_t N = 1000;
+
+    cpp::SortedUniqueVector<int> v;
+
+    ASSERT_EQUAL(v.size(), 0);
+
+    for (size_t i = 1; i <= N; ++i)
+    {
+        v.insert(i);
+    }
+
+    ASSERT_EQUAL(v.size(), 1000);
+
+END_TEST
+
 BEGIN_SUITE(sorted_list_tests)
     TEST(sorted_vector_print)
     TEST(sorted_vector_insert)
@@ -512,5 +529,7 @@ BEGIN_SUITE(sorted_list_tests)
     TEST(test_sorterd_list_function_median)
 
     // TEST(test_sortedlist_ball_sorted)
+
+    TEST(test_sorterd_unique_vector)
     
 END_SUITE

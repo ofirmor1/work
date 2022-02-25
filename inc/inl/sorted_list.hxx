@@ -1,3 +1,6 @@
+#ifndef SORTED_LIST_HXX
+#define SORTED_LIST_HXX
+
 #include <list>
 #include "my_iterator.hpp"
 
@@ -121,5 +124,6 @@ bool SortedList<T>::isUniform() const
     return isContainerUniformed(m_elements);
 }
 
-
 }// end of namespace cpp
+
+#endif /*#ifndef SORTED_LIST_HXX*/
