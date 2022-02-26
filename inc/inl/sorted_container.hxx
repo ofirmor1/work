@@ -78,7 +78,6 @@ typename T::value_type containerMedian(T const& a_container)
 {
     size_t middle = a_container.size() / 2;
     (a_container.size()%2 == 0) ? middle : middle += 1;
-    
     return a_container[middle];
 }
 

@@ -10,10 +10,26 @@ namespace cpp
 template <typename T>
 void SortedUniqueList<T>::insert(T a_element)
 {
-    return m_elements.insert(a_element);
-    // Itr last = std::unique(m_elements.begin(), m_elements.end());
+    if(m_elements.empty())
+    {
+        m_elements.insert(a_element);
+    }
+
+    else
+    {
+        Itr it = m_elements.begin();
+        Itr end = m_elements.end();
+
+        while (it != end && *it < a_element)
+        {   
+            it++;
+        }
+
+        m_elements.insert(it, a_element);
+    }   
+    // return m_elements.insert(a_element);
+    // Itr last = std::unique(m_elements.begin(), m_elements.end()); ???????????????
     // m_elements.erase(last, m_elements.end());
-// std::unique(v.begin(), v.end());
 }
 
 template <typename T>
@@ -52,6 +68,7 @@ MyIterator<T> SortedUniqueList<T>::end()
     return m_elements.end();
 }
 
+template <typename T>
 std::ostream& SortedUniqueList<T>::print(std::ostream& a_os) const
 {
     return m_elements.print(a_os);
@@ -72,7 +89,7 @@ T SortedUniqueList<T>::median() const
 template <typename T>
 bool SortedUniqueList<T>::isSorted() const
 {
-    return m_elements.isSorted()
+    return m_elements.isSorted();
 }
 
 template <typename T>

@@ -22,12 +22,9 @@ public:
 
     virtual T front() const = 0;
     virtual T back() const = 0;
-
     virtual MyIterator<T> begin() = 0;
     virtual MyIterator<T> end() = 0;
-
-    // size_t operator[](size_t a_indx){return a_indx; }
-
+    
     virtual size_t size() const = 0;
     bool empty() const;
 

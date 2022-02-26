@@ -7,10 +7,6 @@
 namespace cpp
 {
 
-// template <typename T>
-// SortedList<T>::SortedList()
-// {}
-
 template <typename T>
 void SortedList<T>::insert(T a_element)
 {
@@ -110,6 +106,12 @@ template <typename T>
 size_t SortedList<T>::size() const
 {
     return m_elements.size();
+}
+
+template <typename T>
+T SortedList<T>::median() const
+{
+    return containerMedian(m_elements);
 }
 
 template <typename T>

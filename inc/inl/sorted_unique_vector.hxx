@@ -8,24 +8,40 @@ namespace cpp
 {
 
 template <typename T>
-void SortedUniqueVector<T>::insert(T a_val)
+void SortedUniqueVector<T>::insert(T a_element)
 {
-    m_elements.insert(a_val);
-    // Itr last = std::unique(m_elements.begin(), m_elements.end());
+    if(m_elements.empty())
+    {
+        m_elements.insert(a_element);
+    }
+    MyIterator<T> it = m_elements.begin();
+    MyIterator<T> end = m_elements.end();
+
+    while (it != end && *it < a_element)
+    {   
+        it++;
+    }
+
+    if(!(*it == a_element))
+    {
+        m_elements.insert(a_element);
+    }
+        
+    // return m_elements.insert(a_element);
+    // Itr last = std::unique(m_elements.begin(), m_elements.end()); ???????????????
     // m_elements.erase(last, m_elements.end());
-// std::unique(v.begin(), v.end());
-
-}
-template <typename T>
-size_t SortedUniqueVector<T>::contains(T a_val) const
-{
-    return m_elements.contains(a_val);
 }
 
 template <typename T>
-size_t SortedUniqueVector<T>::remove(T a_val)
+size_t SortedUniqueVector<T>::contains(T a_element) const
 {
-    return m_elements.remove(a_val);
+    return m_elements.contains(a_element);
+}
+
+template <typename T>
+size_t SortedUniqueVector<T>::remove(T a_element)
+{
+    return m_elements.remove(a_element);
 }
 
 template <typename T>
@@ -65,19 +81,28 @@ size_t SortedUniqueVector<T>::size() const
 }
 
 template <typename T>
-void SortedUniqueVector<T>::fill(T a_elem, size_t a_times)
+void SortedUniqueVector<T>::fill(T a_element, size_t a_times)
 {
-    m_elements.fill(a_elem, a_times);
+    m_elements.fill(a_element, a_times);
 }
 
-// template <typename T>
-// T SortedUniqueVector<T>::median() const;
+template <typename T>
+T SortedUniqueVector<T>::median() const
+{
+    return m_elements.median();
+}
 
-// template <typename T>
-// bool SortedUniqueVector<T>::isSorted() const;
+template <typename T>
+bool SortedUniqueVector<T>::isSorted() const
+{
+    return m_elements.isSorted();
+}
 
-// template <typename T>
-// bool SortedUniqueVector<T>::isUniform() const;
+template <typename T>
+bool SortedUniqueVector<T>::isUniform() const
+{
+    return m_elements.isUniform();
+}
 
 }// namespace cpp
 

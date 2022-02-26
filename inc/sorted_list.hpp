@@ -13,7 +13,6 @@ class SortedList : public SortedContainer<T>
 {
 
 public:
-    // SortedList();
 
     void insert(T a_element);
     size_t contains(T a_element) const;
@@ -26,7 +25,6 @@ public:
     MyIterator<T> end();
     
     std::ostream& print(std::ostream& a_os) const;
-
     size_t size() const;
 
     T median() const;
