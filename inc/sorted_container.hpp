@@ -20,8 +20,8 @@ public:
     virtual size_t remove(T a_element) = 0;
     virtual void insert(T a_element) = 0;
 
-    virtual T front() const = 0;
-    virtual T back() const = 0;
+    virtual T const& front() const = 0;
+    virtual T const& back() const = 0;
     virtual MyIterator<T> begin() = 0;
     virtual MyIterator<T> end() = 0;
     

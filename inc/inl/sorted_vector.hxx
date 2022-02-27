@@ -80,13 +80,13 @@ size_t SortedVector<T>::remove(T a_element)
 }
 
 template <typename T>
-T SortedVector<T>::front() const
+T const& SortedVector<T>::front() const
 {
     return m_elements.front();
 }
 
 template <typename T>
-T SortedVector<T>::back() const
+T const& SortedVector<T>::back() const
 {
     return m_elements.back();
 }

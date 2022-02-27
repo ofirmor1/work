@@ -19,8 +19,8 @@ public:
     size_t contains(T a_val) const;
     size_t remove(T a_val);
 
-    T front() const;
-    T back() const;
+    T const& front() const;
+    T const& back() const;
 
     MyIterator<T> begin();
     MyIterator<T> end();

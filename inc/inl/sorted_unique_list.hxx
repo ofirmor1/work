@@ -45,13 +45,13 @@ size_t SortedUniqueList<T>::remove(T a_element)
 }
 
 template <typename T>
-T SortedUniqueList<T>::front() const
+T const& SortedUniqueList<T>::front() const
 {
     return m_elements.front();
 }
 
 template <typename T>
-T SortedUniqueList<T>::back() const
+T const& SortedUniqueList<T>::back() const
 {
     return m_elements.back();
 }

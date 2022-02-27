@@ -71,13 +71,13 @@ size_t SortedList<T>::remove(T a_element)
 }
 
 template <typename T>
-T SortedList<T>::front() const
+T const& SortedList<T>::front() const
 {
     return m_elements.front();
 }
 
 template <typename T>
-T SortedList<T>::back() const
+T const& SortedList<T>::back() const
 {
     return m_elements.back();
 }
