@@ -81,9 +81,9 @@ size_t SortedUniqueVector<T>::size() const
 }
 
 template <typename T>
-void SortedUniqueVector<T>::fill(T a_element, size_t a_times)
+size_t SortedUniqueVector<T>::fill(T a_element, size_t a_times)
 {
-    m_elements.fill(a_element, a_times);
+    return m_elements.fill(a_element, a_times);
 }
 
 template <typename T>

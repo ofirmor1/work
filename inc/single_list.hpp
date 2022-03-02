@@ -6,7 +6,6 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include "single_list.hpp"
 // #include "hash_set.hpp"
 
 namespace cpp
@@ -116,6 +115,6 @@ bool contains(ListItr<T> a_begin, ListItr<T> const a_end , T a_val);
 
 } // namespace cpp
 
-#include "single_list.hxx"
+#include "./inl/single_list.hxx"
 
 #endif /*SINGLE_LIST*/

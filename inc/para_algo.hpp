@@ -3,12 +3,12 @@
 
 #include <vector>
 #include <cstddef>
-#include <stddef.h>
 
 namespace cpp
 {
 
-size_t sumVector(std::vector<int> const& a_vec, size_t a_numOfThreads);
+template <typename T>
+size_t sumVector(std::vector<T> const& a_vec, size_t a_numOfThreads);
 
 }//namespace cpp
 

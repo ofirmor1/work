@@ -13,6 +13,7 @@ class SortedContainer
 
 public:
     typedef T value_type;
+
     SortedContainer();
     virtual ~SortedContainer() = 0;
 
@@ -26,12 +27,13 @@ public:
     virtual MyIterator<T> end() = 0;
     
     virtual size_t size() const = 0;
+    virtual size_t fill(T a_val, size_t times);
+
     bool empty() const;
 
     virtual std::ostream& print(std::ostream& = std::cout) const = 0;
 
-    virtual void fill(T a_val, size_t times);
-
+    // operator[](size_t const& a_size){return m_e}
 private:
 	SortedContainer<T>(const SortedContainer<T>& a_container);
 	SortedContainer<T>& operator=(const SortedContainer<T>& a_container); 
@@ -39,7 +41,7 @@ private:
 };
 
 template <typename T>
-typename T::value_type containerMedian(T const& a_container);
+typename T::value_type const& containerMedian(T const& a_container);
 
 template <typename T>
 bool isContainerSorted(T const& a_container);

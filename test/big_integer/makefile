@@ -16,11 +16,9 @@ INC_DIR = ../../inc
 SRC_DIR = ../../src
 
 TARGET = utest
-OBJS = utest.o $(SRC_DIR)/big_integer.o $(SRC_DIR)/single_list.o
+OBJS = utest.o
 
 $(TARGET): $(OBJS)
-
-utest.o: $(INC_DIR)/single_list.hpp $(INL_DIR)/single_list.hxx
 
 check: $(TARGET)
 	./$(TARGET) -v

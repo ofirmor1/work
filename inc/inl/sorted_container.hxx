@@ -65,21 +65,28 @@ bool empty(SortedContainer<T> const& a_container)
 }
 
 template <typename T>
-void SortedContainer<T>::fill(T a_element, size_t a_times)
+size_t SortedContainer<T>::fill(T a_element, size_t a_times)
 {
     while(a_times --> 0)
     {
         insert(a_element);
     }
+
+    return a_times;
 }
 
-template <typename T>
-typename T::value_type containerMedian(T const& a_container)
-{
-    size_t middle = a_container.size() / 2;
-    (a_container.size()%2 == 0) ? middle : middle += 1;
-    return a_container[middle];
-}
+// template <typename T>
+// typename T::value_type const& containerMedian(T const& a_container)
+// {
+//     assert(a_container.size() > 0);
+//     MyIterator<T> it = a_container.begin(); 
+//     while (it < a_container.size()/2)
+//     {
+//         it++;
+//     }    
+
+//     return (a_container.size()%2 == 0) ? *it : *(++it);
+// }
 
 template <typename T>
 bool isContainerSorted(T const& a_container)

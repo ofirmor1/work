@@ -187,7 +187,7 @@ void LinkedList<T>::addLast(T const& a_val)
         }
         Node<T>* newTail = new Node<T>();
         newTail->setData(a_val);
-        newTail->setNext(m_sentinal);
+        newTail->setNext(m_tail);
         curr->setNext(newTail);
     }
 
@@ -226,7 +226,6 @@ void LinkedList<T>::axioms() const
 {
    assert(m_size >= 0);
    assert(m_head != 0);
-   assert(m_tail != 0);
    assert(m_sentinal != 0);
    assert(m_sentinal -> getNext() == m_sentinal);
 

@@ -28,7 +28,7 @@ public:
     std::ostream& print(std::ostream& a_os = std::cout) const;
 
     size_t size() const;
-    void fill(T a_elem, size_t a_times);
+    size_t fill(T a_elem, size_t a_times);
 
     T median() const;
     bool isSorted() const;

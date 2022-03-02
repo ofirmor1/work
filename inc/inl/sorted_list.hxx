@@ -1,11 +1,19 @@
 #ifndef SORTED_LIST_HXX
 #define SORTED_LIST_HXX
 
-#include <list>
-#include "my_iterator.hpp"
-
 namespace cpp
 {
+
+template <typename T>
+SortedList<T>::SortedList(size_t a_size)
+: SortedListBase<T>()
+{
+    m_elements.reserve(a_size);
+}
+
+template <typename T>
+SortedList<T>::~SortedList()
+{}
 
 template <typename T>
 void SortedList<T>::insert(T a_element)
@@ -20,112 +28,28 @@ void SortedList<T>::insert(T a_element)
         Itr it = m_elements.begin();
         Itr end = m_elements.end();
 
-        while (it != end && *it < a_element)
-        {   
+        while (it != end)
+        {
+            if(*it > a_element)
+            {
+                break;
+            }
             it++;
         }
-
         m_elements.insert(it, a_element);
-    }        
-}
-
-template <typename T>
-size_t SortedList<T>::contains(T a_element) const
-{
-    ConstItr it = m_elements.begin();
-    ConstItr end = m_elements.end();
-
-    while (it != end && *it < a_element)
-    {
-        ++it;
     }
-
-    size_t count = 0;
-    while (it != end && *it == a_element)
-    {
-        ++it;
-        ++count;
-    }
-
-    return count;   
 }
 
 template <typename T>
-size_t SortedList<T>::remove(T a_element)
+size_t SortedList<T>::fill(T a_element, size_t a_times)
 {
-    Itr it = m_elements.begin();
-    Itr end = m_elements.end();
-    while (it != end && *it < a_element)
-    {
-        ++it;
-    }
+    Itr it = std::lower_bound(m_elements.begin(), m_elements.end(), a_element);
+    m_elements.insert(it, a_times, a_element);
 
-    size_t count = 0;
-    while (it != end && *it == a_element)
-    {
-        it = m_elements.erase(it);
-        ++count;
-    }
-
-    return count;   
+    return a_times;
 }
 
-template <typename T>
-T const& SortedList<T>::front() const
-{
-    return m_elements.front();
-}
 
-template <typename T>
-T const& SortedList<T>::back() const
-{
-    return m_elements.back();
-}
-
-template <typename T>
-MyIterator<T> SortedList<T>::begin() 
-{
-    return &m_elements.front();
-}
-
-template <typename T>
-MyIterator<T> SortedList<T>::end() 
-{
-   MyIterator<T> last = &m_elements.back();
-   ++last;
-   return last;
-}
-
-template <typename T>
-std::ostream& SortedList<T>::print(std::ostream& a_os) const
-{
-    return printContainer(m_elements, a_os);
-}
-
-template <typename T>
-size_t SortedList<T>::size() const
-{
-    return m_elements.size();
-}
-
-template <typename T>
-T SortedList<T>::median() const
-{
-    return containerMedian(m_elements);
-}
-
-template <typename T>
-bool SortedList<T>::isSorted() const
-{
-    return isContainerSorted(m_elements);
-}
-
-template <typename T>
-bool SortedList<T>::isUniform() const
-{
-    return isContainerUniformed(m_elements);
-}
-
-}// end of namespace cpp
+} // namespace cpp
 
 #endif /*#ifndef SORTED_LIST_HXX*/
