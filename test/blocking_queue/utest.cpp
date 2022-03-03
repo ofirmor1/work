@@ -3,306 +3,173 @@
 #include "thread.hpp"
 #include <iostream>
 #include <cassert>
-
-class Cat{
-public:
-    void walk() const { std::cout << "walk the cat\n"; }
-};
-
-BEGIN_TEST(queue_int_test_ctor)
-    mt::BlockingQueue<int> q;
-    ASSERT_EQUAL(q.getCapacity(), 10);
-    ASSERT_EQUAL(q.size(), 0);
-    ASSERT_EQUAL(q.getFront(), 0);
-    ASSERT_EQUAL(q.getBack(), 0);
-
-END_TEST
-
-BEGIN_TEST(queue_int_test_size_and_capacity)
-    mt::BlockingQueue<int> q(3);
-    ASSERT_EQUAL(q.isEmpty(), true);
-    ASSERT_EQUAL(q.getCapacity(), 3);
-    q.enqueue(1);
-    q.enqueue(3);
-    q.enqueue(5);
-    ASSERT_EQUAL(q.size(), 3);
-    ASSERT_EQUAL(q.isFull(), true);
-
-END_TEST
-
-BEGIN_TEST(queue_int_test_enqueue)
-    mt::BlockingQueue<int> q(10);
-    for(size_t i = 1; i <= q.getCapacity(); i++)
-    {
-        q.enqueue(i);
-        ASSERT_EQUAL(q.getBack(), (int)i);
-    }
-    ASSERT_EQUAL(q.isFull(), true);
-
-END_TEST
-
-BEGIN_TEST(queue_int_test_dequeue)
-    mt::BlockingQueue<int> q(10);
-    for(size_t i = 1; i <= q.getCapacity(); i++)
-    {
-        q.enqueue(i);
-        ASSERT_EQUAL(q.getBack(), (int)i);
-    }
-    ASSERT_EQUAL(q.size(), 10);
-    for(size_t i = 1; i <= q.getCapacity(); i++)
-    {
-        int item = q.dequeue();
-        ASSERT_EQUAL(item, (int)i);
-    }
-    ASSERT_EQUAL(q.size(), 0);
-
-END_TEST
-
-
-BEGIN_TEST(queue_int_isEmpty)
-    mt::BlockingQueue<int> q(3);
-    ASSERT_EQUAL(q.isEmpty(), true);
-    q.enqueue(1);
-    q.enqueue(3);
-    q.enqueue(5);
-    ASSERT_EQUAL(q.isEmpty(), false);
-
-END_TEST
-
-
-BEGIN_TEST(queue_int_isFull)
-    mt::BlockingQueue<int> q(3);
-    q.enqueue(1);
-    q.enqueue(3);
-    q.enqueue(5);
-    ASSERT_EQUAL(q.size(), 3);
-    ASSERT_EQUAL(q.isFull(), true);
-
-END_TEST
-
-BEGIN_TEST(queue_int_test_copy_ctor)
-    mt::BlockingQueue<int> q(3);
-    q.enqueue(1);
-    q.enqueue(2);
-    q.enqueue(3);
-    mt::BlockingQueue<int> q2(3);
-    ASSERT_EQUAL(q.size(), 3);
-    ASSERT_EQUAL(q2.size(), 0);
-    q2 = q;
-    ASSERT_EQUAL(q.size(), 3);
-    ASSERT_EQUAL(q2.size(), 3);
-    for(size_t i = 1; i <= q.size(); i++)
-    {
-        size_t r = q2.dequeue();
-        ASSERT_EQUAL(r, i);
-    }
-    ASSERT_EQUAL(q2.size(), 0);
-    ASSERT_EQUAL(q2.isEmpty(), true);
-
-END_TEST
-
-//queue of cats tests
-
-BEGIN_TEST(queue_Cat_test_ctor)
-    mt::BlockingQueue<Cat> qc;  
-    ASSERT_EQUAL(qc.getCapacity(), 10);
-    ASSERT_EQUAL(qc.size(), 0);
-
-END_TEST
-
-
-BEGIN_TEST(queue_Cat_test_size_and_capacity)
-    mt::BlockingQueue<Cat> qc;
-    Cat tom,andy,jerry;
-    qc.enqueue(tom);
-    qc.enqueue(andy);
-    qc.enqueue(jerry);
-    ASSERT_EQUAL(qc.size(), 3);
-    ASSERT_EQUAL(qc.getCapacity(), 10);
-
-END_TEST
-
-
-BEGIN_TEST(queue_Cat_test_enqueue)
-    mt::BlockingQueue<Cat> qc(64);  
-    Cat kitten;
-    qc.enqueue(kitten);
-    ASSERT_EQUAL(qc.size(), 1);
-    qc.dequeue();
-    ASSERT_EQUAL(qc.size(), 0);
-
-END_TEST
-
-BEGIN_TEST(queue_Cat_test_dequeue)
-    mt::BlockingQueue<Cat> qc(3);
-    Cat a,b,c;
-    qc.enqueue(a);
-    qc.enqueue(b);
-    qc.enqueue(c);
-    ASSERT_EQUAL(qc.size(), 3);
-    ASSERT_EQUAL(qc.isFull(), true);
-    qc.dequeue();
-    qc.dequeue();
-    qc.dequeue();
-    ASSERT_EQUAL(qc.size(), 0);
-    ASSERT_EQUAL(qc.isEmpty(), true);
-
-END_TEST
-
-
-BEGIN_TEST(queue_Cat_isEmpty)
-    mt::BlockingQueue<Cat> qc(3);
-    ASSERT_EQUAL(qc.isEmpty(), true);
-    Cat a,b,c;
-    qc.enqueue(a);
-    qc.enqueue(b);
-    qc.enqueue(c);
-    ASSERT_EQUAL(qc.isEmpty(), false);
-
-END_TEST
-
-
-BEGIN_TEST(queue_Cat_isFull)
-    mt::BlockingQueue<Cat> qc(3);
-    Cat a,b,c;
-    qc.enqueue(a);
-    qc.enqueue(b);
-    qc.enqueue(c);
-    ASSERT_EQUAL(qc.size(), 3);
-    ASSERT_EQUAL(qc.isFull(), true);
-
-END_TEST
-
-BEGIN_TEST(queue_Cat_test_copy_ctor)
-    mt::BlockingQueue<Cat> qc(3);
-    Cat a,b,c;
-    qc.enqueue(a);
-    qc.enqueue(b);
-    qc.enqueue(c);
-    mt::BlockingQueue<Cat> q2;
-    ASSERT_EQUAL(qc.size(), 3);
-    ASSERT_EQUAL(q2.size(), 0);
-    q2 = qc;
-    ASSERT_EQUAL(qc.size(), 3);
-    ASSERT_EQUAL(q2.size(), 3);
-    Cat isA = q2.dequeue();
-    Cat isB = q2.dequeue();
-    Cat isC = q2.dequeue();
-    (void)isA;
-    (void)isB;
-    (void)isC;
-    // ASSERT_EQUAL(isA, a);
-
-END_TEST
-
-
-// queue of queue of int tests
-BEGIN_TEST(queue_of_queue_int_test_ctor)
-    mt::BlockingQueue<int> qi;
-    mt::BlockingQueue<mt::BlockingQueue<int> > qqi(2);  
-    ASSERT_EQUAL(qqi.isEmpty(), true);
-    ASSERT_EQUAL(qqi.getCapacity(), 2);
-    ASSERT_EQUAL(qqi.size(), 0);
-    ASSERT_EQUAL(qqi.isFull(), false);
-
-END_TEST
+#include <unistd.h>
 
 //MUTEX + THREAD TESTS
 
 mt::BlockingQueue<int> q;
-const size_t N = 1000;
-mt::Mutex mtx;
+const int LOOPS = 10;
 
-void* FillFIrstHalfWithoutMutex(void*)
+void* producer(void*)
 {   
-    for (size_t i = 0; i < N/2; i++)
+    bool ok = false;
+    for (size_t i = 0; i < LOOPS;)
     {
-        q.enqueue(i);
+        printf("%ld\n", i);
+        ok = q.enqueue(i, ok);
+        if(ok)
+        {
+            ++i;
+        }    
+        else
+        {
+            usleep(500000);
+        }
     }
 
     return 0;
 }
 
-void* FillSecondHalfWithoutMutex(void*)
+template<typename T>
+void* consumer(void*)
 {   
-    for (size_t i = N/2; i < N; i++)
+    std::pair<T, bool> pair;
+    for (int i = 0; i < LOOPS; i++)
     {
-        q.enqueue(i);
+        bool ok = false;
+        pair = q.dequeue(ok);
+        if(pair.second == ok)
+        {
+            if(pair.first == i)
+            {
+                ++i;
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            usleep(2000000);
+        }
     }
 
     return 0;
 }
 
-void* FillFIrstHalfWithMutex(void*)
-{   
-    for (size_t i = 0; i < N/2; i++)
-    {
-        mtx.lock();
-        q.enqueue(i);
-        mtx.unlock();
-    }
 
-    return 0;
-}
+BEGIN_TEST(test_mutex_with_2cons_2prod)
+    mt::Thread p1(producer, 0);
+    mt::Thread p2(producer, 0);
+    mt::Thread c1(consumer<int>, 0);
+    mt::Thread c2(consumer<int>, 0);
 
-void* FillSecondHalfWithMutex(void*)
-{   
-    for (size_t i = N/2; i < N; i++)
-    {
-        mtx.lock();
-        q.enqueue(i);
-        mtx.unlock();
-    }
-
-    return 0;
-}
-
-BEGIN_TEST(blocking_queue_fill_with_threads_without_mutex)
-    mt::Thread th1(FillFIrstHalfWithMutex);
-    mt::Thread th2(FillSecondHalfWithMutex);
-
-    th1.join();
-    th2.join();
-
-    q.print();
-    ASSERT_EQUAL(q.size(), 1000);
+    p1.join();
+    p2.join();
+    c1.join();
+    c2.join();
+    ASSERT_PASS();
+    // ASSERT_EQUAL(q.size(), 0);
     
 END_TEST
 
 
-BEGIN_TEST(blocking_queue_fill_without_threads_without_mutex)
-    mt::Thread th1(FillFIrstHalfWithoutMutex);
-    mt::Thread th2(FillSecondHalfWithoutMutex);
+void* fillPositive(void*)
+{
+    mt::BlockingQueue<int> q;
 
-    th1.join();
-    th2.join();
+    bool ok = false;
+    for (size_t i = 1; i < LOOPS;)
+    {
+        printf("%ld\n", i);
+        ok = q.enqueue(i, ok);
+        if(ok)
+        {
+            ++i;
+        }    
+        else
+        {
+            usleep(50000000);
+        }
+    }
 
-    q.print();
-    ASSERT_NOT_EQUAL(q.size(), 1000);
+    return 0;
+}
+
+void* fillNegative(void*)
+{
+    mt::BlockingQueue<int> q;
+
+    bool ok = false;
+    for (int i = 0; i > -1*LOOPS;)
+    {
+        printf("%d\n", i);
+        ok = q.enqueue(i, ok);
+        if(ok)
+        {
+            --i;
+        }  
+        else
+        {
+            usleep(50000000);
+        }  
+    }
+
+    return 0;
+}
+
+template<typename T>
+void* clearQueue(void*)
+{
+    mt::BlockingQueue<int> q;
+
+    bool ok = false;
+    for (int i = 0; i < 2*LOOPS;)
+    {
+        printf(" 123  ");
+        
+        std::pair<T,bool> p = q.dequeue(ok);
+        printf("%d\n 123", p.first);
+        // int neg = i*-1;
+        // int pos = i;
+        if(p.second == ok)
+        {   
+            if(p.first == i)
+            {
+                ++i;
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            usleep(50000000);
+        }   
+    }
+
+    return 0;
+}
+
+BEGIN_TEST(test_mutex_with_2th_fill_1th_dequeue)
+    mt::Thread f1(fillPositive, 0);
+    mt::Thread f2(fillNegative, 0);
+    // mt::Thread c1(clearQueue<int>, 0);
+
+    f1.join();
+    f2.join();
+    // c1.join();
+
+    ASSERT_EQUAL(q.size(), 0);
     
 END_TEST
 
 
 BEGIN_SUITE(queue_tests_unit)
-    //queue of int tests
-    TEST(queue_int_test_ctor)
-    TEST(queue_int_test_size_and_capacity)
-    TEST(queue_int_test_enqueue)
-    TEST(queue_int_test_dequeue)
-    TEST(queue_int_isEmpty)
-    TEST(queue_int_isFull)
-    TEST(queue_int_test_copy_ctor)
 
-    //queue of cats tests
-    TEST(queue_Cat_test_ctor)
-    TEST(queue_Cat_test_size_and_capacity)
-    TEST(queue_Cat_test_enqueue)
-    TEST(queue_Cat_test_dequeue)
-    TEST(queue_Cat_isEmpty)
-    TEST(queue_Cat_isFull)
-    TEST(queue_Cat_test_copy_ctor)
-
-    TEST(queue_of_queue_int_test_ctor)
-    TEST(blocking_queue_fill_with_threads_without_mutex)
+    TEST(test_mutex_with_2cons_2prod)
+    TEST(test_mutex_with_2th_fill_1th_dequeue)
 
 END_SUITE

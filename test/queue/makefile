@@ -1,35 +1,35 @@
-CXX = g++
-CC = $(CXX)
-
-WARNINGS = -pedantic
-WARNINGS += -Wall -Werror
-
-DEBUG = -g3
-CXX_STD = c++03
-
-CXXFLAGS = $(WARNINGS) $(DEBUG) -std=$(CXX_STD)
-
-CPPFLAGS = -I$(INC_DIR) -I$(INL_DIR)
-
-INL_DIR = ../../inc/inl
 INC_DIR = ../../inc
+INL_DIR = ../../inc/inl
 SRC_DIR = ../../src
 
-TARGET = utest
-OBJS = utest.o
+CC := $(CXX)
+CXX := g++
+
+CPPFLAGS = -I../inc -I../../inc -I./inc
+
+WARNS = -Wall -Werror -pedantic
+
+CXXFLAGS = -std=c++03 $(WARNS)
+CXXFLAGS += -g
+LDLIBS   = -lpthread
+
+OBJS   := utest.o
+TARGET := utest
+
+all: $(TARGET)
 
 $(TARGET): $(OBJS)
 
-utest.o: $(INC_DIR)/queue.hpp $(INC_DIR)/single_list.hpp $(INL_DIR)/single_list.hxx
+check: all
+	@./$(TARGET) -v
 
-check: $(TARGET)
-	./$(TARGET) -v
-	
-vala:
-	valgrind -q --leak-check=full ./${TARGET} -v
-	gdb -q ${TARGET}
-		
+valgrind: $(TARGET)
+	valgrind --leak-check=full --track-origins=yes --log-file=logValgrind01.txt ./$(TARGET)
+	valgrind --tool=helgrind --log-file=loghelgrind01.txt ./$(TARGET)
+	valgrind --tool=drd --log-file=logdrd01.txt ./$(TARGET)
+
 clean:
-	@$(RM) $(TARGET) $(OBJS)
-	
-.PHONY: clean check (edited) 
+	$(RM) $(TARGET) $(OBJS) *.txt
+
+
+.PHONY: all run clean valgrind

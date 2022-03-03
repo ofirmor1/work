@@ -1,14 +1,18 @@
+#ifndef QUEUE_HPP
+#define QUEUE_HPP
+
 #include <iostream>
 #include <stddef.h>
 #include <cassert>
 #include "single_list.hpp"
 
-const size_t CAPACITY = 10;
-
+namespace cpp
+{
 template <typename T>
 class Queue
 {
 public:
+	static const size_t CAPACITY = 16;
     Queue(size_t a_capacity = CAPACITY);
 
 	void enqueue(T const& a_value);
@@ -25,7 +29,8 @@ public:
 	size_t getCapacity() const;
 
 private:
-    void copy(Queue const& a_queue);
+    Queue(Queue const& a_queue);
+	Queue& operator=(Queue const& a_queue);
 	void clear();
 
 private:
@@ -34,65 +39,8 @@ private:
 	size_t m_capacity;
 };
 
-template <typename T>
-Queue<T>::Queue(size_t a_capacity)
-: m_elements(new T[a_capacity])
-, m_capacity(a_capacity)
-{
-	m_list = LinkedList<T>();
-}
- 
-template <typename T>
-void Queue<T>::enqueue(T const& a_value)
-{
-	m_list.addLast(a_value);
-}
+}//namespace cpp
 
-template <typename T>
-T Queue<T>::dequeue()
-{
-	return m_list.remove();
-}
+#include "./inl/queue.hxx"
 
-
-template <typename T>
-void Queue<T>::print() const
-{
-	m_list.printList();
-}
-
-template <typename T>
-bool Queue<T>::isEmpty() const
-{
-	return m_list.size() == 0;
-}
-
-template <typename T>
-bool Queue<T>::isFull() const
-{
-	return m_list.size() == m_capacity;
-}
-
-template <typename T>
-T Queue<T>::getFront() const
-{
-	return m_list.first();
-}
-
-template <typename T>
-T Queue<T>::getBack() const
-{
-	return m_list.last();
-}
-
-template <typename T>
-size_t Queue<T>::getCapacity() const
-{
-	return m_capacity;
-}
-
-template <typename T>
-size_t Queue<T>::size() const
-{
-	return m_list.size();
-}
+#endif /*#ifndef QUEUE_HPP*/

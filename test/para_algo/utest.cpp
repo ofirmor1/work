@@ -118,7 +118,7 @@ BEGIN_TEST(sum_vector_of_1M_elements_with_four_threads)
     }
    
     size_t sum = sumVector(vec, 4);
-	std::cout<< sum  << std::endl;
+	std::cout<< sum << std::endl;
 	ASSERT_PASS();
 
 END_TEST
@@ -179,4 +179,4 @@ BEGIN_SUITE(para_algo_tests)
 
     // TEST(sort_vector_of_1000_elements_with_one_threads)
 
-END_SUITE
+END_SUITE   

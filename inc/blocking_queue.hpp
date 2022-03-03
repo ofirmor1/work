@@ -4,42 +4,42 @@
 #include <iostream>
 #include <stddef.h>
 #include <cassert>
-#include "single_list.hpp"
+#include "queue.hpp"
 #include "mutex.hpp"
-
-const size_t CAPACITY = 10;
 
 namespace mt
 {
-
 template <typename T>
 class BlockingQueue
 {
 public:
+	static const size_t CAPACITY = 16;
+
     BlockingQueue(size_t a_capacity = CAPACITY);
 
-	void enqueue(T const& a_value);
-	T dequeue();
+	bool enqueue(T const& a_value, bool& a_ok);
+	std::pair<T, bool> dequeue(bool& a_ret);
+	void clear();
 
     bool isEmpty() const;
     bool isFull() const;
+
 	void print() const;
 	size_t size() const;
-	size_t cap() const;
+	size_t getCapacity() const;
 
 	T getFront() const;
 	T getBack() const;
-	size_t getCapacity() const;
 
 private:
-    void copy(BlockingQueue const& a_queue);
-	void clear();
+	bool nonBlockEmpty() const;
+	bool nonBlockFull() const;
+    BlockingQueue(BlockingQueue const& a_source);//no imp by design
+	BlockingQueue& operator=(BlockingQueue const& a_source);
 
 private:
-	cpp::LinkedList<T> m_list;
-	T* m_elements;
-	size_t m_capacity;
-	Mutex m_mtx;
+	cpp::Queue<T> m_queue;
+	mutable Mutex m_mtx;
 };
 
 

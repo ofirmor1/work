@@ -2,8 +2,10 @@
 #include "queue.hpp"
 #include <iostream>
 #include <cassert>
+
 using std::cout;
 using std::endl;
+using cpp::Queue;
 
 class Cat{
 public:
@@ -12,7 +14,7 @@ public:
 
 BEGIN_TEST(queue_int_test_ctor)
     Queue<int> q;
-    ASSERT_EQUAL(q.getCapacity(), 10);
+    ASSERT_EQUAL(q.getCapacity(), 16);
     ASSERT_EQUAL(q.size(), 0);
     ASSERT_EQUAL(q.getFront(), 0);
     ASSERT_EQUAL(q.getBack(), 0);
@@ -106,7 +108,7 @@ END_TEST
 
 BEGIN_TEST(queue_Cat_test_ctor)
     Queue<Cat> qc;  
-    ASSERT_EQUAL(qc.getCapacity(), 10);
+    ASSERT_EQUAL(qc.getCapacity(), 16);
     ASSERT_EQUAL(qc.size(), 0);
 
 END_TEST
@@ -119,7 +121,7 @@ BEGIN_TEST(queue_Cat_test_size_and_capacity)
     qc.enqueue(andy);
     qc.enqueue(jerry);
     ASSERT_EQUAL(qc.size(), 3);
-    ASSERT_EQUAL(qc.getCapacity(), 10);
+    ASSERT_EQUAL(qc.getCapacity(), 16);
 
 END_TEST
 

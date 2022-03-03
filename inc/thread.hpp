@@ -13,7 +13,9 @@ public:
 
     typedef void*(*funcPtr)(void*);
 
-    Thread(funcPtr a_action);
+    Thread(funcPtr a_action, void* a_arg);
+
+    // Thread(Thread const& a_th);
     ~Thread();
 
     void join();

@@ -55,8 +55,8 @@ void* FillEven(void*) {
 }
 
 BEGIN_TEST(fill_array)
-    mt::Thread th1(FillEven);
-    mt::Thread th2(FillOdd);  
+    mt::Thread th1(FillEven, 0);
+    mt::Thread th2(FillOdd, 0);  
     th1.join();  
     th2.join();
 
@@ -67,8 +67,8 @@ END_TEST
 
 BEGIN_TEST(inc_with_mutex)
 	g = 0;
-    mt::Thread t1(incGlobalWithMutex); 
-    mt::Thread t2(incGlobalWithMutex);
+    mt::Thread t1(incGlobalWithMutex, 0); 
+    mt::Thread t2(incGlobalWithMutex, 0);
 
     t1.join();
     t2.join();
@@ -81,11 +81,10 @@ END_TEST
 
 BEGIN_TEST(inc_without_mutex)
 	g = 0;
-    mt::Thread t1(incGlobalWithoutMutex); 
-    mt::Thread t2(incGlobalWithoutMutex);
+    mt::Thread t1(incGlobalWithoutMutex, 0); 
+    mt::Thread t2(incGlobalWithoutMutex, 0);
 
     t1.join();
-    t2.join();
     t2.join();
 
     std::cout << "g = " << g << std::endl;

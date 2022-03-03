@@ -19,6 +19,10 @@ public:
     bool isLock() const;
 
 private:
+    Mutex(Mutex const& a_source); //no imp by design
+	Mutex& operator=(Mutex const& a_source);
+
+private:
     pthread_mutex_t m_mtx;
     bool m_isLock;
 };
