@@ -9,11 +9,12 @@ CXXFLAGS = -std=c++03 $(WARNS)
 CXXFLAGS += -g
 LDLIBS   = -lpthread
 
-OBJS   := utest.o mystring.o store.o
+OBJS   := utest.o mystring.o store.o vector.o
 TARGET := utest
 
 mystring.o: mystring.hpp
 store.o: store.hpp
+vector.o: vector.hpp
 
 all: $(TARGET)
 

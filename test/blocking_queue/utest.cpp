@@ -1,175 +1,137 @@
 #include "mu_test.h"
 #include "blocking_queue.hpp"
 #include "thread.hpp"
-#include <iostream>
-#include <cassert>
-#include <unistd.h>
+#include "mutex.hpp"
+#include <stdio.h>
 
-//MUTEX + THREAD TESTS
+mt::Mutex m;
+int tVar1 = -1; // testing fifo between 0-50
+int tVar2 = 49; // testing fifo between 51-100
 
-mt::BlockingQueue<int> q;
-const int LOOPS = 10;
+template <typename T>
+class Arguments
+{
 
-void* producer(void*)
-{   
-    bool ok = false;
-    for (size_t i = 0; i < LOOPS;)
+public:
+    Arguments(mt::BlockingQueue<T> *a_queue, size_t a_begin, size_t a_end)
+        : m_queue(a_queue), m_begin(a_begin), m_end(a_end)
     {
-        printf("%ld\n", i);
-        ok = q.enqueue(i, ok);
-        if(ok)
+    }
+
+    mt::BlockingQueue<T> *m_queue;
+    size_t m_begin;
+    size_t m_end;
+};
+
+void *enqueueMany(void *a_arg)
+{
+    using namespace mt;
+    Arguments<int> *myArg = static_cast<Arguments<int> *>(a_arg);
+
+    BlockingQueue<int> *queue = myArg->m_queue;
+    size_t begin = myArg->m_begin;
+    size_t end = myArg->m_end;
+    size_t i = begin;
+    while (i < end)
+    {
+        bool res = queue->enqueue(i);
+        m.lock();
+
+        if (res)
         {
             ++i;
-        }    
-        else
-        {
-            usleep(500000);
         }
+        m.unlock();
     }
-
     return 0;
 }
 
-template<typename T>
-void* consumer(void*)
-{   
-    std::pair<T, bool> pair;
-    for (int i = 0; i < LOOPS; i++)
-    {
-        bool ok = false;
-        pair = q.dequeue(ok);
-        if(pair.second == ok)
-        {
-            if(pair.first == i)
-            {
-                ++i;
-            }
-            else
-            {
-                break;
-            }
-        }
-        else
-        {
-            usleep(2000000);
-        }
-    }
-
-    return 0;
-}
-
-
-BEGIN_TEST(test_mutex_with_2cons_2prod)
-    mt::Thread p1(producer, 0);
-    mt::Thread p2(producer, 0);
-    mt::Thread c1(consumer<int>, 0);
-    mt::Thread c2(consumer<int>, 0);
-
-    p1.join();
-    p2.join();
-    c1.join();
-    c2.join();
-    ASSERT_PASS();
-    // ASSERT_EQUAL(q.size(), 0);
-    
-END_TEST
-
-
-void* fillPositive(void*)
+void *dequeueMany(void *a_arg)
 {
-    mt::BlockingQueue<int> q;
+    int *arr = new int[100];
+    using namespace mt;
+    BlockingQueue<int> *queue = static_cast<BlockingQueue<int> *>(a_arg);
 
-    bool ok = false;
-    for (size_t i = 1; i < LOOPS;)
+    size_t i = 0;
+    while (i < 100)
     {
-        printf("%ld\n", i);
-        ok = q.enqueue(i, ok);
-        if(ok)
+        std::pair<int, bool> p;
+        p = queue->dequeue();
+        arr[i] = p.first;
+        bool r = p.second;
+        m.lock();
+        if (r)
         {
             ++i;
-        }    
-        else
-        {
-            usleep(50000000);
         }
+        m.unlock();
     }
-
-    return 0;
+    return arr;
 }
 
-void* fillNegative(void*)
+bool ensureFIFO(int a_item)
 {
-    mt::BlockingQueue<int> q;
-
-    bool ok = false;
-    for (int i = 0; i > -1*LOOPS;)
+    if (a_item == tVar1 + 1)
     {
-        printf("%d\n", i);
-        ok = q.enqueue(i, ok);
-        if(ok)
-        {
-            --i;
-        }  
-        else
-        {
-            usleep(50000000);
-        }  
+        m.lock();
+        ++tVar1;
+        m.unlock();
+        return true;
     }
-
-    return 0;
+    if (a_item == tVar2 + 1)
+    {
+        m.lock();
+        ++tVar2;
+        m.unlock();
+        return true;
+    }
+    return false;
 }
 
-template<typename T>
-void* clearQueue(void*)
+BEGIN_TEST(fifo_test_one_thread_enque_one_dequeue)
+using namespace mt;
+BlockingQueue<int> myQueue(100);
+Arguments<int> queueArg(&myQueue, 0, 100);
+
+mt::Thread t1(enqueueMany, static_cast<void *>(&queueArg));
+
+mt::Thread t2(dequeueMany, static_cast<void *>(&myQueue));
+t1.join();
+void *res = t2.join();
+int *y = static_cast<int *>(res);
+for (size_t i = 0; i < 100; ++i)
 {
-    mt::BlockingQueue<int> q;
-
-    bool ok = false;
-    for (int i = 0; i < 2*LOOPS;)
-    {
-        printf(" 123  ");
-        
-        std::pair<T,bool> p = q.dequeue(ok);
-        printf("%d\n 123", p.first);
-        // int neg = i*-1;
-        // int pos = i;
-        if(p.second == ok)
-        {   
-            if(p.first == i)
-            {
-                ++i;
-            }
-            else
-            {
-                break;
-            }
-        }
-        else
-        {
-            usleep(50000000);
-        }   
-    }
-
-    return 0;
+    // std::cout << y[i] <<",";
+    ASSERT_EQUAL(y[i], (int)i);
 }
-
-BEGIN_TEST(test_mutex_with_2th_fill_1th_dequeue)
-    mt::Thread f1(fillPositive, 0);
-    mt::Thread f2(fillNegative, 0);
-    // mt::Thread c1(clearQueue<int>, 0);
-
-    f1.join();
-    f2.join();
-    // c1.join();
-
-    ASSERT_EQUAL(q.size(), 0);
-    
+ASSERT_EQUAL(myQueue.isEmpty(), true);
 END_TEST
 
+BEGIN_TEST(fifo_test_two_thread_enque_one_dequeue)
+using namespace mt;
+BlockingQueue<int> myQueue(100);
+Arguments<int> first(&myQueue, 0, 50);
+Arguments<int> second(&myQueue, 50, 100);
 
-BEGIN_SUITE(queue_tests_unit)
+mt::Thread t1(enqueueMany, static_cast<void *>(&first));
+mt::Thread t2(enqueueMany, static_cast<void *>(&second));
 
-    TEST(test_mutex_with_2cons_2prod)
-    TEST(test_mutex_with_2th_fill_1th_dequeue)
+mt::Thread t3(dequeueMany, static_cast<void *>(&myQueue));
+
+t1.join();
+t2.join();
+void *res = t3.join();
+int *y = static_cast<int *>(res);
+for (size_t i = 0; i < 100; ++i)
+{
+    // std::cout << y[i] <<",";
+    ASSERT_EQUAL(ensureFIFO(y[i]), true);
+}
+ASSERT_EQUAL(myQueue.isEmpty(), true);
+END_TEST
+
+BEGIN_SUITE(tests)
+TEST(fifo_test_one_thread_enque_one_dequeue)
+TEST(fifo_test_two_thread_enque_one_dequeue)
 
 END_SUITE

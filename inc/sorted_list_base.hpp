@@ -29,7 +29,7 @@ public:
     std::ostream& print(std::ostream& a_os = std::cout) const;
 
 protected:
-    typedef typename std::list<T>::iterator Itr;
+    typedef typename std::list<T>:: Itr;
     typedef typename std::list<T>::const_iterator ConstItr;
     typedef typename std::list<T> Container;
     Container m_elements;

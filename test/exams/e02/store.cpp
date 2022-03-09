@@ -2,6 +2,7 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+
 namespace cpp
 {
 
@@ -72,7 +73,7 @@ size_t Store::getCapacity() const
     return m_capacity;
 }
 
-int Store::operator[](size_t a_index) const
+int Store::operator[](size_t a_index)
 {
     return m_arr[a_index];
 }

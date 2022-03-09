@@ -12,7 +12,7 @@ BlockingQueue<T>::BlockingQueue(size_t a_capacity)
 {}
 
 template <typename T>
-bool BlockingQueue<T>::enqueue(T const& a_value, bool& a_ok)
+bool BlockingQueue<T>::enqueue(T const& a_value)
 {
 	m_mtx.lock();
 	if(m_queue.isFull())
@@ -27,7 +27,7 @@ bool BlockingQueue<T>::enqueue(T const& a_value, bool& a_ok)
 }
 
 template <typename T>
-std::pair<T, bool> BlockingQueue<T>::dequeue(bool& a_ret)
+std::pair<T, bool> BlockingQueue<T>::dequeue()
 {
 	m_mtx.lock();
 	if(m_queue.isEmpty())

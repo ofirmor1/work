@@ -17,8 +17,8 @@ public:
 
     BlockingQueue(size_t a_capacity = CAPACITY);
 
-	bool enqueue(T const& a_value, bool& a_ok);
-	std::pair<T, bool> dequeue(bool& a_ret);
+	bool enqueue(T const& a_value);
+	std::pair<T, bool> dequeue();
 	void clear();
 
     bool isEmpty() const;

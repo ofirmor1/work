@@ -25,15 +25,13 @@ public:
     size_t getCapacity() const;
     size_t getSize() const;
 
-    int operator[](size_t a_index) const;
+    int operator[](size_t a_index);
 
 private:
     size_t m_size;
     size_t m_capacity;
     int* m_arr;
     
-
-
 };
 
 }//namespace cpp
