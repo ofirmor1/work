@@ -18,7 +18,7 @@ public:
     BlockingQueue(size_t a_capacity = CAPACITY);
 
 	bool enqueue(T const& a_value);
-	std::pair<T, bool> dequeue();
+	T dequeue(bool& ok);
 	void clear();
 
     bool isEmpty() const;
@@ -32,10 +32,10 @@ public:
 	T getBack() const;
 
 private:
-	bool nonBlockEmpty() const;
-	bool nonBlockFull() const;
+	bool nonLockEmpty() const;
+	bool nonLockFull() const;
     BlockingQueue(BlockingQueue const& a_source);//no imp by design
-	BlockingQueue& operator=(BlockingQueue const& a_source);
+	BlockingQueue& operator=(BlockingQueue const& a_source);//no imp by design
 
 private:
 	cpp::Queue<T> m_queue;

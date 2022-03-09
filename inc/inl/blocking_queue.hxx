@@ -15,7 +15,7 @@ template <typename T>
 bool BlockingQueue<T>::enqueue(T const& a_value)
 {
 	m_mtx.lock();
-	if(m_queue.isFull())
+	if(nonLockFull())
 	{
 		m_mtx.unlock();
 		return false;
@@ -27,19 +27,21 @@ bool BlockingQueue<T>::enqueue(T const& a_value)
 }
 
 template <typename T>
-std::pair<T, bool> BlockingQueue<T>::dequeue()
-{
-	m_mtx.lock();
-	if(m_queue.isEmpty())
-	{
-		m_mtx.unlock();
-		return std::make_pair(0, false);
-	}
-
-	T removed = m_queue.dequeue();
-	m_mtx.unlock();
-	return std::make_pair(removed, true);
-}
+T BlockingQueue<T>::dequeue(bool& ok)
+ {
+     m_mtx.lock();
+    
+   if(nonLockEmpty())
+   {
+       ok = false;
+       m_mtx.unlock();
+       return 0;
+   }
+    T res = m_queue.dequeue();
+    ok = true;
+    m_mtx.unlock();
+    return res;
+ }
 
 template <typename T>
 void BlockingQueue<T>::print() const
@@ -60,9 +62,8 @@ bool BlockingQueue<T>::isEmpty() const
 }
 
 template <typename T>
-bool BlockingQueue<T>::nonBlockEmpty() const
+bool BlockingQueue<T>::nonLockEmpty() const
 {
-	assert(m_mtx.isLock());
 	return m_queue.isEmpty();
 }
 
@@ -77,9 +78,8 @@ bool BlockingQueue<T>::isFull() const
 }
 
 template <typename T>
-bool BlockingQueue<T>::nonBlockFull() const
+bool BlockingQueue<T>::nonLockFull() const
 {
-	assert(m_mtx.isLock());
 	return m_queue.isFull();
 }
 

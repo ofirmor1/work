@@ -4,22 +4,22 @@
 namespace mt
 {
 
-Thread::Thread(funcPtr a_action, void* a_arg)
-: m_id(0)
+Thread::Thread(const pthread_attr_t * a_attr, funcPtr a_action, void* a_arg)
+: m_id(pthread_self())
 , m_joinable(true)
 {
-    int r = ::pthread_create(&m_id ,0, a_action, &a_arg);
+    int r = ::pthread_create(&m_id ,a_attr, a_action, a_arg);
     assert(r == 0);
 }
 
-// Thread::Thread(Thread const& a_th)
-// : m_id(a_th.m_id)
-// , m_joinable(a_th.m_joinable)
-// {
-//     Thread& th = const_cast<Thread& > (a_th);
-//     th.m_id = 0;
-//     th.m_joinable = false;
-// }
+Thread::Thread(Thread const& a_source)
+: m_id(a_source.m_id)
+, m_joinable(a_source.m_joinable)
+{
+    Thread& th = const_cast<Thread& > (a_source);
+    th.m_id = 0;
+    th.m_joinable = false;
+}
 
 Thread::~Thread()
 {
@@ -29,16 +29,19 @@ Thread::~Thread()
     }
 }
 
-void Thread::join()
+void* Thread::join()
 {
     if(m_joinable)
-    {
-        int r = pthread_join(m_id, 0);
+    { 
+        void* res;
+        int r = pthread_join(m_id, &res);
         if(r == 0)
         {
             m_joinable = false;
         }
+
         assert(r == 0);
+        return res;
     }
     else
     {
@@ -46,10 +49,13 @@ void Thread::join()
     }
 }
 
-void Thread::join(pthread_t a_th)
+void* Thread::join(pthread_t a_th)
 {
-    int r = pthread_join(a_th, 0);
+    void* res;
+    int r = pthread_join(a_th, &res);
     assert(r == 0);
+
+    return res;
 }
 
 void Thread::detach()

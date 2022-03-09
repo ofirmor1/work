@@ -13,15 +13,15 @@ public:
 
     typedef void*(*funcPtr)(void*);
 
-    Thread(funcPtr a_action, void* a_arg);
+    Thread(const pthread_attr_t * attr, funcPtr a_action, void* a_arg);
 
-    // Thread(Thread const& a_th);
+    Thread(Thread const& a_th);
     ~Thread();
 
-    void join();
+    void* join();
     void detach();
 
-    static void join(pthread_t a_th);
+    static void* join(pthread_t a_th);
     static pthread_t self();
         
 private:

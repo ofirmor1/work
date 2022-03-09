@@ -2,6 +2,8 @@
 #include "blocking_queue.hpp"
 #include "thread.hpp"
 #include "mutex.hpp"
+#include "mutex_exceptions.hpp"
+#include "thread_exceptions.hpp"
 #include <stdio.h>
 
 mt::Mutex m;
@@ -14,9 +16,10 @@ class Arguments
 
 public:
     Arguments(mt::BlockingQueue<T> *a_queue, size_t a_begin, size_t a_end)
-        : m_queue(a_queue), m_begin(a_begin), m_end(a_end)
-    {
-    }
+    : m_queue(a_queue)
+    , m_begin(a_begin)
+    , m_end(a_end)
+    {}
 
     mt::BlockingQueue<T> *m_queue;
     size_t m_begin;
@@ -43,22 +46,21 @@ void *enqueueMany(void *a_arg)
         }
         m.unlock();
     }
+
     return 0;
 }
 
 void *dequeueMany(void *a_arg)
 {
-    int *arr = new int[100];
     using namespace mt;
+    int *arr = new int[100];
     BlockingQueue<int> *queue = static_cast<BlockingQueue<int> *>(a_arg);
 
     size_t i = 0;
     while (i < 100)
     {
-        std::pair<int, bool> p;
-        p = queue->dequeue();
-        arr[i] = p.first;
-        bool r = p.second;
+        bool r = false;
+        arr[i] = queue->dequeue(r);
         m.lock();
         if (r)
         {
@@ -66,26 +68,41 @@ void *dequeueMany(void *a_arg)
         }
         m.unlock();
     }
+
     return arr;
 }
 
 bool ensureFIFO(int a_item)
 {
-    if (a_item == tVar1 + 1)
+    using namespace mt;
+    try
     {
-        m.lock();
-        ++tVar1;
-        m.unlock();
-        return true;
+        if (a_item == tVar1 + 1)
+        {
+            m.lock();
+            ++tVar1;
+            m.unlock();
+            return true;
+        }
+        if (a_item == tVar2 + 1)
+        {
+            m.lock();
+            ++tVar2;
+            m.unlock();
+            return true;
+        }
+        return false;
     }
-    if (a_item == tVar2 + 1)
+    catch(MutexAllreadyLocked const& e)
     {
-        m.lock();
-        ++tVar2;
-        m.unlock();
-        return true;
+        std::cerr << e.what() << '\n';
     }
-    return false;
+    catch(MutexAllreadyUnlocked const& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    
 }
 
 BEGIN_TEST(fifo_test_one_thread_enque_one_dequeue)
@@ -93,9 +110,9 @@ using namespace mt;
 BlockingQueue<int> myQueue(100);
 Arguments<int> queueArg(&myQueue, 0, 100);
 
-mt::Thread t1(enqueueMany, static_cast<void *>(&queueArg));
+mt::Thread t1(0, enqueueMany, static_cast<void *>(&queueArg));
 
-mt::Thread t2(dequeueMany, static_cast<void *>(&myQueue));
+mt::Thread t2(0, dequeueMany, static_cast<void *>(&myQueue));
 t1.join();
 void *res = t2.join();
 int *y = static_cast<int *>(res);
@@ -113,10 +130,10 @@ BlockingQueue<int> myQueue(100);
 Arguments<int> first(&myQueue, 0, 50);
 Arguments<int> second(&myQueue, 50, 100);
 
-mt::Thread t1(enqueueMany, static_cast<void *>(&first));
-mt::Thread t2(enqueueMany, static_cast<void *>(&second));
+mt::Thread t1(0, enqueueMany, static_cast<void *>(&first));
+mt::Thread t2(0, enqueueMany, static_cast<void *>(&second));
 
-mt::Thread t3(dequeueMany, static_cast<void *>(&myQueue));
+mt::Thread t3(0, dequeueMany, static_cast<void *>(&myQueue));
 
 t1.join();
 t2.join();
