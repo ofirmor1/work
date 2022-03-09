@@ -13,18 +13,25 @@ public:
     Store(size_t a_size = CAPACITY);
 
     ~Store();
-    Store(Store const& a_arr);
-    Store& operator=(Store const& a_arr);
+    Store(Store const& a_source);
+    Store& operator=(Store const& a_source);
 
-    int get(size_t a_indx) const; //get value of element at index
-    void set(size_t index, int a_value); //set value of element at index to v
+    int get(size_t a_index) const; //get value of element at index
+    void set(size_t a_index, int a_value); //set value of element at index to v
     void reset(int a_value); //set value of all elements to v
 
     void print() const;
 
+    size_t getCapacity() const;
+    size_t getSize() const;
+
+    int operator[](size_t a_index) const;
+
 private:
-    int* m_arr;
     size_t m_size;
+    size_t m_capacity;
+    int* m_arr;
+    
 
 
 };

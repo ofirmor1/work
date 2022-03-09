@@ -1,5 +1,6 @@
 #include "mu_test.h"
 #include "mystring.hpp"
+#include "store.hpp"
 
 #include <string>
 #include <iostream>
@@ -25,12 +26,27 @@ using namespace std;
     res = isReversed(s1, s2);
     ASSERT_EQUAL(res, false);
 
-
-
 END_TEST   
 
+BEGIN_TEST(store_tests)
+static const size_t SIZE = 64;
+    Store arr(SIZE);
+    ASSERT_EQUAL(arr.getCapacity(), 64);
+    ASSERT_EQUAL(arr.getSize(), 0);
 
+    ASSERT_EQUAL(arr[2], 0);
+    arr.set(2, 2);
+    ASSERT_EQUAL(arr[2], 2);
+
+    arr.reset(3);
+    for (size_t i = 0; i < arr.getSize(); i++)
+    {
+        ASSERT_EQUAL(arr[i], 3);
+    }
+
+END_TEST  
 
 BEGIN_SUITE(exam_tests)
     TEST(string_tests)
+    TEST(store_tests)
 END_SUITE
