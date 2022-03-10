@@ -14,7 +14,15 @@ BlockingQueue<T>::BlockingQueue(size_t a_capacity)
 template <typename T>
 bool BlockingQueue<T>::enqueue(T const& a_value)
 {
-	m_mtx.lock();
+	try
+	{
+		m_mtx.lock();
+	}
+	catch(const std::exception& e)
+	{
+		assert(!e.what());
+	}
+	
 	if(nonLockFull())
 	{
 		m_mtx.unlock();
@@ -22,26 +30,52 @@ bool BlockingQueue<T>::enqueue(T const& a_value)
 	}
 
 	m_queue.enqueue(a_value);
-	m_mtx.unlock();
+	
+	try
+	{
+		m_mtx.unlock();
+	}
+	catch(const std::exception& e)
+	{
+		assert(!e.what());
+	}
+	
 	return true;
 }
 
 template <typename T>
 T BlockingQueue<T>::dequeue(bool& ok)
- {
-     m_mtx.lock();
+{
+	try
+	{
+		m_mtx.lock();
+	}
+	catch(const std::exception& e)
+	{
+		assert(!e.what());
+	}
     
-   if(nonLockEmpty())
-   {
-       ok = false;
-       m_mtx.unlock();
-       return 0;
-   }
-    T res = m_queue.dequeue();
-    ok = true;
-    m_mtx.unlock();
-    return res;
- }
+	if(nonLockEmpty())
+	{
+		ok = false;
+		m_mtx.unlock();
+		return 0;
+	}
+	
+	T res = m_queue.dequeue();
+	ok = true;
+
+	try
+	{
+		m_mtx.unlock();
+	}
+	catch(const std::exception& e)
+	{
+		assert(!e.what());
+	}
+
+	return res;
+}
 
 template <typename T>
 void BlockingQueue<T>::print() const

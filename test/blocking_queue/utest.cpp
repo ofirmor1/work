@@ -96,13 +96,13 @@ bool ensureFIFO(int a_item)
     catch(MutexAllreadyLocked const& e)
     {
         std::cerr << e.what() << '\n';
+        throw;
     }
     catch(MutexAllreadyUnlocked const& e)
     {
         std::cerr << e.what() << '\n';
+        throw;
     }
-    
-    
 }
 
 BEGIN_TEST(fifo_test_one_thread_enque_one_dequeue)
