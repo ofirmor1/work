@@ -17,8 +17,8 @@ public:
 
     BlockingQueue(size_t a_capacity = CAPACITY);
 
-	bool enqueue(T const& a_value);
-	T dequeue(bool& ok);
+	void enqueue(T const& a_value);
+	void dequeue(T& a_retVal);
 	void clear();
 
     bool isEmpty() const;
@@ -30,6 +30,9 @@ public:
 
 	T getFront() const;
 	T getBack() const;
+
+	void lockQueue() const;
+	void unLockQueue() const;
 
 private:
 	bool nonLockEmpty() const;

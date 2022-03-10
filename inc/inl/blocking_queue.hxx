@@ -12,87 +12,66 @@ BlockingQueue<T>::BlockingQueue(size_t a_capacity)
 {}
 
 template <typename T>
-bool BlockingQueue<T>::enqueue(T const& a_value)
+void BlockingQueue<T>::enqueue(T const& a_value)
 {
+	lockQueue();
 	try
 	{
-		m_mtx.lock();
+		m_queue.enqueue(a_value);
 	}
-	catch(const std::exception& e)
+	catch(...)
 	{
-		assert(!e.what());
+		unLockQueue();
+		throw;
 	}
-	
-	if(nonLockFull())
-	{
-		m_mtx.unlock();
-		return false;
-	}
-
-	m_queue.enqueue(a_value);
-	
-	try
-	{
-		m_mtx.unlock();
-	}
-	catch(const std::exception& e)
-	{
-		assert(!e.what());
-	}
-	
-	return true;
+	unLockQueue();
 }
 
 template <typename T>
-T BlockingQueue<T>::dequeue(bool& ok)
+void BlockingQueue<T>::dequeue(T& a_retVal)
 {
-	try
-	{
-		m_mtx.lock();
-	}
-	catch(const std::exception& e)
-	{
-		assert(!e.what());
-	}
+	lockQueue();
     
-	if(nonLockEmpty())
-	{
-		ok = false;
-		m_mtx.unlock();
-		return 0;
-	}
-	
-	T res = m_queue.dequeue();
-	ok = true;
-
 	try
 	{
-		m_mtx.unlock();
+
+			a_retVal = m_queue.dequeue();
+		
 	}
-	catch(const std::exception& e)
+	catch(...)
 	{
-		assert(!e.what());
+		unLockQueue();
+		throw;
 	}
 
-	return res;
+	unLockQueue();
+	
 }
 
 template <typename T>
 void BlockingQueue<T>::print() const
 {
-	m_mtx.lock();
+	lockQueue();
 	m_queue.printList();
-	m_mtx.unlock();
 }
 
 template <typename T>
 bool BlockingQueue<T>::isEmpty() const
 {
-	m_mtx.lock();
-	bool r = m_queue.size() == 0;
-	m_mtx.unlock();
+	lockQueue();
+	return m_queue.isEmpty();
+}
 
-	return r;
+template <typename T>
+bool BlockingQueue<T>::isFull() const
+{
+	lockQueue();
+	if(m_queue.capacity())
+	{
+		return m_queue.size() == m_queue.capacity();
+	}
+
+	return false;
 }
 
 template <typename T>
@@ -102,39 +81,74 @@ bool BlockingQueue<T>::nonLockEmpty() const
 }
 
 template <typename T>
-bool BlockingQueue<T>::isFull() const
+bool BlockingQueue<T>::nonLockFull() const
 {
-	m_mtx.lock();
-	bool r = (m_queue.size() == m_queue.cap());
-	m_mtx.unlock();
+	if(m_queue.capacity())
+	{
+		return m_queue.isFull();
+	}
 
-	return r;
+	return false;
 }
 
 template <typename T>
-bool BlockingQueue<T>::nonLockFull() const
+void BlockingQueue<T>::lockQueue() const
 {
-	return m_queue.isFull();
+	try
+	{
+		m_mtx.lock();
+	}
+	catch(const std::exception& e)
+	{
+		assert(!e.what());
+	}
+}
+
+template <typename T>
+void BlockingQueue<T>::unLockQueue() const
+{
+	try
+	{
+		m_mtx.unlock();
+	}
+	catch(const std::exception& e)
+	{
+		assert(!e.what());
+	}
 }
 
 template <typename T>
 T BlockingQueue<T>::getFront() const
 {
-	m_mtx.lock();
-	T r = m_queue.first();
-	m_mtx.unlock();
-
-	return r;
+	lockQueue();
+	try
+	{
+		if(!m_queue.isEmpty())
+		{
+			return m_queue.getFront();
+		}
+	}
+	catch(const std::exception& e)
+	{
+		throw;
+	}	
 }
 
 template <typename T>
 T BlockingQueue<T>::getBack() const
 {
-	m_mtx.lock();
-	T r = m_queue.last();
-	m_mtx.unlock();
-
-	return r;
+	lockQueue();
+	try
+	{
+		if(!m_queue.isEmpty())
+		{
+			return m_queue.getBack();
+		}
+	}
+	catch(const std::exception& e)
+	{
+		throw;
+	}	
 }
 
 template <typename T>
@@ -146,11 +160,18 @@ size_t BlockingQueue<T>::getCapacity() const
 template <typename T>
 size_t BlockingQueue<T>::size() const
 {
-	m_mtx.lock();
-	size_t size = m_queue.size(); 
-	m_mtx.unlock();
-
-	return size;
+	lockQueue();
+	try
+	{
+		if(m_queue)
+		{
+			return m_queue.size();
+		}
+	}
+	catch(const std::exception& e)
+	{
+		throw;
+	}
 }
 
 

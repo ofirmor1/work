@@ -57,7 +57,7 @@ T Queue<T>::getBack() const
 }
 
 template <typename T>
-size_t Queue<T>::getCapacity() const
+size_t Queue<T>::capacity() const
 {
 	return m_capacity;
 }

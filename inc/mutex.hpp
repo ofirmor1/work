@@ -10,13 +10,11 @@ class Mutex
 {
 
 public:
-    Mutex();
+    explicit Mutex();
     ~Mutex();
     
     void lock();
     void unlock();
-
-    bool isLock() const;
 
 private:
     Mutex(Mutex const& a_source); //no imp by design
@@ -24,7 +22,6 @@ private:
 
 private:
     pthread_mutex_t m_mtx;
-    bool m_isLock;
 };
 
 }//namespace mt

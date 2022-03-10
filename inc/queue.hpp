@@ -22,11 +22,11 @@ public:
     bool isFull() const;
 	void print() const;
 	size_t size() const;
-	size_t cap() const;
+	size_t capacity() const;
 
 	T getFront() const;
 	T getBack() const;
-	size_t getCapacity() const;
+	
 
 private:
     Queue(Queue const& a_queue);

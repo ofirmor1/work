@@ -37,14 +37,7 @@ void *enqueueMany(void *a_arg)
     size_t i = begin;
     while (i < end)
     {
-        bool res = queue->enqueue(i);
-        m.lock();
-
-        if (res)
-        {
-            ++i;
-        }
-        m.unlock();
+        queue->enqueue(i++);
     }
 
     return 0;
@@ -59,14 +52,8 @@ void *dequeueMany(void *a_arg)
     size_t i = 0;
     while (i < 100)
     {
-        bool r = false;
-        arr[i] = queue->dequeue(r);
-        m.lock();
-        if (r)
-        {
-            ++i;
-        }
-        m.unlock();
+        queue->dequeue(arr[i]);
+        ++i;
     }
 
     return arr;
@@ -107,33 +94,33 @@ bool ensureFIFO(int a_item)
 
 BEGIN_TEST(fifo_test_one_thread_enque_one_dequeue)
 using namespace mt;
-BlockingQueue<int> myQueue(100);
-Arguments<int> queueArg(&myQueue, 0, 100);
+BlockingQueue<int> q(100);
+Arguments<int> queueArg(&q, 0, 100);
 
 mt::Thread t1(0, enqueueMany, static_cast<void *>(&queueArg));
 
-mt::Thread t2(0, dequeueMany, static_cast<void *>(&myQueue));
+mt::Thread t2(0, dequeueMany, static_cast<void *>(&q));
 t1.join();
 void *res = t2.join();
 int *y = static_cast<int *>(res);
 for (size_t i = 0; i < 100; ++i)
 {
-    // std::cout << y[i] <<",";
+    std::cout << y[i] <<",";
     ASSERT_EQUAL(y[i], (int)i);
 }
-ASSERT_EQUAL(myQueue.isEmpty(), true);
+ASSERT_EQUAL(q.isEmpty(), true);
 END_TEST
 
 BEGIN_TEST(fifo_test_two_thread_enque_one_dequeue)
 using namespace mt;
-BlockingQueue<int> myQueue(100);
-Arguments<int> first(&myQueue, 0, 50);
-Arguments<int> second(&myQueue, 50, 100);
+BlockingQueue<int> q(100);
+Arguments<int> first(&q, 0, 50);
+Arguments<int> second(&q, 50, 100);
 
 mt::Thread t1(0, enqueueMany, static_cast<void *>(&first));
 mt::Thread t2(0, enqueueMany, static_cast<void *>(&second));
 
-mt::Thread t3(0, dequeueMany, static_cast<void *>(&myQueue));
+mt::Thread t3(0, dequeueMany, static_cast<void *>(&q));
 
 t1.join();
 t2.join();
@@ -141,10 +128,10 @@ void *res = t3.join();
 int *y = static_cast<int *>(res);
 for (size_t i = 0; i < 100; ++i)
 {
-    // std::cout << y[i] <<",";
+    std::cout << y[i] <<",";
     ASSERT_EQUAL(ensureFIFO(y[i]), true);
 }
-ASSERT_EQUAL(myQueue.isEmpty(), true);
+ASSERT_EQUAL(q.isEmpty(), true);
 END_TEST
 
 BEGIN_SUITE(tests)
