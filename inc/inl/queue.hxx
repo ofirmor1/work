@@ -68,6 +68,15 @@ size_t Queue<T>::size() const
 	return m_list.size();
 }
 
+template <typename T>
+void Queue<T>::clear()
+{
+	while (m_list.size() > 0)
+	{
+		m_list.remove();
+	}
+}
+
 }//namespace cpp
 
 #endif /*#ifndef QUEUE_HXX*/

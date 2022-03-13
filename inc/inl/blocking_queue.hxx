@@ -2,50 +2,48 @@
 #define BLOCKING_QUEUE_HXX
 
 #include <utility>
+#include "mutex_exceptions.hpp"
+#include "blocking_queue_exceptions.hpp"
 
 namespace mt
 {
 template <typename T>
 BlockingQueue<T>::BlockingQueue(size_t a_capacity)
-: m_queue()
+try: m_queue(a_capacity)
 , m_mtx()
 {}
+catch(const std::exception& e)
+{
+	std::cerr << e.what() << '\n';
+}
+
 
 template <typename T>
 void BlockingQueue<T>::enqueue(T const& a_value)
 {
 	lockQueue();
-	try
-	{
+
+		if (nonLockFull())
+		{
+			unLockQueue();
+			throw BlockingQueueIsFull();
+		}
 		m_queue.enqueue(a_value);
-	}
-	catch(...)
-	{
-		unLockQueue();
-		throw;
-	}
-	unLockQueue();
 }
 
 template <typename T>
 void BlockingQueue<T>::dequeue(T& a_retVal)
 {
 	lockQueue();
-    
-	try
-	{
 
-			a_retVal = m_queue.dequeue();
-		
-	}
-	catch(...)
-	{
+		if (nonLockEmpty())
+		{
+			unLockQueue();
+			throw BlockingQueueIsEmpty();
+		}
+		a_retVal = m_queue.dequeue();
 		unLockQueue();
-		throw;
-	}
 
-	unLockQueue();
-	
 }
 
 template <typename T>
@@ -53,13 +51,16 @@ void BlockingQueue<T>::print() const
 {
 	lockQueue();
 	m_queue.printList();
+	unLockQueue();
 }
 
 template <typename T>
 bool BlockingQueue<T>::isEmpty() const
 {
 	lockQueue();
-	return m_queue.isEmpty();
+	bool ret = m_queue.isEmpty();
+	unLockQueue();
+	return ret;
 }
 
 template <typename T>
@@ -68,9 +69,10 @@ bool BlockingQueue<T>::isFull() const
 	lockQueue();
 	if(m_queue.capacity())
 	{
+		unLockQueue();
 		return m_queue.size() == m_queue.capacity();
 	}
-
+	unLockQueue();
 	return false;
 }
 
@@ -172,6 +174,20 @@ size_t BlockingQueue<T>::size() const
 	{
 		throw;
 	}
+}
+
+template <typename T>
+void BlockingQueue<T>::clear()
+{
+	lockQueue();
+	try
+	{
+		m_queue.clear();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}	
 }
 
 

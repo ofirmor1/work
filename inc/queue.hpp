@@ -18,6 +18,8 @@ public:
 	void enqueue(T const& a_value);
 	T dequeue();
 
+	void clear();
+
     bool isEmpty() const;
     bool isFull() const;
 	void print() const;
@@ -31,7 +33,6 @@ public:
 private:
     Queue(Queue const& a_queue);
 	Queue& operator=(Queue const& a_queue);
-	void clear();
 
 private:
 	LinkedList<T> m_list;

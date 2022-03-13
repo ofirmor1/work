@@ -1,14 +1,16 @@
 #include "mu_test.h"
+#include "mutex_exceptions.hpp"
+#include "thread_exceptions.hpp"
+#include "blocking_queue_exceptions.hpp"
 #include "blocking_queue.hpp"
 #include "thread.hpp"
 #include "mutex.hpp"
-#include "mutex_exceptions.hpp"
-#include "thread_exceptions.hpp"
 #include <stdio.h>
 
 mt::Mutex m;
+const size_t SIZE = 1000;
 int tVar1 = -1; // testing fifo between 0-50
-int tVar2 = 49; // testing fifo between 51-100
+int tVar2 = 499; // testing fifo between 51-1000
 
 template <typename T>
 class Arguments
@@ -35,25 +37,72 @@ void *enqueueMany(void *a_arg)
     size_t begin = myArg->m_begin;
     size_t end = myArg->m_end;
     size_t i = begin;
-    while (i < end)
+    bool isFull;
+    try
     {
-        queue->enqueue(i++);
+        while (i < end)
+        {
+            try
+            {
+                isFull = false;
+                queue->enqueue(i);
+            }
+            catch(const std::exception& e)
+            {
+                isFull = true;
+                std::cerr << e.what() << '\n';
+            }
+            m.lock();
+            if(!isFull)
+            {
+                ++i;
+            }
+            m.unlock();
+        }
     }
-
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        throw;
+    }
+    
     return 0;
 }
 
 void *dequeueMany(void *a_arg)
 {
     using namespace mt;
-    int *arr = new int[100];
+    int *arr = new int[SIZE];
     BlockingQueue<int> *queue = static_cast<BlockingQueue<int> *>(a_arg);
 
-    size_t i = 0;
-    while (i < 100)
+    bool isEmpty;
+    try
     {
-        queue->dequeue(arr[i]);
-        ++i;
+        size_t i = 0;
+        while (i < SIZE)
+        {
+            try
+            {
+                isEmpty = false;
+                queue->dequeue(arr[i]);
+            }
+            catch(const std::exception& e)
+            {
+                isEmpty = true;
+                std::cerr << e.what() << '\n';
+            }
+            m.lock();
+            if(!isEmpty)
+            {
+                ++i;
+            }
+            m.unlock();
+        }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        throw;
     }
 
     return arr;
@@ -94,48 +143,95 @@ bool ensureFIFO(int a_item)
 
 BEGIN_TEST(fifo_test_one_thread_enque_one_dequeue)
 using namespace mt;
-BlockingQueue<int> q(100);
-Arguments<int> queueArg(&q, 0, 100);
-
-mt::Thread t1(0, enqueueMany, static_cast<void *>(&queueArg));
-
-mt::Thread t2(0, dequeueMany, static_cast<void *>(&q));
-t1.join();
-void *res = t2.join();
-int *y = static_cast<int *>(res);
-for (size_t i = 0; i < 100; ++i)
+try
 {
-    std::cout << y[i] <<",";
-    ASSERT_EQUAL(y[i], (int)i);
+    BlockingQueue<int> q(SIZE);
+    Arguments<int> queueArg(&q, 0, SIZE);
+
+    mt::Thread t1(0, enqueueMany, static_cast<void *>(&queueArg));
+    mt::Thread t2(0, dequeueMany, static_cast<void *>(&q));
+
+    t1.join();
+    void *res = t2.join();
+    int *y = static_cast<int *>(res);
+
+    for (size_t i = 0; i < SIZE; ++i)
+    {
+        std::cout << y[i] <<",";
+        ASSERT_EQUAL(y[i], (int)i);
+    }
+    ASSERT_EQUAL(q.isEmpty(), true);
 }
-ASSERT_EQUAL(q.isEmpty(), true);
+catch(const std::exception& e)
+{
+    std::cerr << e.what() << '\n';
+}
+
 END_TEST
+
 
 BEGIN_TEST(fifo_test_two_thread_enque_one_dequeue)
 using namespace mt;
-BlockingQueue<int> q(100);
-Arguments<int> first(&q, 0, 50);
-Arguments<int> second(&q, 50, 100);
+
+BlockingQueue<int> q(SIZE);
+Arguments<int> first(&q, 0, SIZE/2);
+Arguments<int> second(&q, SIZE/2, SIZE);
 
 mt::Thread t1(0, enqueueMany, static_cast<void *>(&first));
 mt::Thread t2(0, enqueueMany, static_cast<void *>(&second));
-
 mt::Thread t3(0, dequeueMany, static_cast<void *>(&q));
 
 t1.join();
 t2.join();
 void *res = t3.join();
 int *y = static_cast<int *>(res);
-for (size_t i = 0; i < 100; ++i)
+
+for (size_t i = 0; i < SIZE; ++i)
 {
     std::cout << y[i] <<",";
     ASSERT_EQUAL(ensureFIFO(y[i]), true);
 }
 ASSERT_EQUAL(q.isEmpty(), true);
+
+END_TEST
+
+
+BEGIN_TEST(exceptions_test)
+    mt::BlockingQueue<int> myQueue(2);
+    ASSERT_EQUAL(myQueue.isEmpty(), true);
+    int i;
+    try 
+    { 
+        
+        myQueue.dequeue(i);
+         printf("123");
+    }
+    catch(BlockingQueueIsEmpty const& fail)
+    {
+        std::cerr << fail.what() << '\n';
+        ASSERT_PASS();
+    }
+     printf("123");
+    myQueue.enqueue(10);
+    myQueue.enqueue(1);
+     printf("123");
+    try 
+    { 
+        myQueue.enqueue(7); 
+        printf("123");
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        ASSERT_PASS();
+    }
+    ASSERT_PASS();
+
 END_TEST
 
 BEGIN_SUITE(tests)
-TEST(fifo_test_one_thread_enque_one_dequeue)
-TEST(fifo_test_two_thread_enque_one_dequeue)
+// TEST(fifo_test_one_thread_enque_one_dequeue)
+// TEST(fifo_test_two_thread_enque_one_dequeue)
+TEST(exceptions_test)
 
 END_SUITE
