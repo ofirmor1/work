@@ -23,6 +23,7 @@ public:
 private:
     SubPro& m_subPro;
 	OprPro& m_oprPro;
+    // std::map<key, std::pair<mt::Mutex, std::map<(key % 10),SubPro> > > Hash;
 };
 
 }//namespace cdr

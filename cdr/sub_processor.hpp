@@ -16,12 +16,8 @@ public:
     
 
 private:
-    Hash* m_subHash;
+    std::map< m_subHash;
 };
-
-typedef MSISDN key;
-
-size_t hashFunc(std::string a_msisdn);
 
 }//namespace cdr
 

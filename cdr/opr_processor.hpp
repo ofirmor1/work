@@ -7,12 +7,13 @@
 namespace cdr
 {
 
-class OprPro : public Subscriber
+class OprPro : public Operator
 {
 public:
+    OprPro();
 
 private:
-    // std::map<key, std::pair<mt::Mutex, std::map<(key % 10),SubPro> > > Hash;
+    
 };
 
 }//namespace cdr
