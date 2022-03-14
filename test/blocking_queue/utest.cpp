@@ -30,6 +30,7 @@ public:
 
 void *enqueueMany(void *a_arg)
 {
+    
     using namespace mt;
     Arguments<int> *myArg = static_cast<Arguments<int> *>(a_arg);
 
@@ -201,28 +202,23 @@ BEGIN_TEST(exceptions_test)
     ASSERT_EQUAL(myQueue.isEmpty(), true);
     int i;
     try 
-    { 
-        
+    {  
         myQueue.dequeue(i);
-         printf("123");
     }
-    catch(BlockingQueueIsEmpty const& fail)
+    catch(mt::BlockingQueueExceptions const& fail)
     {
         std::cerr << fail.what() << '\n';
         ASSERT_PASS();
     }
-     printf("123");
     myQueue.enqueue(10);
     myQueue.enqueue(1);
-     printf("123");
     try 
     { 
         myQueue.enqueue(7); 
-        printf("123");
     }
-    catch(const std::exception& e)
+    catch(mt::BlockingQueueExceptions const& fail)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << fail.what() << '\n';
         ASSERT_PASS();
     }
     ASSERT_PASS();

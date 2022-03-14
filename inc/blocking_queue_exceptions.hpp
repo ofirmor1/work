@@ -5,11 +5,16 @@
 
 namespace mt 
 {
-class BlockingQueueIsFull : public std::exception {
+    
+class BlockingQueueExceptions : public std::runtime_error {
+    public: BlockingQueueExceptions(const std::string& what = "") : std::runtime_error(what) {}
+};
+
+class BlockingQueueIsFull : public BlockingQueueExceptions {
     public: const char* what() const throw() {return "Queue is full.\n";}
 };
 
-class BlockingQueueIsEmpty : public std::exception {
+class BlockingQueueIsEmpty : public BlockingQueueExceptions {
     public: const char* what() const throw() {return "Queue is empty.\n";}
 };
 
