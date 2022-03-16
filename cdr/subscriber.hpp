@@ -12,7 +12,7 @@ public:
     Subscriber();
 
 private:
-    size_t m_msisdn;
+    size_t m_msisdn; // mobile number of subscriber
     size_t m_mocExt; // outcoming CALL for external operator;
     size_t m_mocInt; // outcoming CALL for internal operator;
     size_t m_motExt; // incoming CALL from external operator;

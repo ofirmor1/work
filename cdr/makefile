@@ -5,15 +5,15 @@ SRC_DIR = ../../src
 CC := $(CXX)
 CXX := g++
 
-CPPFLAGS = -I../inc -I../../inc -I./inc
+# CPPFLAGS = -I../inc -I../../inc -I./inc
 
 WARNS = -Wall -Werror -pedantic
 
-CXXFLAGS = -std=c++03 $(WARNS)
+CXXFLAGS = -std=c++17 $(WARNS)
 CXXFLAGS += -g
 LDLIBS   = -lpthread
 
-OBJS   := utest.o
+OBJS := utest.o cdr.o
 TARGET := utest
 
 all: $(TARGET)
@@ -30,6 +30,5 @@ valgrind: $(TARGET)
 
 clean:
 	$(RM) $(TARGET) $(OBJS)
-
 
 .PHONY: all run clean valgrind
