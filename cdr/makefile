@@ -13,8 +13,13 @@ CXXFLAGS = -std=c++17 $(WARNS)
 CXXFLAGS += -g
 LDLIBS   = -lpthread
 
-OBJS := utest.o cdr.o
+# tcp_server.o tcp_client.o tcp_net.o requests_handle.o
+
+OBJS := utest.o mutex.o cdr_parse.o billing_aggregator.o operator_aggregator.o 
 TARGET := utest
+
+# cdr_parse.o : ../inc/mutex.o
+# mutex.o: mutex.hpp 
 
 all: $(TARGET)
 

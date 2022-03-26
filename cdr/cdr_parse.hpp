@@ -21,9 +21,10 @@ private:
     void initCdrMap();
 
 private:
-    static const size_t THREADS_NUMBER = 4;
     Cdr m_cdr;
     std::unordered_map<std::string, Cdr::UsageType> m_cdrMap;
+    static const int QUEUE_TASKS_SIZE = 50;
+    static const int NUM_OF_THREADS = 4;
 };
 
 }//namespace cdr

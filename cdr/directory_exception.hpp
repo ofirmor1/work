@@ -8,7 +8,7 @@ namespace mt
 class DirectoryException : public std::logic_error 
 {
 public:
-    explicit DirectoryException(const std::string& what_arg);
+    explicit DirectoryException(std::string const& what_arg);
 };
 
 }//namespace mt

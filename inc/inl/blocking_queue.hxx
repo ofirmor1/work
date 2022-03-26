@@ -2,9 +2,9 @@
 #define BLOCKING_QUEUE_HXX
 
 #include <utility>
-#include "multi_thread_utils.hpp"
-#include "mutex_exceptions.hpp"
-#include "blocking_queue_exceptions.hpp"
+#include "../multi_thread_utils.hpp"
+#include "../mutex_exceptions.hpp"
+#include "../blocking_queue_exceptions.hpp"
 
 namespace mt
 {
@@ -22,50 +22,56 @@ catch(mt::BlockingQueueExceptions const& fail)
 template <typename T>
 void BlockingQueue<T>::enqueue(T const& a_value)
 {
-	ResourceGuard<mt::Mutex, BlockingQueueIsEmpty> guard(m_mtx);
-
-	if (nonLockFull())
+    std::unique_lock<std::mutex> lock(m_mtx);
+    while(nonLockFull())
 	{
-		throw BlockingQueueIsFull();
-	}
-	m_queue.enqueue(a_value);
+        m_cond.wait(lock);
+    }
+    m_queue.enqueue(a_value);
+    lock.unlock();
+	m_cond.notify_all();
 }
 
 template <typename T>
 void BlockingQueue<T>::dequeue(T& a_retVal)
 {
-	ResourceGuard<mt::Mutex, BlockingQueueIsEmpty> guard(m_mtx);
-
-	if (nonLockEmpty())
+	std::unique_lock<std::mutex> lock(m_mtx);
+    while(nonLockEmpty())
 	{
-		unLockQueue();
-		throw BlockingQueueIsEmpty();
-	}
-	a_retVal = m_queue.dequeue();
+        m_cond.wait(lock);
+    }
+    a_retVal = m_queue.dequeue();
+    lock.unlock();
+    m_cond.notify_all();
 }
 
 template <typename T>
 void BlockingQueue<T>::print() const
 {
-	ResourceGuard<mt::Mutex, BlockingQueueExceptions> guard(m_mtx);
-	m_queue.printList();
+	std::unique_lock<std::mutex> lock(m_mtx);
+	m_queue.print();
+	lock.unlock();
 }
 
 template <typename T>
 bool BlockingQueue<T>::isEmpty() const
 {
-	ResourceGuard<mt::Mutex, BlockingQueueIsEmpty> guard(m_mtx);
+	std::unique_lock<std::mutex> lock(m_mtx);
 
 	bool ret = m_queue.isEmpty();
+
+	lock.unlock();
 	return ret;
 }
 
 template <typename T>
 bool BlockingQueue<T>::isFull() const
 {
-	ResourceGuard<mt::Mutex, BlockingQueueIsFull> guard(m_mtx);
+	std::unique_lock<std::mutex> lock(m_mtx);
 
 	bool ret = m_queue.isFull();
+
+	lock.unlock();
 	return ret;
 }
 
@@ -90,17 +96,19 @@ size_t BlockingQueue<T>::getCapacity() const
 template <typename T>
 size_t BlockingQueue<T>::size() const
 {
-	ResourceGuard<mt::Mutex, BlockingQueueExceptions> guard(m_mtx);
+	std::unique_lock<std::mutex> lock(m_mtx);
 
 	return m_queue.size();
+
+	lock.unlock();
 }
 
 template <typename T>
 void BlockingQueue<T>::clear()
 {
-	ResourceGuard<mt::Mutex, BlockingQueueExceptions> guard(m_mtx);
-
+	std::unique_lock<std::mutex> lock(m_mtx);
 	m_queue.clear();
+	lock.unlock();
 }
 
 }//namespace mt

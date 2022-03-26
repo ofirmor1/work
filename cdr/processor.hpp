@@ -1,11 +1,11 @@
 #ifndef PROCESSOR_HPP
 #define PROCESSOR_HPP
 
+#include "cdr_parse.hpp"
+#include "database.hpp"
 #include<pthread.h>
 #include<unordered_map>
-#include "sub_processor.hpp"
-#include "opr_processor.hpp"
-#include "cdr.hpp"
+
 
 namespace cdr
 {
@@ -17,10 +17,7 @@ public:
     Processor();
     
     void updateData();
-    SubPro& getSub(Processor const& a_cur);
-    OprPro& getOpr(Processor const& a_cur);
-
-    void addNewCdr(CdrLine& a_newCdr);
+    void addNewCdr(Cdr& a_newCdr);
 
     void CreateThreads(Processor const& a_pro, size_t a_threads);
 
@@ -28,9 +25,8 @@ private:
     void Process();
 
 private:
-    // SubPro& m_subPro;
-	// OprPro& m_oprPro;
-    Cdr m_parser;
+    CdrParse m_parser;
+    std::shared_ptr<Database> m_database;
     std::unordered_map<std::string, size_t> m_imsiMap; 
 };
 

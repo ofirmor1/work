@@ -32,7 +32,7 @@ std::vector<std::string> DirectoryReader::files() const
     return files;
 }
 
-std::string  DirectoryReader::GetName() const 
+std::string  DirectoryReader::getName() const 
 {
   return std::string(this->m_dirEntry->d_name); 
 }
