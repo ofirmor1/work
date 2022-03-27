@@ -121,6 +121,37 @@ BEGIN_TEST(q6)
 END_TEST
 
 
+BEGIN_TEST(q7)
+    int num = 8;
+    size_t setBits = numOfSetBits(num);
+    printf("\nnum of set bits in num %d: %ld\n", num, setBits);
+
+    ASSERT_EQUAL(setBits, 1);
+
+    int num2 = 7;
+    setBits = numOfSetBitsLUT(num2);
+    printf("\nLUT Solution: num of set bits in num %d: %ld\n", num2, setBits);
+
+    ASSERT_EQUAL(setBits, 3);
+END_TEST
+
+
+
+BEGIN_TEST(q8)
+    int num = 19;//10011
+    size_t setPairBits = numOfPairSetBits(num);
+    printf("\nnum of set bits in num %d: %ld\n", num, setPairBits);
+
+    ASSERT_EQUAL(setPairBits, 1);
+
+    setPairBits = numOfPairSetBitsLUT(num);
+    printf("\nLUT Solution:num of set bits in num %d: %ld\n", num, setPairBits);
+
+    ASSERT_EQUAL(setPairBits, 1);
+
+END_TEST
+
+
 BEGIN_SUITE(iq_tests)
     TEST(q1)
     TEST(q2)
@@ -128,4 +159,6 @@ BEGIN_SUITE(iq_tests)
     TEST(q4)
     TEST(q5)
     TEST(q6)
+    TEST(q7)
+    TEST(q8)
 END_SUITE

@@ -1,46 +1,47 @@
 #include "quest.hpp"
 #include <algorithm>
+#include <cstdio>
 
 namespace iq
 {
 
 //q1
-void mergeArr(int *arr1, int *arr2, size_t n, size_t k)
+void mergeArr(int* a_arr1, int* a_arr2, size_t n, size_t k)
 {
     for (size_t i = n-1; i > 0; --i)
     {
-        if(arr1[i] < arr2[k-1])
+        if(a_arr1[i] < a_arr2[k-1])
         {
-            arr1[i] = arr1[i] + arr2[k-1];
-            arr2[k-1] = arr1[i] - arr2[k-1];
-            arr1[i] = arr1[i] - arr2[k-1];
+            a_arr1[i] = a_arr1[i] + a_arr2[k-1];
+            a_arr2[k-1] = a_arr1[i] - a_arr2[k-1];
+            a_arr1[i] = a_arr1[i] - a_arr2[k-1];
         }
-        std::sort(arr2, arr2 + k);      
+        std::sort(a_arr2, a_arr2 + k);      
     }
-    arr1[0] = arr2[k-1];
+    a_arr1[0] = a_arr2[k-1];
 }
 
 //q2
-static void rotateByOne(int *arr, size_t n)
+static void rotateByOne(int* a_arr, size_t n)
 {
-    int temp = arr[n-1];
+    int temp = a_arr[n-1];
     for (size_t i = n-1; i > 0; --i)
     {
-        arr[i] = arr[i-1];
+        a_arr[i] = a_arr[i-1];
     }
-    arr[0] = temp;
+    a_arr[0] = temp;
 }
 
-void rotateArr(int *arr, size_t n, size_t k)
+void rotateArr(int* a_arr, size_t n, size_t k)
 {
     for(size_t i = 0; i < k; ++i)
     {
-        rotateByOne(arr, n);
+        rotateByOne(a_arr, n);
     }
 }
 
 //q3
-void replaceEachElmWIthLargestOnRight(int *arr, int n)
+void replaceEachElmWIthLargestOnRight(int* a_arr, int n)
 {
     if(n == 1)
     {
@@ -52,18 +53,18 @@ void replaceEachElmWIthLargestOnRight(int *arr, int n)
         int max = 0;
         for(int j = i+1; j <= n-1; ++j)
         {
-            if(arr[j] > max)
+            if(a_arr[j] > max)
             {
 
-                max = arr[j];
+                max = a_arr[j];
             }
         }
-        arr[i] = max;
+        a_arr[i] = max;
     }
 }
 
 //q4
-void replaceEachElmWIthClosestLargestOnRight(int *arr, int n)
+void replaceEachElmWIthClosestLargestOnRight(int* a_arr, int n)
 {
     if(n == 1)
     {
@@ -75,13 +76,13 @@ void replaceEachElmWIthClosestLargestOnRight(int *arr, int n)
         int max = -1;
         for(int j = i+1; j <= n-1; ++j)
         {
-            if(arr[j] > arr[i])
+            if(a_arr[j] > a_arr[i])
             {
-                max = arr[j];
+                max = a_arr[j];
                 break;
             }
         }
-        arr[i] = max;
+        a_arr[i] = max;
     }
 }
 
@@ -102,7 +103,7 @@ static bool isPrime(size_t n)
     return true;
 }
 
-int* nFirstPrime(size_t n, int* arr)
+int* nFirstPrime(size_t n, int* a_arr)
 {
     size_t count = 0;
     size_t i = 2;
@@ -110,22 +111,22 @@ int* nFirstPrime(size_t n, int* arr)
     {
         if(isPrime(i))
         {
-            arr[count] = i;
+            a_arr[count] = i;
             ++count;
         }
         ++i;
     }
-    return arr;
+    return a_arr;
 }
 
 //q6
-void sortArr(int* arr, size_t n)
+void sortArr(int* a_arr, size_t n)
 {
     size_t i, countMinusOnes = 0, countZeros = 0, countOnes = 0;
 
     for (i = 0; i < n; i++) 
     {
-        switch (arr[i]) 
+        switch (a_arr[i]) 
         {
         case -1:
             countMinusOnes++;
@@ -142,21 +143,88 @@ void sortArr(int* arr, size_t n)
     i = 0;
     while (countMinusOnes > 0)
     {
-        arr[i++] = -1;
-        countMinusOnes--;
+        a_arr[i++] = -1;
+        --countMinusOnes;
     }
 
     while (countZeros > 0)
     {
-        arr[i++] = 0;
-        countZeros--;
+        a_arr[i++] = 0;
+        --countZeros;
     }
  
     while (countOnes > 0)
     {
-        arr[i++] = 1;
-        countOnes--;
+        a_arr[i++] = 1;
+        --countOnes;
     }
+}
+
+//q7
+int numOfSetBits(int n)
+{
+    size_t count = 0;   
+    while(n)
+    {
+        count += n & 1;
+        n >>= 1;
+    }
+
+    return count;
+}
+
+//q7 with LUT
+int LUT[256];
+void SetBitsLUT()
+{
+    for (size_t i = 0; i < 256; ++i)
+    {
+        LUT[i] = (i & 1) + LUT[i / 2];
+    }
+}
+
+int numOfSetBitsLUT(int n)
+{
+    SetBitsLUT();
+    return (LUT[n & 0xff]
+        + LUT[(n>>8) & 0xff]
+        + LUT[(n>>16) & 0xff]
+        + LUT[n>>24]);
+}
+
+//q8
+int numOfPairSetBits(int n)
+{
+    size_t count = 0;
+    while(n)
+    {
+        if(n & 1 && ((n >>= 1) & 1))
+        {
+            ++count;
+        }
+        n >>= 1 & 1;
+        printf("%d ", n);
+    }
+    return count;
+}
+
+//q8 with LUT
+int pairLUT[256];
+void pairSetBitsLUT()
+{
+    for (size_t i = 0; i < 256; ++i)
+    {
+        pairLUT[i] = (i & 1) & ((i >> 1) & 1);
+    }
+}
+
+int numOfPairSetBitsLUT(int n)
+{
+    pairSetBitsLUT();
+    return (pairLUT[n & 0xff]
+        + pairLUT[(n>>8) & 0xff]
+        + pairLUT[(n>>16) & 0xff]
+        + pairLUT[n>>24]);
 }
  
 }//namespace iq
