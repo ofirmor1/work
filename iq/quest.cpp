@@ -1,10 +1,19 @@
 #include "quest.hpp"
 #include <algorithm>
 #include <cstdio>
+#include <vector>
 
 namespace iq
 {
 
+template<typename T>
+void swap(T& a_first, T& a_second)
+{
+    a_first = a_first + a_second;
+    a_second = a_first - a_second;
+    a_first = a_first - a_second;
+
+}
 //q1
 void mergeArr(int* a_arr1, int* a_arr2, size_t n, size_t k)
 {
@@ -12,9 +21,7 @@ void mergeArr(int* a_arr1, int* a_arr2, size_t n, size_t k)
     {
         if(a_arr1[i] < a_arr2[k-1])
         {
-            a_arr1[i] = a_arr1[i] + a_arr2[k-1];
-            a_arr2[k-1] = a_arr1[i] - a_arr2[k-1];
-            a_arr1[i] = a_arr1[i] - a_arr2[k-1];
+            swap(a_arr1[i], a_arr2[k-1]);
         }
         std::sort(a_arr2, a_arr2 + k);      
     }
@@ -158,6 +165,27 @@ void sortArr(int* a_arr, size_t n)
         a_arr[i++] = 1;
         --countOnes;
     }
+}
+
+//q6
+void sortArr2(std::vector<int>& a_vec, size_t n)
+{
+    size_t count[3] = {0,0,0};
+
+    std::for_each(a_vec.begin(), a_vec.end(), [&count](int e){++count[e+1];});
+
+    auto from = &a_vec[0];
+    auto to = from + count[0];
+    std::fill(from,to,-1);
+
+    from = to;
+    to = from + count[1];
+    std::fill(from,to,0);
+
+    from = to;
+    to = from + count[2];
+    std::fill(from,to,1);   
+
 }
 
 //q7

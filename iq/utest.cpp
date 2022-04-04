@@ -2,6 +2,8 @@
 #include "quest.hpp"
 #include <iostream>
 #include <cassert>
+#include <map>
+#include <vector>
 
 using namespace iq;
 
@@ -120,6 +122,34 @@ BEGIN_TEST(q6)
 
 END_TEST
 
+BEGIN_TEST(q6_2)
+    // int arr[] = { 0, 1, -1, -1, 0, 1, 0, -1, 0, 1 };
+    std::vector<int> vec = { 0, 1, -1, -1, 0, 1, 0, -1, 0, 1 };
+    // for(auto e : arr)
+    // {
+    //     vec.push_back(e);
+    // }
+
+    size_t n = vec.size();
+    
+    printf("\nbefore sorting: \n");
+    for (auto e : vec)
+    {
+        std::cout << e << ' ' << '\n';
+    }
+    
+    sortArr2(vec, n);
+
+    printf("\nafter sorting: \n");
+    for (auto e : vec)
+    {
+        std::cout << e << ' ' << '\n';
+    }
+
+    ASSERT_PASS();
+
+END_TEST
+
 
 BEGIN_TEST(q7)
     int num = 8;
@@ -151,6 +181,8 @@ BEGIN_TEST(q8)
 
 END_TEST
 
+BEGIN_TEST(q9)
+END_TEST
 
 BEGIN_SUITE(iq_tests)
     TEST(q1)

@@ -2,6 +2,8 @@
 #define QUEST_HPP
 
 #include <cstddef>
+#include <map>
+#include <vector>
 
 namespace iq
 {
@@ -16,6 +18,8 @@ void replaceEachElmWIthClosestLargestOnRight(int *arr, int n);
 int* nFirstPrime(size_t n, int* arr);
 
 void sortArr(int* arr, size_t n);
+
+void sortArr2(std::vector<int>& a_vec, size_t n);
 
 int numOfSetBits(int n);
 

@@ -1,14 +1,20 @@
+INC_DIR = ../../inc
+INL_DIR = ../../inc/inl
+SRC_DIR = ../../src
+
 CC := $(CXX)
 CXX := g++
 
+CPPFLAGS = -I../inc -I../../inc -I./inc
+
 WARNS = -Wall -Werror -pedantic
 
-CXXFLAGS = -std=c++17 $(WARNS)
+CXXFLAGS = -std=c++03 $(WARNS)
 CXXFLAGS += -g
-LDLIBS   = -lpthread
+LDLIBS   =-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
-OBJS   := utest.o quest.o
-TARGET := utest
+OBJS   := demo.o
+TARGET := demo
 
 all: $(TARGET)
 
