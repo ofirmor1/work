@@ -1,8 +1,27 @@
 #include <SFML/Graphics.hpp>
 
+
+namespace cpp
+{
+class Bricks
+{
+
+public:
+    Bricks(size_t const a_numOfShapes);
+
+private:
+
+
+};
+
+Bricks::Bricks()
+{
+    
+}
+
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "Bouncing balls!");
+    sf::RenderWindow window(sf::VideoMode(900, 900), "Bouncing balls!");
     sf::CircleShape greenCircle(10.f);
     sf::CircleShape blueCircle(10.f);
     greenCircle.setFillColor(sf::Color::Green);
@@ -14,6 +33,9 @@ int main()
     double blueStepX = 50;
     double blueStepY = 50;
 
+    auto const ws = window.getSize();
+    auto const wsRightEdge = ws - 80;
+    auto const wsLeftEdge = 50;
     while (window.isOpen())
     {
         sf::Event event;
@@ -23,48 +45,48 @@ int main()
                 window.close();
         }
 
-        if(greenCircle.getPosition().x > 120 && greenCircle.getPosition().y < 120)
+        if(greenCircle.getPosition().x > wsRightEdge && greenCircle.getPosition().y < wsRightEdge)
         {
             greenStepX = -0.1;
             greenStepY = -0.1;
         }
-        if(greenCircle.getPosition().x < 50 && greenCircle.getPosition().y > 50)
+        if(greenCircle.getPosition().x < wsLeftEdge && greenCircle.getPosition().y > wsLeftEdge)
         {
             greenStepX = 0.1;
             greenStepY = 0.1;
         }
-        if(greenCircle.getPosition().x > 120 && greenCircle.getPosition().y > 120)
+        if(greenCircle.getPosition().x > wsRightEdge && greenCircle.getPosition().y > wsRightEdge)
         {
             greenStepX = 0.1;
             greenStepY = -0.1;
         }
-        if(greenCircle.getPosition().x < 50 && greenCircle.getPosition().y < 50)
+        if(greenCircle.getPosition().x < wsLeftEdge && greenCircle.getPosition().y < wsLeftEdge)
         {
             greenStepX = -0.1;
             greenStepY = 0.1;
         }
 
-        if(blueCircle.getPosition().x > 120 && blueCircle.getPosition().y < 120)
+        if(blueCircle.getPosition().x > wsRightEdge && blueCircle.getPosition().y < wsRightEdge)
         {
             blueStepX = -0.1;
             blueStepY = -0.1;
         }
-        if(blueCircle.getPosition().x < 50 && blueCircle.getPosition().y > 50)
+        if(blueCircle.getPosition().x < wsLeftEdge && blueCircle.getPosition().y > wsLeftEdge)
         {
             blueStepX = 0.1;
             blueStepY = 0.1;
         }
-        if(blueCircle.getPosition().x > 120 && blueCircle.getPosition().y > 120)
+        if(blueCircle.getPosition().x > wsRightEdge && blueCircle.getPosition().y > wsRightEdge)
         {
             blueStepX = 0.1;
             blueStepY = -0.1;
         }
-        if(blueCircle.getPosition().x < 50 && blueCircle.getPosition().y < 50)
+        if(blueCircle.getPosition().x < wsLeftEdge && blueCircle.getPosition().y < wsLeftEdge)
         {
             blueStepX = -0.1;
             blueStepY = 0.1;
         }
-        
+
         greenCircle.move(greenStepX, greenStepY);
         blueCircle.move(blueStepX, blueStepY);
         window.clear();
