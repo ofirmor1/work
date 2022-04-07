@@ -21,7 +21,7 @@ public:
 	void Run();
 
 private:
-	void createLevel(size_t a_numOfBlocks = 5, size_t a_numOfRows = 6, float a_padding = 5.f);
+	void createLevel(size_t a_numOfBlocksInRow = 10, size_t a_numOfRows = 5, float a_padding = 5.f);
 
 	void input(sf::Keyboard::Key a_key, bool a_isPressed);
 	void processEvents();
@@ -31,20 +31,18 @@ private:
 	void drawFPS(const sf::Time& a_deltaTime);
 
 private:
-	static const sf::Time FPS;
-	static bool	ShowFPS;
+    static const sf::Time FPS;
+	static bool	 ShowFPS;
 
 	sf::RenderWindow	m_window;
 	Paddle				m_player;
 	Ball				m_ball;
 	std::vector<Brick*> m_level;
 	
-	int	m_lives;
-	int	m_score;
+	short m_lives;
 
 	sf::Font	m_font;
 	sf::Text	m_livesText;
-	sf::Text	m_scoreText;
 	sf::Text	m_drawFPSText;
 	std::size_t m_drawFPSFrames;
 	sf::Time	m_drawFPSTime;

@@ -1,7 +1,5 @@
 #include "paddle.hpp"
 
-#include <SFML/Graphics.hpp>
-
 namespace game
 {
 
@@ -29,7 +27,7 @@ void Paddle::draw(sf::RenderTarget& a_target, sf::RenderStates a_states) const
 sf::FloatRect Paddle::getBounds() const
 {
 	return m_paddle.getGlobalBounds();
-};
+}
 
 } // namespace game
 

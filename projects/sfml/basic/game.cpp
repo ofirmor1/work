@@ -4,19 +4,43 @@
 
 namespace game
 {
+
+const sf::Time Game::FPS = sf::seconds(1.f / 60.f);
+bool Game::ShowFPS = false;
+
 Game::Game()
-: m_window(sf::VideoMode(600, 800), "Breakout!")
+: m_window(sf::VideoMode(800, 800), "Breaking bricks")
 , m_player(sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)))
-, m_ball(5.f, sf::Color::Yellow, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f))
+, m_ball(5.f, sf::Color::White, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f))
 , m_lives(3)
-, m_score(0)
 , m_font()
 , m_livesText()
-, m_scoreText()
 , m_drawFPSText()
 , m_drawFPSFrames(0)
 , m_drawFPSTime()
-{}
+{
+    size_t winY = sf::VideoMode::getDesktopMode().height / 2 - m_window.getSize().y / 2;
+    size_t winX = sf::VideoMode::getDesktopMode().width / 2 - m_window.getSize().x / 2;
+
+    m_window.setPosition(sf::Vector2i(winX, winY));
+
+    //FPS set up
+    m_drawFPSText.setFillColor(sf::Color::Blue);
+    m_livesText.setOutlineColor(sf::Color::White);
+    m_drawFPSText.setFont(m_font);
+    m_drawFPSText.setPosition(5.f, 5.f);
+    m_drawFPSText.setCharacterSize(10);
+    
+    //text set up
+    m_livesText.setFillColor(sf::Color::Blue);
+    m_livesText.setOutlineColor(sf::Color::White);
+    m_livesText.setFont(m_font);
+    m_livesText.setPosition(15.f, m_window.getSize().y - 30.f);
+    m_livesText.setCharacterSize(16);
+    m_livesText.setString("Lives" + std::to_string((m_lives)));
+
+    createLevel();
+}
 
 Game::~Game()
 {
@@ -24,6 +48,7 @@ Game::~Game()
     {
 		delete e;
 	}
+
 	m_level.clear();
 }
 
@@ -43,90 +68,125 @@ std::vector<Brick*>* Game::getLevel()
     return &m_level;
 }
 
-void Run()
+void Game::Run()
 {
+    printf("!23");
+    sf::Clock clock;
+    sf::Time time = sf::Time::Zero;
+   
+    while (m_window.isOpen() && m_lives > 0)
+    {
+        sf::Time deltaTime = clock.restart();
+        time += deltaTime;
 
+        while(time > FPS)
+        {
+            time -= FPS;
+            processEvents();
+            update(FPS);
+        }
+
+        if (ShowFPS)
+        {
+            drawFPS(deltaTime);
+        }
+
+        render();
+        
+    }
+    
+}
+
+void Game::input(sf::Keyboard::Key a_key, bool a_isPressed)
+{
+    if(a_key == sf::Keyboard::F6 && !a_isPressed)
+    {
+        ShowFPS = false;
+    }
+}
+
+void Game::processEvents()
+{
+    sf::Event event;
+    while (m_window.pollEvent(event))
+    {
+        if (event.type == sf::Event::KeyPressed)
+        {
+            input(event.key.code, true);
+        }
+
+        else if (event.type == sf::Event::KeyReleased)
+        {
+            input(event.key.code, false);
+        }
+
+        else if (event.type == sf::Event::Closed)
+        {
+            m_window.close();
+        }
+    } 
+}
+
+void Game::update(const sf::Time& a_deltaTime)
+{
+    m_ball.move(a_deltaTime, m_window.getSize(), m_player, m_level, m_lives);
+    m_player.move(sf::Mouse::getPosition(m_window).x, m_window.getSize().x);    
+}
+
+void Game::drawFPS(const sf::Time& a_deltaTime)
+{
+    m_drawFPSTime += a_deltaTime;
+    m_drawFPSFrames += 1;
+
+    if(m_drawFPSTime >= sf::seconds(1.0f))
+    {
+        m_drawFPSText.setString(std::to_string(m_drawFPSFrames) + "FPS");
+        m_drawFPSTime -= sf::seconds((1.0f));
+        m_drawFPSFrames = 0;
+    }
+}
+
+void Game::render()
+{
+    m_window.clear();
+
+    m_window.draw(m_player);
+    m_window.draw(m_ball);
+
+    for (auto e : m_level)
+    {
+        m_window.draw(*e);
+    }
+
+    m_livesText.setString("Lives: " + std::to_string((m_lives)));
+    m_window.draw(m_livesText);
+
+    if(ShowFPS)
+    {
+        m_window.draw(m_drawFPSText);
+    }
+
+    m_window.display();
+}
+
+void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_padding)
+{
+    float width = ((m_window.getSize().x - (a_padding * (a_numOfBlocksInRow + 1))) / a_numOfBlocksInRow);
+    sf::Vector2f brickSize(width, 20.f);
+
+    float accumRow = a_padding;
+
+    for (size_t row = 0; row < a_numOfRows; ++row)
+    {
+        float accumCol = a_padding;
+        for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
+        {
+            sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
+            m_level.push_back(new Brick(brickSize, pos, sf:: Color::Blue));
+            accumCol += a_padding;
+        }
+        accumRow += a_padding;  
+    }
 }
 
 }//namespace game
-
-// int main()
-// {
-//     sf::RenderWindow window(sf::VideoMode(900, 900), "Bouncing balls!");
-//     sf::CircleShape greenCircle(10.f);
-//     sf::CircleShape blueCircle(10.f);
-//     greenCircle.setFillColor(sf::Color::Green);
-//     blueCircle.setFillColor(sf::Color::Red);
-//     greenCircle.setPosition(20, 30);
-//     blueCircle.setPosition(40, 90);
-//     double greenStepX = 5;
-//     double greenStepY = 5;
-//     double blueStepX = 50;
-//     double blueStepY = 50;
-
-//     auto const ws = window.getSize();
-//     auto const wsRightEdge = ws - 80;
-//     auto const wsLeftEdge = 50;
-//     while (window.isOpen())
-//     {
-//         sf::Event event;
-//         while (window.pollEvent(event))
-//         {
-//             if (event.type == sf::Event::Closed)
-//                 window.close();
-//         }
-
-//         window.clear();
-//         window.draw(greenCircle);
-//         window.draw(blueCircle);
-//         window.display();
-// }
-
-//     return 0;
-// }
-
-
-//         if(greenCircle.getPosition().x > wsRightEdge && greenCircle.getPosition().y < wsRightEdge)
-//         {
-//             greenStepX = -0.1;
-//             greenStepY = -0.1;
-//         }
-//         if(greenCircle.getPosition().x < wsLeftEdge && greenCircle.getPosition().y > wsLeftEdge)
-//         {
-//             greenStepX = 0.1;
-//             greenStepY = 0.1;
-//         }
-//         if(greenCircle.getPosition().x > wsRightEdge && greenCircle.getPosition().y > wsRightEdge)
-//         {
-//             greenStepX = 0.1;
-//             greenStepY = -0.1;
-//         }
-//         if(greenCircle.getPosition().x < wsLeftEdge && greenCircle.getPosition().y < wsLeftEdge)
-//         {
-//             greenStepX = -0.1;
-//             greenStepY = 0.1;
-//         }
-
-//         if(blueCircle.getPosition().x > wsRightEdge && blueCircle.getPosition().y < wsRightEdge)
-//         {
-//             blueStepX = -0.1;
-//             blueStepY = -0.1;
-//         }
-//         if(blueCircle.getPosition().x < wsLeftEdge && blueCircle.getPosition().y > wsLeftEdge)
-//         {
-//             blueStepX = 0.1;
-//             blueStepY = 0.1;
-//         }
-//         if(blueCircle.getPosition().x > wsRightEdge && blueCircle.getPosition().y > wsRightEdge)
-//         {
-//             blueStepX = 0.1;
-//             blueStepY = -0.1;
-//         }
-//         if(blueCircle.getPosition().x < wsLeftEdge && blueCircle.getPosition().y < wsLeftEdge)
-//         {
-//             blueStepX = -0.1;
-//             blueStepY = 0.1;
-//         }
-
-//         greenCircle.move(greenStepX, greenStepY);
-//         blueCircle.move(blueStepX, blueStepY);

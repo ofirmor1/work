@@ -9,12 +9,14 @@ CPPFLAGS = -I../inc -I../../inc -I./inc
 
 WARNS = -Wall -Werror -pedantic
 
-CXXFLAGS = -std=c++03 $(WARNS)
+CXXFLAGS = -std=c++17 $(WARNS)
 CXXFLAGS += -g
 LDLIBS   =-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
-OBJS   := demo.o
-TARGET := demo
+OBJS   := app.o game.o ball.o brick.o paddle.o
+TARGET := app
+
+app.o : game.hpp ball.hpp brick.hpp paddle.hpp
 
 all: $(TARGET)
 

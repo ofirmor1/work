@@ -14,7 +14,7 @@ class HandleCollision
 {
 
 public:
-    HandleCollision(Ball& a_ball, std::vector<Brick>* a_bricks);
+    HandleCollision(Ball& a_ball, std::vector<Brick>    * a_bricks);
     bool isCollisionWithBrick(std::pair<size_t, size_t> a_coordinates);
     bool isCollisionWithOtherBall(std::pair<size_t, size_t> a_coordinates);
     bool isCollisionWithWall(std::pair<size_t, size_t> a_coordinates);
