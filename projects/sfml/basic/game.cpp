@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <unistd.h>
 
 #include "game.hpp"
 
@@ -9,13 +10,15 @@ const sf::Time Game::FPS = sf::seconds(1.f / 60.f);
 bool Game::ShowFPS = false;
 
 Game::Game()
-: m_window(sf::VideoMode(800, 800), "Breaking bricks")
+: m_window(sf::VideoMode(600, 600), "Breaking bricks - Level 1")
 , m_player(sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)))
 , m_ball(5.f, sf::Color::White, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f))
 , m_lives(3)
+, m_level(1)
 , m_font()
 , m_livesText()
 , m_drawFPSText()
+, m_gameOverText()
 , m_drawFPSFrames(0)
 , m_drawFPSTime()
 {
@@ -24,32 +27,43 @@ Game::Game()
 
     m_window.setPosition(sf::Vector2i(winX, winY));
 
-    //FPS set up
-    m_drawFPSText.setFillColor(sf::Color::Blue);
-    m_livesText.setOutlineColor(sf::Color::White);
+    if(!m_font.loadFromFile("fonts/Arial.ttf"))
+    {
+        std::cout << "failed to load font." << std::endl;
+    }
+		
+    //FPS text set up
+    m_drawFPSText.setFillColor(sf::Color::White);
+    m_drawFPSText.setOutlineColor(sf::Color::White);
     m_drawFPSText.setFont(m_font);
     m_drawFPSText.setPosition(5.f, 5.f);
     m_drawFPSText.setCharacterSize(10);
     
-    //text set up
-    m_livesText.setFillColor(sf::Color::Blue);
+    //lives text set up
+    m_livesText.setFillColor(sf::Color::White);
     m_livesText.setOutlineColor(sf::Color::White);
     m_livesText.setFont(m_font);
     m_livesText.setPosition(15.f, m_window.getSize().y - 30.f);
     m_livesText.setCharacterSize(16);
-    m_livesText.setString("Lives" + std::to_string((m_lives)));
+
+    //text set up
+    m_gameOverText.setFillColor(sf::Color::White);
+    m_gameOverText.setOutlineColor(sf::Color::White);
+    m_gameOverText.setFont(m_font);
+    m_gameOverText.setPosition(m_window.getSize().y / 2, m_window.getSize().x / 2  - 100.f);
+    m_gameOverText.setCharacterSize(30);
 
     createLevel();
 }
 
 Game::~Game()
 {
-	for(auto e : m_level)
+	for(auto e : m_bricks)
     {
 		delete e;
 	}
 
-	m_level.clear();
+	m_bricks.clear();
 }
 
 
@@ -65,15 +79,15 @@ Paddle* Game::getPaddle()
 
 std::vector<Brick*>* Game::getLevel()
 {
-    return &m_level;
+    return &m_bricks;
 }
 
 void Game::Run()
 {
-    printf("!23");
+    // anotherRound:
     sf::Clock clock;
     sf::Time time = sf::Time::Zero;
-   
+    
     while (m_window.isOpen() && m_lives > 0)
     {
         sf::Time deltaTime = clock.restart();
@@ -85,16 +99,27 @@ void Game::Run()
             processEvents();
             update(FPS);
         }
-
         if (ShowFPS)
         {
             drawFPS(deltaTime);
         }
-
         render();
-        
     }
-    
+    m_gameOverText.setString("Game Over!\n Play again? press 1, \notherwise press 0");
+    m_window.draw(m_gameOverText);
+    m_window.display();
+    sf::Event event;
+    m_window.waitEvent(event);
+    if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num1))
+    {
+        Game g;
+        m_window.close();
+        g.Run();
+    }
+    else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num0))
+    {
+        exit(0);
+    }
 }
 
 void Game::input(sf::Keyboard::Key a_key, bool a_isPressed)
@@ -129,8 +154,15 @@ void Game::processEvents()
 
 void Game::update(const sf::Time& a_deltaTime)
 {
-    m_ball.move(a_deltaTime, m_window.getSize(), m_player, m_level, m_lives);
-    m_player.move(sf::Mouse::getPosition(m_window).x, m_window.getSize().x);    
+    m_ball.move(a_deltaTime, m_window.getSize(), m_player, m_bricks, m_lives);
+    m_player.move(sf::Mouse::getPosition(m_window).x, m_window.getSize().x);
+    if(m_bricks.empty())
+    {
+        ++m_level;
+        m_window.setTitle("Breaking bricks - Level 2");
+        createLevel(10, 5, 40, 2);
+    }
+
 }
 
 void Game::drawFPS(const sf::Time& a_deltaTime)
@@ -153,12 +185,16 @@ void Game::render()
     m_window.draw(m_player);
     m_window.draw(m_ball);
 
-    for (auto e : m_level)
+    std::vector<Brick*>::iterator itr;
+	for(itr = m_bricks.begin(); itr != m_bricks.end(); itr++)
     {
-        m_window.draw(*e);
-    }
+		if((*itr) != NULL)
+        {
+            m_window.draw(**itr);
+        }
+	}
 
-    m_livesText.setString("Lives: " + std::to_string((m_lives)));
+    m_livesText.setString("Lives: " + std::to_string(m_lives));
     m_window.draw(m_livesText);
 
     if(ShowFPS)
@@ -169,7 +205,7 @@ void Game::render()
     m_window.display();
 }
 
-void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_padding)
+void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_padding, short m_level)
 {
     float width = ((m_window.getSize().x - (a_padding * (a_numOfBlocksInRow + 1))) / a_numOfBlocksInRow);
     sf::Vector2f brickSize(width, 20.f);
@@ -182,7 +218,7 @@ void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_p
         for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
         {
             sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
-            m_level.push_back(new Brick(brickSize, pos, sf:: Color::Blue));
+            m_bricks.push_back(new Brick(brickSize, pos, sf:: Color::Blue));
             accumCol += a_padding;
         }
         accumRow += a_padding;  

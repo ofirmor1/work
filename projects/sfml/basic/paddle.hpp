@@ -10,7 +10,7 @@ class Paddle : public sf::Drawable
 public:
 	Paddle(sf::Vector2f a_position = sf::Vector2f(30.f, 2.5f),
 		   sf::Color a_color = sf::Color::White,
-		   sf::Vector2f a_size = sf::Vector2f(60.f, 5.f));
+		   sf::Vector2f a_size = sf::Vector2f(120.f, 5.f));
 	~Paddle() = default;
 
 	void move(const int a_position, const size_t a_windowWidth);

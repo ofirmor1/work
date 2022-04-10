@@ -17,7 +17,7 @@ Ball::Ball(float a_radius, sf::Color a_color, sf::Vector2f a_position, sf::Vecto
 }
 
 void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize, 
-			  const Paddle& a_paddle, std::vector<Brick*>& a_bricks,
+			  const Paddle& a_paddle, std::vector<Brick*>& a_bricksVec,
 			  short& a_lives)
 {
     sf::Vector2f pos = m_ball.getPosition();
@@ -43,23 +43,24 @@ void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize,
     //ball hit buttom
     if(a_windowSize.y - m_ball.getRadius() < pos.y)
     {
-        --m_lives;
+        --a_lives;
         m_ball.setPosition(a_windowSize.x / 2.f, a_windowSize.y / 2.f);
     }
 
-    //check for brick collisions
-    std::vector<Brick*> bricks;
-    for(auto e : bricks)
+    // check for brick collisions
+    std::vector<Brick*>::iterator itr;
+    for(itr = a_bricksVec.begin(); itr != a_bricksVec.end(); itr++)
     {
-        if(e->getBounds().intersects(m_ball.getGlobalBounds ()))
+		if(*itr != NULL && (**itr).getBounds().intersects(m_ball.getGlobalBounds()))
         {
             m_speed = sf::Vector2f(m_speed.x, m_speed.y * -1.f);
 
-            delete e;
+            delete *itr;
+			*itr = NULL;
         }
-
-        m_ball.move(m_speed * a_deltaTime.asSeconds());
     }
+
+    m_ball.move(m_speed * a_deltaTime.asSeconds());
 }
 
 void Ball::draw(sf::RenderTarget& a_target, sf::RenderStates a_states) const
