@@ -242,10 +242,10 @@ void Game::drawFPS(const sf::Time& a_deltaTime)
 void Game::render()
 {
     m_window.clear();
-
+    m_window.draw(m_background);
     m_window.draw(m_player);
     m_window.draw(m_ball);
-    m_window.draw(m_background);
+    
 
     std::vector<Brick*>::iterator itr;
 	for(itr = m_bricks.begin(); itr != m_bricks.end(); itr++)
