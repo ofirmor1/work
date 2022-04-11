@@ -81,8 +81,12 @@ void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize,
 			    *itr = NULL;
             }
         }
-    }
+        // ++m_level;
+        // Run();
 
+        
+    }
+        
     m_ball.move(m_speed * a_deltaTime.asSeconds());
 }
 

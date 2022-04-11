@@ -3,12 +3,20 @@
 namespace game
 {
 
-Paddle::Paddle(sf::Vector2f a_position, sf::Color a_color, sf::Vector2f a_size)
+Paddle::Paddle(std::string a_paddleTexPath, sf::Vector2f a_position, sf::Color a_color, sf::Vector2f a_size)
 : m_paddle(sf::Vector2f(a_size.x, a_size.y))
+, m_paddleTex(new sf::Texture)
 {
+	if (!(*m_paddleTex).loadFromFile(a_paddleTexPath))
+	{
+		std::cout << "failed to load paddle texture." << std::endl;
+	}
 	m_paddle.setFillColor(a_color);
 	m_paddle.setOrigin((a_size.x / 2.f), (a_size.y / 2.f));
 	m_paddle.setPosition(a_position);
+	(*m_paddleTex).setSmooth(true);
+	m_paddle.setScale(1.8, 8);
+	m_paddle.setTexture(m_paddleTex);
 }
 
 void Paddle::move(const int a_position, const size_t a_windowWidth)

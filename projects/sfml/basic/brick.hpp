@@ -9,7 +9,7 @@ class Brick : public sf::Drawable
 {
 
 public:
-	Brick(sf::Vector2f a_size = sf::Vector2f(60.f, 40.f), 
+	Brick(std::string a_brickTexPath = "./images/brick_tex.jpg", sf::Vector2f a_size = sf::Vector2f(60.f, 40.f), 
     sf::Vector2f a_position = sf::Vector2f(0.f, 0.f),
     sf::Color a_color = sf::Color::White, short a_health = 1);
 	~Brick() = default;
@@ -24,6 +24,7 @@ private:
 private:
 	sf::RectangleShape m_brick;
 	short m_health;
+	sf::Texture* m_brickTex;
 
 };
 

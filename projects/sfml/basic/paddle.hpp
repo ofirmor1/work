@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 namespace game
 {
@@ -8,7 +9,7 @@ namespace game
 class Paddle : public sf::Drawable
 {
 public:
-	Paddle(sf::Vector2f a_position = sf::Vector2f(30.f, 2.5f),
+	Paddle(std::string a_paddleTexPath = "./images/skate.png", sf::Vector2f a_position = sf::Vector2f(30.f, 2.5f),
 		   sf::Color a_color = sf::Color::White,
 		   sf::Vector2f a_size = sf::Vector2f(120.f, 5.f));
 	~Paddle() = default;
@@ -21,6 +22,7 @@ private:
 
 private:
 	sf::RectangleShape m_paddle;
+	sf::Texture* m_paddleTex;
 };
 
 } // namespace game
