@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include "brick.hpp"
 #include "paddle.hpp"
@@ -22,9 +23,14 @@ public:
 private:
 	sf::CircleShape m_ball;
 	sf::Vector2f m_speed;
+	sf::SoundBuffer m_bounceBuffer;
+	sf::SoundBuffer m_brickBuffer;
+	sf::Sound		m_bounceSound;
+	sf::Sound		m_brickSound;
 
 private:
 	virtual void draw(sf::RenderTarget& a_target, sf::RenderStates a_states) const;
+	void bounce(sf::Sound& a_bounce);
 
 
 };

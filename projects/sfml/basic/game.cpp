@@ -10,10 +10,7 @@ const sf::Time Game::FPS = sf::seconds(1.f / 60.f);
 bool Game::ShowFPS = false;
 
 Game::Game()
-: m_window(sf::VideoMode(600, 600), "Breaking bricks - Level 1")
-, m_player(sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)))
-, m_ball(5.f, sf::Color::White, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f))
-, m_lives(3)
+: m_lives(3)
 , m_level(1)
 , m_font()
 , m_livesText()
@@ -21,6 +18,12 @@ Game::Game()
 , m_gameOverText()
 , m_drawFPSFrames(0)
 , m_drawFPSTime()
+, m_backgroundTex()
+, m_background()
+// , m_backgroundSize(m_background.getTexture()->getSize())
+, m_window(sf::VideoMode(600 , 600), "Breaking bricks - Level 1")
+, m_player(sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)))
+, m_ball(5.f, sf::Color::White, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f))
 {
     size_t winY = sf::VideoMode::getDesktopMode().height / 2 - m_window.getSize().y / 2;
     size_t winX = sf::VideoMode::getDesktopMode().width / 2 - m_window.getSize().x / 2;
@@ -31,6 +34,30 @@ Game::Game()
     {
         std::cout << "failed to load font." << std::endl;
     }
+    if(!m_backgroundTex.loadFromFile("images/background.jpg"))
+    {
+        std::cout << "failed to load background image." << std::endl;
+    } 
+
+    this->m_backgroundTex.setSmooth(true);
+    // Attach the texture to the sprite
+    this->m_background.setTexture(this->m_backgroundTex);
+    
+    
+    // // m_backgroundSize = m_
+    // // this->m_backgroundSize = (m_background.getTexture()->getSize()); // get its size
+    // m_backgroundSize.x = m_window.getSize().x;
+    // m_backgroundSize.y = m_window.getSize().y;
+
+    // // // initially set the window size to be the max size of the image.
+    // m_window.create(sf::VideoMode(600, 600), "Breaking bricks - Level 1", sf::Style::Default);
+    // // setWindowBackground();
+    // m_window.setFramerateLimit(60);
+
+    // // and set it as the view.
+    // sf::FloatRect visibleArea(0.0f, 0.0f, (float)m_backgroundSize.x, (float)m_backgroundSize.y);
+    // m_gameView = sf::View(visibleArea);
+    // m_window.setView(m_gameView);
 		
     //FPS text set up
     m_drawFPSText.setFillColor(sf::Color::White);
@@ -54,6 +81,33 @@ Game::Game()
     m_gameOverText.setCharacterSize(30);
 
     createLevel();
+}
+
+void Game::setWindowBackground()
+{
+    sf::Event event;
+    while(m_window.waitEvent(event))
+    {
+        if (event.type == sf::Event::Resized)
+        {
+            // Get the new size of the window
+            sf::Vector2f visibleArea = sf::Vector2f((float)event.size.width, (float)event.size.height);
+
+            // Find the scale factor in the x and the y axis
+            const float scaleXFactor = visibleArea.x / m_background.getLocalBounds().width;
+            const float scaleYFactor = visibleArea.y / m_background.getLocalBounds().height;
+
+            // Pick the smallest factor and get the new view size.
+            const float lowestFactor = std::min(scaleXFactor, scaleYFactor);
+            const sf::Vector2f windowSize(sf::Vector2f(m_window.getSize()));
+            const sf::Vector2f viewSize = windowSize / lowestFactor;
+
+            m_gameView.setSize(viewSize);
+            m_gameView.setCenter(viewSize / 2.0f);
+            m_window.setView(m_gameView);
+        }
+    }
+   
 }
 
 Game::~Game()
@@ -108,17 +162,24 @@ void Game::Run()
     m_gameOverText.setString("Game Over!\n Play again? press 1, \notherwise press 0");
     m_window.draw(m_gameOverText);
     m_window.display();
+    gameOverMenu();
+}
+
+void Game::gameOverMenu()
+{   
     sf::Event event;
-    m_window.waitEvent(event);
-    if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num1))
+    while (m_window.waitEvent(event))
     {
-        Game g;
-        m_window.close();
-        g.Run();
-    }
-    else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num0))
-    {
-        exit(0);
+        if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num1))
+        {
+            Game g;
+            m_window.close();
+            g.Run();
+        }
+        else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num0))
+        {
+            m_window.close();
+        }
     }
 }
 
@@ -184,6 +245,7 @@ void Game::render()
 
     m_window.draw(m_player);
     m_window.draw(m_ball);
+    m_window.draw(m_background);
 
     std::vector<Brick*>::iterator itr;
 	for(itr = m_bricks.begin(); itr != m_bricks.end(); itr++)
@@ -211,18 +273,55 @@ void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_p
     sf::Vector2f brickSize(width, 20.f);
 
     float accumRow = a_padding;
-
-    for (size_t row = 0; row < a_numOfRows; ++row)
+    switch (m_level)
     {
-        float accumCol = a_padding;
-        for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
+    case 1:
+        for (size_t row = 0; row < a_numOfRows; ++row)
         {
-            sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
-            m_bricks.push_back(new Brick(brickSize, pos, sf:: Color::Blue));
-            accumCol += a_padding;
+            float accumCol = a_padding;
+            for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
+            {
+                sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
+                    if(col % 4 == 0)
+                {
+                    m_bricks.push_back(new Brick(brickSize, pos, sf:: Color::White, 1));
+                }
+                else
+                {
+                    m_bricks.push_back(new Brick(brickSize, pos, sf:: Color::White, 2));
+                }
+                accumCol += a_padding;
+            }
+            accumRow += a_padding;  
         }
-        accumRow += a_padding;  
+        break;
+    case 2:
+        for (size_t row = 0; row < a_numOfRows; ++row)
+        {
+            float accumCol = a_padding;
+            for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
+            {
+                sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
+                if(col % 4 == 0)
+                {
+                    m_bricks.push_back(new Brick(brickSize, pos, sf:: Color::White, 1));
+                }
+                else
+                {
+                    m_bricks.push_back(new Brick(brickSize, pos, sf:: Color::White, 2));
+                }
+                
+                accumCol += a_padding;
+            }
+            accumRow += a_padding;  
+        }
+        break;
+    default:
+        break;
     }
+    
+
+    
 }
 
 }//namespace game

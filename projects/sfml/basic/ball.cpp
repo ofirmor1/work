@@ -14,6 +14,18 @@ Ball::Ball(float a_radius, sf::Color a_color, sf::Vector2f a_position, sf::Vecto
     m_ball.setOrigin(a_radius, a_radius);
     m_ball.setFillColor(a_color);
     m_ball.setPosition(a_position);
+
+    if(!m_bounceBuffer.loadFromFile("sounds/bounce_sound.wav"))
+    {
+        std::cout << "Failed to load sounds/bounce_sound.wav" << std::endl;
+    }
+	m_bounceSound.setBuffer(m_bounceBuffer);
+
+	if(!m_brickBuffer.loadFromFile("sounds/brick_sound.wav"))
+    {
+        std::cout << "Failed to load sounds/brick_sound.wav" << std::endl;
+    }
+	m_brickSound.setBuffer(m_brickBuffer);
 }
 
 void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize, 
@@ -25,18 +37,21 @@ void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize,
     //bounce left/right side
     if(pos.x < m_ball.getRadius() || pos.x > a_windowSize.x - m_ball.getRadius())
     {
+        bounce(m_bounceSound);
         m_speed = sf::Vector2f(m_speed.x * -1.f, m_speed.y);
     }
 
     //bounce top
     if(pos.y < m_ball.getRadius())
     {
+        bounce(m_bounceSound);
         m_speed = sf::Vector2f(m_speed.x, m_speed.y * -1.f);
     }
 
     //bounce paddle
     if(a_paddle.getBounds().intersects(m_ball.getGlobalBounds()))
     {
+        bounce(m_bounceSound);
         m_speed = sf::Vector2f(m_speed.x, m_speed.y * -1.f);
     }
 
@@ -44,6 +59,7 @@ void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize,
     if(a_windowSize.y - m_ball.getRadius() < pos.y)
     {
         --a_lives;
+        bounce(m_bounceSound);
         m_ball.setPosition(a_windowSize.x / 2.f, a_windowSize.y / 2.f);
     }
 
@@ -54,9 +70,16 @@ void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize,
 		if(*itr != NULL && (**itr).getBounds().intersects(m_ball.getGlobalBounds()))
         {
             m_speed = sf::Vector2f(m_speed.x, m_speed.y * -1.f);
-
-            delete *itr;
-			*itr = NULL;
+            bounce(m_brickSound);
+            if((*itr)->getCurrHealth() > 1)
+            {
+                (*itr)->hurt();
+            }
+            else
+            {
+                delete *itr;
+			    *itr = NULL;
+            }
         }
     }
 
@@ -66,6 +89,11 @@ void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize,
 void Ball::draw(sf::RenderTarget& a_target, sf::RenderStates a_states) const
 {
 	a_target.draw(m_ball);
+}
+
+void Ball::bounce(sf::Sound& a_bounce) {
+	// Play bounce sound
+	a_bounce.play();
 }
 
 }//namespace game

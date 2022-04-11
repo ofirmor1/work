@@ -4,8 +4,9 @@
 namespace game
 {
 
-Brick::Brick(sf::Vector2f a_size, sf::Vector2f a_position, sf::Color a_color)
-:m_brick(a_size)
+Brick::Brick(sf::Vector2f a_size, sf::Vector2f a_position, sf::Color a_color, short a_health)
+: m_brick(a_size)
+, m_health(a_health)
 {
 	m_brick.setPosition(a_position);
 	m_brick.setFillColor(a_color);
@@ -20,6 +21,12 @@ void Brick::hurt()
 {
 	--m_health;
 }
+
+short Brick::getCurrHealth() const
+{
+	return m_health;
+}
+
 
 sf::FloatRect Brick::getBounds() const
 {

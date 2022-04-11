@@ -25,19 +25,17 @@ private:
 
 	void input(sf::Keyboard::Key a_key, bool a_isPressed);
 	void processEvents();
+	void gameOverMenu();
 	void update(const sf::Time& a_deltaTime);
 	void render();
+
+	void setWindowBackground();
 
 	void drawFPS(const sf::Time& a_deltaTime);
 
 private:
     static const sf::Time FPS;
 	static bool	 ShowFPS;
-
-	sf::RenderWindow	m_window;
-	Paddle				m_player;
-	Ball				m_ball;
-	std::vector<Brick*> m_bricks;
 	
 	short m_lives;
 	short m_level;
@@ -48,88 +46,16 @@ private:
 	sf::Text	m_gameOverText;
 	std::size_t m_drawFPSFrames;
 	sf::Time	m_drawFPSTime;
+	sf::View	m_gameView;
+	sf::Texture m_backgroundTex;
+	sf::Sprite m_background;
+
+	sf::Vector2u m_backgroundSize;
+	sf::RenderWindow	m_window;
+	Paddle				m_player;
+	Ball				m_ball;
+	std::vector<Brick*> m_bricks;
 
 };
 
 }//namespace game
-
-// int main()
-// {
-    
-//     sf::CircleShape greenCircle(10.f);
-//     sf::CircleShape blueCircle(10.f);
-//     greenCircle.setFillColor(sf::Color::Green);
-//     blueCircle.setFillColor(sf::Color::Red);
-//     greenCircle.setPosition(20, 30);
-//     blueCircle.setPosition(40, 90);
-//     double greenStepX = 5;
-//     double greenStepY = 5;
-//     double blueStepX = 50;
-//     double blueStepY = 50;
-
-//     auto const ws = window.getSize();
-//     auto const wsRightEdge = ws - 80;
-//     auto const wsLeftEdge = 50;
-//     while (window.isOpen())
-//     {
-//         sf::Event event;
-//         while (window.pollEvent(event))
-//         {
-//             if (event.type == sf::Event::Closed)
-//                 window.close();
-//         }
-
-//         window.clear();
-//         window.draw(greenCircle);
-//         window.draw(blueCircle);
-//         window.display();
-// }
-
-//     return 0;
-// }
-
-
-//         if(greenCircle.getPosition().x > wsRightEdge && greenCircle.getPosition().y < wsRightEdge)
-//         {
-//             greenStepX = -0.1;
-//             greenStepY = -0.1;
-//         }
-//         if(greenCircle.getPosition().x < wsLeftEdge && greenCircle.getPosition().y > wsLeftEdge)
-//         {
-//             greenStepX = 0.1;
-//             greenStepY = 0.1;
-//         }
-//         if(greenCircle.getPosition().x > wsRightEdge && greenCircle.getPosition().y > wsRightEdge)
-//         {
-//             greenStepX = 0.1;
-//             greenStepY = -0.1;
-//         }
-//         if(greenCircle.getPosition().x < wsLeftEdge && greenCircle.getPosition().y < wsLeftEdge)
-//         {
-//             greenStepX = -0.1;
-//             greenStepY = 0.1;
-//         }
-
-//         if(blueCircle.getPosition().x > wsRightEdge && blueCircle.getPosition().y < wsRightEdge)
-//         {
-//             blueStepX = -0.1;
-//             blueStepY = -0.1;
-//         }
-//         if(blueCircle.getPosition().x < wsLeftEdge && blueCircle.getPosition().y > wsLeftEdge)
-//         {
-//             blueStepX = 0.1;
-//             blueStepY = 0.1;
-//         }
-//         if(blueCircle.getPosition().x > wsRightEdge && blueCircle.getPosition().y > wsRightEdge)
-//         {
-//             blueStepX = 0.1;
-//             blueStepY = -0.1;
-//         }
-//         if(blueCircle.getPosition().x < wsLeftEdge && blueCircle.getPosition().y < wsLeftEdge)
-//         {
-//             blueStepX = -0.1;
-//             blueStepY = 0.1;
-//         }
-
-//         greenCircle.move(greenStepX, greenStepY);
-//         blueCircle.move(blueStepX, blueStepY);
