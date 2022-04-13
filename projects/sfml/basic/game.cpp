@@ -11,9 +11,11 @@ bool Game::ShowFPS = false;
 
 Game::Game(short a_level)
 : m_lives(3)
+, m_score()
 , m_level(a_level)
 , m_font()
 , m_livesText()
+, m_scoreText()
 , m_drawFPSText()
 , m_gameOverText()
 , m_drawFPSFrames(0)
@@ -21,13 +23,35 @@ Game::Game(short a_level)
 , m_backgroundTex()
 , m_background()
 {
-
-    windowSetUp();
-    textSetUp();
-    m_player = Paddle("./images/skate.png", sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)));
-    m_ball = Ball(5.f, sf::Color::White, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f));
-    setUpLevel();
+    if(m_level == 1)
+    {
+        windowSetUp();
+    }
+    initilizeGameObj();
 }
+
+void Game::initilizeGameObj()
+{
+    textSetUp();
+    switch (m_level)
+    {
+    case 1:
+        m_player = Paddle(m_level, "./images/skate.png", sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)));
+        m_ball = Ball(5.f, sf::Color::White, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y - 250));
+        break;
+    case 2:
+        m_player = Paddle(m_level, "./images/skate2.png", sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)));
+        m_ball = Ball(7.f, sf::Color::Red, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y - 250));
+        break;
+    case 3:
+        m_player = Paddle(m_level, "./images/skate3.png", sf::Vector2f((m_window.getSize().x / 2.f), (m_window.getSize().y - 70.f)));
+        m_ball = Ball(10.f, sf::Color::Blue, sf::Vector2f(m_window.getSize().x / 2.f, m_window.getSize().y - 250));
+        break;
+    }
+    
+    setUpLevel(m_level);
+}
+
 void Game::windowSetUp()
 {
     m_window.create(sf::VideoMode(800 , 600), "Breaking bricks - Level 1");
@@ -67,32 +91,46 @@ void Game::textSetUp()
     m_livesText.setPosition(15.f, m_window.getSize().y - 30.f);
     m_livesText.setCharacterSize(16);
 
-    //text set up
+    //score text set up
+    m_scoreText.setFillColor(sf::Color::White);
+    m_livesText.setOutlineColor(sf::Color::White);
+    m_scoreText.setFont(m_font);
+	m_scoreText.setPosition(400.f, m_window.getSize().y - 30.f);
+	m_scoreText.setCharacterSize(16);
+	m_scoreText.setString("Score: " + std::to_string(m_score));
+
+    //gameOver text set up
     m_gameOverText.setFillColor(sf::Color::White);
     m_gameOverText.setOutlineColor(sf::Color::White);
     m_gameOverText.setFont(m_font);
     m_gameOverText.setPosition(m_window.getSize().y / 2, m_window.getSize().x / 2  - 100.f);
     m_gameOverText.setCharacterSize(30);
 
-        //text set up
+    //roundFinished text set up
     m_roundFinishedText.setFillColor(sf::Color::White);
     m_roundFinishedText.setOutlineColor(sf::Color::White);
     m_roundFinishedText.setFont(m_font);
-    m_roundFinishedText.setPosition(m_window.getSize().y / 2, m_window.getSize().x / 2  - 100.f);
+    m_roundFinishedText.setPosition(m_window.getSize().y / 3, m_window.getSize().x / 2  - 100.f);
     m_roundFinishedText.setCharacterSize(30);
 }
 
-void Game::setUpLevel()
+void Game::setUpLevel(size_t a_level)
 {
-    switch (m_level)
+    switch (a_level)
     {
     case 1:
-        createLevel(1, 1, 40.f, m_level);
+        createLevel(1, 1, 60.f, a_level);
         break;
     case 2:
-        createLevel(5, 5, 40.f, m_level);
+        createLevel(3, 5, 40.f, a_level);
         m_window.setTitle("Breaking bricks - Level 2");
         break;
+    case 3:
+        createLevel(3, 5, 40.f, a_level);
+        m_window.setTitle("Breaking bricks - Level 3");
+        break;
+    default:
+        exit(0);
     }
 }
 
@@ -124,11 +162,6 @@ void Game::setUpLevel()
 
 Game::~Game()
 {
-	for(auto& e : m_bricks)
-    {
-		delete e;
-	}
-
 	m_bricks.clear();
 }
 
@@ -137,7 +170,6 @@ void Game::Run()
     // anotherRound:
     sf::Clock clock;
     sf::Time time = sf::Time::Zero;
-    
     while (m_window.isOpen() && m_lives > 0)
     {
         sf::Time deltaTime = clock.restart();
@@ -153,12 +185,19 @@ void Game::Run()
         {
             drawFPS(deltaTime);
         }
+        if(m_bricks.empty())
+        {
+            finishRound();
+        }
         render();
     }
-    m_gameOverText.setString("Game Over!\n Play again? press 1, \notherwise press 0");
-    m_window.draw(m_gameOverText);
-    m_window.display();
-    gameOverMenu();
+    if(m_lives == 0)
+    {
+        m_gameOverText.setString("Game Over!\n Play again? press 1, \notherwise press 0");
+        m_window.draw(m_gameOverText);
+        m_window.display();
+        gameOverMenu();
+    }
 }
 
 void Game::gameOverMenu()
@@ -168,7 +207,7 @@ void Game::gameOverMenu()
     {
         if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num1))
         {
-            Game g(1);
+            Game g(4);
             m_window.close();
             g.Run();
         }
@@ -211,7 +250,7 @@ void Game::processEvents()
 
 void Game::update(const sf::Time& a_deltaTime)
 {
-    m_ball.move(a_deltaTime, m_window.getSize(), m_player, m_bricks, m_lives);
+    m_ball.move(a_deltaTime, m_window.getSize(), m_player, m_bricks, m_lives, m_score);
     m_player.move(sf::Mouse::getPosition(m_window).x, m_window.getSize().x);
 }
 
@@ -230,26 +269,33 @@ void Game::drawFPS(const sf::Time& a_deltaTime)
 
 void Game::finishRound()
 {  
-    m_roundFinishedText.setString("Congrats! You finished this round!\n for next round? press 1, \nexit game press 0");
-    std::cout << "1212";
+    m_roundFinishedText.setString("Congrats! You finished round number " + std::to_string(m_level) + "!\npress 1 to continue, \npress 0 to exit the game");
     m_window.draw(m_roundFinishedText);
     m_window.display();
     sf::Event event;
-    while (m_window.waitEvent(event))
+    while(m_window.waitEvent(event))
     {
         if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num1))
         {
-            Game g(2);
-            m_window.close();
-            g.Run();
-            // ++m_level;
-
+            finishLevel();
+            ++m_level;
+            initilizeGameObj();
+            Run();
         }
         else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Num0))
         {
             m_window.close();
         }
     }
+}
+
+// std::vector<Brick*> m_bricks;
+// std::vector<std::unique_ptr<shape::brick> >& a_bricks
+void Game::finishLevel()
+{
+    m_window.clear();
+    m_bricks.clear();
+    sleep(1);
 }
 
 void Game::render()
@@ -260,19 +306,16 @@ void Game::render()
     m_window.draw(m_ball);
     m_livesText.setString("Lives: " + std::to_string(m_lives));
     m_window.draw(m_livesText);
+    m_scoreText.setString("Score: " + std::to_string(m_score));
+    m_window.draw(m_scoreText);
+    
 
-    std::vector<Brick*>::iterator itr;
+    brickPtrVec::iterator itr;
 	for(itr = m_bricks.begin(); itr != m_bricks.end(); itr++)
     {
 		if((*itr) != NULL)
         {
             m_window.draw(**itr);
-        }
-        else
-        {std::cout << "1212";
-            // sleep(1);
-            finishRound();
-            
         }
 	}
 
@@ -291,6 +334,7 @@ void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_p
     float accumRow = a_padding;
 
     std::string brickImgPath = "./images/brick_tex.jpg";
+    std::string brickImg2Path = "./images/brick_tex2.jpg";
     switch (m_level)
     {
     case 1:
@@ -300,14 +344,7 @@ void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_p
             for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
             {
                 sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
-                    if(col % 4 == 0)
-                {
-                    m_bricks.push_back(new Brick(brickImgPath, brickSize, pos, sf:: Color::White, 1));
-                }
-                else
-                {
-                    m_bricks.push_back(new Brick(brickImgPath, brickSize, pos, sf:: Color::White, 2));
-                }
+                m_bricks.emplace_back(std::move(new Brick(brickImgPath, brickSize, pos, sf:: Color::White, 1)));
                 accumCol += a_padding;
             }
             accumRow += a_padding;  
@@ -320,15 +357,28 @@ void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_p
             for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
             {
                 sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
-                if(col % 4 == 0)
+                if(col % 2 == 0 && row % 2 == 0)
                 {
-                    m_bricks.push_back(new Brick(brickImgPath, brickSize, pos, sf:: Color::White, 1));
+                    m_bricks.emplace_back(std::move(new Brick(brickImgPath, brickSize, pos, sf:: Color::White, 1)));
                 }
                 else
                 {
-                    m_bricks.push_back(new Brick(brickImgPath, brickSize, pos, sf:: Color::White, 2));
+                    m_bricks.emplace_back(std::move(new Brick(brickImg2Path, brickSize, pos, sf:: Color::White, 2)));
                 }
                 
+                accumCol += a_padding;
+            }
+            accumRow += a_padding;  
+        }
+        break;
+    case 3:
+        for (size_t row = 0; row < a_numOfRows; ++row)
+        {
+            float accumCol = a_padding;
+            for (size_t col = 0; col < a_numOfBlocksInRow; ++col)
+            {
+                sf::Vector2f pos = sf::Vector2f((col * brickSize.x) + accumCol, (row * brickSize.y) + accumRow);
+                m_bricks.emplace_back(std::move(new Brick(brickImg2Path, brickSize, pos, sf:: Color::White, 2)));
                 accumCol += a_padding;
             }
             accumRow += a_padding;  
@@ -337,6 +387,7 @@ void Game::createLevel(size_t a_numOfBlocksInRow , size_t a_numOfRows, float a_p
     default:
         break;
     }
+        std::cout << m_bricks.size() << std::endl;
 }
 
 }//namespace game

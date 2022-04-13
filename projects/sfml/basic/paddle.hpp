@@ -9,7 +9,7 @@ namespace game
 class Paddle : public sf::Drawable
 {
 public:
-	Paddle(std::string a_paddleTexPath = "./images/skate.png", sf::Vector2f a_position = sf::Vector2f(30.f, 2.5f),
+	Paddle(size_t a_level = 1, std::string a_paddleTexPath = "./images/skate.png", sf::Vector2f a_position = sf::Vector2f(30.f, 2.5f),
 		   sf::Color a_color = sf::Color::White,
 		   sf::Vector2f a_size = sf::Vector2f(120.f, 5.f));
 	~Paddle() = default;

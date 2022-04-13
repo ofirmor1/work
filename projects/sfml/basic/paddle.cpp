@@ -3,7 +3,7 @@
 namespace game
 {
 
-Paddle::Paddle(std::string a_paddleTexPath, sf::Vector2f a_position, sf::Color a_color, sf::Vector2f a_size)
+Paddle::Paddle(size_t a_level, std::string a_paddleTexPath, sf::Vector2f a_position, sf::Color a_color, sf::Vector2f a_size)
 : m_paddle(sf::Vector2f(a_size.x, a_size.y))
 , m_paddleTex(new sf::Texture)
 {
@@ -14,9 +14,21 @@ Paddle::Paddle(std::string a_paddleTexPath, sf::Vector2f a_position, sf::Color a
 	m_paddle.setFillColor(a_color);
 	m_paddle.setOrigin((a_size.x / 2.f), (a_size.y / 2.f));
 	m_paddle.setPosition(a_position);
-	(*m_paddleTex).setSmooth(true);
-	m_paddle.setScale(1.8, 8);
 	m_paddle.setTexture(m_paddleTex);
+	(*m_paddleTex).setSmooth(true);
+	switch (a_level)
+	{
+	case 1:
+		m_paddle.setScale(2.5, 8);
+
+		break;
+	case 2:
+		m_paddle.setScale(1.8, 8);
+		break;
+	case 3:
+		m_paddle.setScale(1.2, 8);
+		break;
+	}	
 }
 
 void Paddle::move(const int a_position, const size_t a_windowWidth)

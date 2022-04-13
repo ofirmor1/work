@@ -29,8 +29,8 @@ Ball::Ball(float a_radius, sf::Color a_color, sf::Vector2f a_position, sf::Vecto
 }
 
 void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize, 
-			  const Paddle& a_paddle, std::vector<Brick*>& a_bricksVec,
-			  short& a_lives)
+			  const Paddle& a_paddle, std::vector<std::unique_ptr<Brick> >& a_bricksVec,
+			  short& a_lives, short& a_score)
 {
     sf::Vector2f pos = m_ball.getPosition();
 
@@ -60,34 +60,35 @@ void Ball::move(const sf::Time& a_deltaTime, const sf::Vector2u& a_windowSize,
     {
         --a_lives;
         bounce(m_bounceSound);
-        m_ball.setPosition(a_windowSize.x / 2.f, a_windowSize.y / 2.f);
+        m_ball.setPosition(a_windowSize.x / 2.f, a_windowSize.y - 250);
     }
 
     // check for brick collisions
-    std::vector<Brick*>::iterator itr;
-    for(itr = a_bricksVec.begin(); itr != a_bricksVec.end(); itr++)
+    CollisionWithBrickHandle(a_bricksVec, a_score);
+    m_ball.move(m_speed * a_deltaTime.asSeconds());
+}
+
+void Ball::CollisionWithBrickHandle(std::vector<std::unique_ptr<Brick> >& a_bricksVec, short& a_score)
+{
+    for(auto& e : a_bricksVec)
     {
-		if(*itr != NULL && (**itr).getBounds().intersects(m_ball.getGlobalBounds()))
+		if(e && e->getBounds().intersects(m_ball.getGlobalBounds()))
         {
             m_speed = sf::Vector2f(m_speed.x, m_speed.y * -1.f);
             bounce(m_brickSound);
-            if((*itr)->getCurrHealth() > 1)
+            if((e)->getCurrHealth() > 1)
             {
-                (*itr)->hurt();
+                (e)->hurt();
             }
             else
             {
-                delete *itr;
-			    *itr = NULL;
+                ++a_score;
+                a_bricksVec.erase(std::remove_if(a_bricksVec.begin(), a_bricksVec.end(), [this](const auto &e) {return e->getBounds().intersects(m_ball.getGlobalBounds()); }), a_bricksVec.end());
+                
             }
+            std::cout << a_bricksVec.size() << std::endl;
         }
-        // ++m_level;
-        // Run();
-
-        
     }
-        
-    m_ball.move(m_speed * a_deltaTime.asSeconds());
 }
 
 void Ball::draw(sf::RenderTarget& a_target, sf::RenderStates a_states) const
@@ -95,7 +96,8 @@ void Ball::draw(sf::RenderTarget& a_target, sf::RenderStates a_states) const
 	a_target.draw(m_ball);
 }
 
-void Ball::bounce(sf::Sound& a_bounce) {
+void Ball::bounce(sf::Sound& a_bounce)
+{
 	// Play bounce sound
 	a_bounce.play();
 }
