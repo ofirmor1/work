@@ -103,8 +103,8 @@ void Grid::searchWord(std::string const& a_word)
         {
             for (auto dir : m_directVec) 
             {
-                int rd = row + dir.first;
-                int cd = col + dir.second;
+                int nextRow = row + dir.first;
+                int nextCol = col + dir.second;
                 if (m_matrix[row][col] != a_word[0])
                 {
    
@@ -113,17 +113,18 @@ void Grid::searchWord(std::string const& a_word)
                 size_t index = 1;
                 for (;index < a_word.length(); ++index) 
                 {
-                    if (m_matrix[rd][cd] != a_word[index])
+                    if (m_matrix[nextRow][nextCol] != a_word[index])
                     {
                         break;
                     }
                     
-                    if (rd >= m_rows || rd < 0 || cd >= m_columns || cd < 0)
+                    if (nextRow >= m_rows || nextRow < 0 || nextCol >= m_columns || nextCol < 0)
                     {
                         
                         break;
                     }           
-                    rd += dir.first, cd += dir.second;
+                    nextRow += dir.first;
+                    nextCol += dir.second;
                 }
 
                 if (index == a_word.length())
