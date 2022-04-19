@@ -8,11 +8,12 @@
 
 BEGIN_TEST(test)
 using namespace iq;
-    std::string path = "puzzle.txt";
-    std::string word = "apple";
-    Grid g(path);
-    g.searchWord(word);
+    std::string a_gridpFileath = "puzzle.txt";
+    std::string a_wordsFilePath = "words.txt";
+    Grid g(a_wordsFilePath, a_gridpFileath, "ud");
     g.printWordsFrequency();
+    ASSERT_PASS();
+
 END_TEST
 
 BEGIN_SUITE(iq_tests)

@@ -10,26 +10,33 @@ namespace iq
 class Grid
 {
 public:
-    explicit Grid(std::string const& a_path = "puzzle.txt");
+    Grid(std::string const& a_wordsFilePath, std::string const& a_gridpFileath, std::string const& a_directions);
+
+    void searchDirections(std::string const& a_directions);
 
     void initializeGrid(std::ifstream& a_cwPuzzle);
+
+    void buildDirectionMap();
 
     void searchWord(std::string const& a_word);
 
     void loadGrid(std::string const& a_path);
+
+    void loadWords(std::string const& a_wordsFile);
 
     void updateWordsTable(std::string const& a_word);
 
     void printWordsFrequency();
 
 private:
-    std::vector<std::vector<char>> m_grid;
-    std::unordered_map<std::string, unsigned int> m_wordsFrequency;
+    std::vector<std::vector<char>> m_matrix;
+    std::vector<std::string> m_wordsVec;
+    int m_rows;
+    int m_columns;
+    std::unordered_map<std::string, int> m_wordsFrequency;
+    std::vector<std::pair<int, int>> m_directVec;
+    std::unordered_map<char, std::pair<int, int>> m_directMap;
 };
-
-// std::string getDirections(std::ifstream a_source);
-
-// std::ifstream set;
 
 }//namespace iq
 

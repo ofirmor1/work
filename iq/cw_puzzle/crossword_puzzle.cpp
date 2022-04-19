@@ -5,174 +5,133 @@
 
 namespace iq
 {
-Grid::Grid(std::string const& a_path)
-: m_grid()
+Grid::Grid(std::string const& a_wordsFilePath, std::string const& a_gridpFileath, std::string const& a_directions)
+: m_matrix()
+, m_directVec()
+, m_directMap()
 {
-   loadGrid(a_path);
+    loadGrid(a_gridpFileath);
+    m_rows = m_matrix.size();
+    m_columns = m_matrix[0].size();
+    buildDirectionMap();
+    searchDirections(a_directions); 
+    loadWords(a_wordsFilePath);
 }
 
-void Grid::loadGrid(std::string const& a_path)
+void Grid::loadGrid(std::string const& a_gridFilePath)
 {
     std::ifstream file;
-    file.open(a_path);
-    
-    std::string line;
+    file.open(a_gridFilePath);
+    if(file.fail())
+    {
+        return;
+    }
 
+    std::string line;
     while (std::getline(file, line))
     {
         std::vector<char> row;
 
-        for (char const& c : line)
+        for (char const& ch : line)
         {
-            if (c != ' ')
+            if (ch != ' ')
             {
-                row.push_back(c);
+                row.push_back(ch);
             }   
         }
-        m_grid.push_back(row);
+        m_matrix.push_back(row);
     }
+}
+
+void Grid::loadWords(std::string const& a_wordsFilePath)
+{
+    std::ifstream file;
+    file.open(a_wordsFilePath);
+    
+    std::string line;
+    while(!file.fail())
+    {
+        std::string line;
+        getline(file, line);
+        
+        if(line.empty())
+        {
+            break;
+        }
+        m_wordsVec.push_back(line);
+    }
+    for (size_t i = 0; i < m_wordsVec.size(); ++i)
+    {
+        searchWord(m_wordsVec[i]);
+    }  
+}
+
+void Grid::buildDirectionMap()
+{
+    m_directMap['r'] = {1, 0};
+    m_directMap['l'] = {-1, 0};
+    m_directMap['u'] = {0, 1};
+    m_directMap['d'] = {0, -1};
+    m_directMap['x'] = {-1, -1};
+    m_directMap['y'] = {1, -1};
+    m_directMap['z'] = {-1, 1};
+    m_directMap['t'] = {1, 1};
+}
+
+void Grid::searchDirections(std::string const& a_directions)
+{
+    std::unordered_map<char, std::pair<int, int>>::iterator it;
+    for (size_t i = 0; i < a_directions.length(); ++i)
+    {
+        it = m_directMap.find(a_directions[i]);
+        if(it != m_directMap.end())
+        {
+            m_directVec.push_back(m_directMap[a_directions[i]]);
+        }
+    }
+    // for(auto e : m_directVec)
+    // {
+    //     std::cout << e.first << e.second << std::endl;
+    // }
 }
 
 void Grid::searchWord(std::string const& a_word)
 {
-    char firstChar = a_word[0];
-    unsigned int row = 0;
-    auto it = m_grid[row].begin();
-    std::cout <<  "it: " <<*it << std::endl;
-    std::cout << "size: " <<m_grid.size() << std::endl;
-    
-    while (row < m_grid.size())
+    for (int row = 0; row < m_rows; ++row)
     {
-        while(it != m_grid[row].end())
+        for (int col = 0; col < m_columns; ++col)
         {
-            auto nextChar = std::find(it, m_grid[row].end(), firstChar);
-            //check right   
-            unsigned int i = 0;
-            std::cout <<  "check: " <<row << std::endl;
-            std::cout <<  "1: "  << *nextChar << std::endl;
-            std::cout <<  "2: "  << nextChar - m_grid[row].begin() << std::endl;
-            unsigned int col = nextChar - m_grid[row].begin();
-            std::cout <<  "3: "  << col << std::endl;
-            // std::cout <<  m_grid[i][col+1] << std::endl;
-            std::cout <<  "4: "  << a_word[i] << std::endl;
-            if(col < m_grid.size())
+            for (auto dir : m_directVec) 
             {
-                while (i < a_word.length() && m_grid[i][col+1] == a_word[i])
+                int rd = row + dir.first;
+                int cd = col + dir.second;
+                if (m_matrix[row][col] != a_word[0])
                 {
-                    ++i;
-                }
-                if (i == a_word.length())
-                {
-                    updateWordsTable(a_word);
+   
                     break;
                 }
-            }
+                size_t index = 1;
+                for (;index < a_word.length(); ++index) 
+                {
+                    if (m_matrix[rd][cd] != a_word[index])
+                    {
+                        break;
+                    }
+                    
+                    if (rd >= m_rows || rd < 0 || cd >= m_columns || cd < 0)
+                    {
+                        
+                        break;
+                    }           
+                    rd += dir.first, cd += dir.second;
+                }
 
-            //check left
-            // it = std::find(++it, m_grid[row].end(), firstChar);
-            // col = it - m_grid[row].begin();
-            // std::cout <<  *it << std::endl;
-            // std::cout <<  col << std::endl;
-            i = 0;
-            if(col > 0)
-            {
-                while (i < a_word.length() && m_grid[i][col-1] == a_word[i])
-                {
-                    ++i;
-                }
-                if (i == a_word.length())
+                if (index == a_word.length())
                 {
                     updateWordsTable(a_word);
-                }     
+                }    
             }
-            //check up
-            i = 0;
-            if(i > 0)
-            {
-                while (i < a_word.length() && m_grid[i-1][col] == a_word[i])
-                {
-                    ++i;
-                }
-                if (i == a_word.length())
-                {
-                    updateWordsTable(a_word);
-                }
-            }
-    
-
-            //check down
-            i = 0;
-            if(i < m_grid.size())
-            {
-                while (i < a_word.length() && m_grid[i+1][col] == a_word[i])
-                {
-                    ++i;
-                }
-                if (i == a_word.length())
-                {
-                    updateWordsTable(a_word);
-                }
-            }
-
-            //check up and right
-            i = 0;
-            if(i > 0 && col < m_grid.size())
-            {
-                while (i < a_word.length() && m_grid[i-1][col+1] == a_word[i])
-                {
-                    ++i;
-                }
-                if (i == a_word.length())
-                {
-                    updateWordsTable(a_word);
-                }
-            }
-            //check up and left
-            i = 0;
-            if(i > 0 && col > 0)
-            {
-                while (i < a_word.length() && m_grid[i-1][col-1] == a_word[i])
-                {
-                    ++i;
-                }
-                if (i == a_word.length())
-                {
-                    updateWordsTable(a_word);
-                }
-            }
-            
-            //check down and right
-            i = 0;
-            if(i < m_grid.size() && col < m_grid.size())
-            {
-                while (i < a_word.length() && m_grid[i+1][col+1] == a_word[i])
-                {
-                    ++i;
-                }
-                if (i == a_word.length())
-                {
-                    updateWordsTable(a_word);
-                }
-            }
-
-            //check up and left
-            i = 0;
-            if(i < m_grid.size() && col > 0)
-            {
-                while (i < a_word.length() && m_grid[i+1][col-1] == a_word[i])
-                {
-                    ++i;
-                }
-                if (i == a_word.length())
-                {
-                    updateWordsTable(a_word);
-                }
-            }
-            it++;
-            nextChar++;
-            std::cout <<  "it: " <<*it << std::endl;
         }
-        ++row;
     }
 }
 
@@ -181,33 +140,12 @@ void Grid::updateWordsTable(std::string const& a_word)
     ++m_wordsFrequency[a_word];
 }
 
-// void Grid::initializeGrid(std::ifstream& a_cwPuzzle)
-// {
-//     std::string line;
-//     char byte = 0;
-
-//     for(auto row : m_matrix)
-//     {
-//        while(getline(a_cwPuzzle, line))
-//         {
-//             for(auto const& col : line)
-//             {
-//                 m_matrix[row][col] = 
-//             }
-//         }
-        
-//         {
-//             a_cwPuzzle >> byte;
-//             a_cwPuzzle >> m_matrix
-//         }
-//     }
-// }
-
 void Grid::printWordsFrequency()
 {
     for (auto const& pair : m_wordsFrequency)
     {
-        std::cout << pair.first << ": " << pair.second << "\n";
+        std::cout << "word: " << pair.first << std::endl;
+        std::cout << "frequency: "<< pair.second << std::endl;
     }
 }
  
