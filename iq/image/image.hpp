@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <stdlib.h>
 #include <string>
 #include <iostream>
@@ -9,18 +8,18 @@
 namespace advcpp
 {
 
-template <typename T>
 class Image
 {
 public:
     Image() = default;
-    Image(const size_t a_width, const size_t a_height, const int a_colorScale);
+    Image(size_t a_width, size_t a_height, std::string a_type, int a_colorScale);
     
     ~Image();
-    Image<T>(Image const& a_src);
-    Image<T>(Image&& a_src);
-    Image<T>& operator=(Image<T> const& a_src);
-    Image<T>& operator=(Image<T>&& a_src);
+    Image(Image const& a_src);
+    Image& operator=(Image const& a_src);
+
+    Image(Image&& a_src);
+    Image& operator=(Image&& a_src);
 
     // void print(std::string a_separator = "\t", std::ostream& a_os = std::cout) const;
     // size_t operator[](size_t a_index);
@@ -28,22 +27,28 @@ public:
     size_t getWidth() const;
     size_t getHeight() const;
     int getScale() const;
-    T getPixel(size_t a_width, size_t a_height) const;
-    void setPixel(size_t a_width, size_t a_height, T a_factor) const;
+    std::string getType() const;
+
+    void setWidth(size_t a_width);
+    void setHeight(size_t a_height);
+    
+    int getPixel(size_t a_width, size_t a_height) const;
+    void setPixel(size_t a_width, size_t a_height, int a_factor) const;
+    // void setPixel(size_t a_width, size_t a_height, int a_factor) const;
+
+    bool operator==(Image const& a_src);
 
 private:
     size_t m_width;
     size_t m_height;
     int m_colorScale;
-    T** m_pixels;
+    std::string m_type;
+    int* m_pixels;
 };
 
-template <typename T>
-void brighten(Image<T>& a_src, int a_factor);
+void brighten(Image& a_src, int a_factor);
 
-template <typename T>
-Image<T>& read(std::string a_path, Image<T>& a_destImg);
+Image read(std::ifstream& a_inputFile);
 
-template <typename T>
-Image<T>& save(Image<T>& a_src, std::ofstream &outputFile);
+Image save(Image& a_src, std::ofstream& a_outputFile);
 } // namespace advcpp

@@ -1,130 +1,213 @@
 #include "image.hpp"
 
+#define NOT_IN_RANGE -1;
+
 namespace advcpp
 {
-template <typename T>
-Image<T>::Image(const size_t a_width, const size_t a_height, const int a_colorScale)
+
+Image::Image(size_t a_width, size_t a_height, std::string a_type, int a_colorScale)
 : m_width(a_width)
 , m_height(a_height)
 , m_colorScale(a_colorScale)
+, m_type(a_type)
+, m_pixels(new int[m_width * m_height])
 {
-    m_pixels = new T * [a_width];
-    for(auto row : m_pixels)
-    {
-        row = new T[a_height];
-    }
+    std::cout << "ctor\n";
 }
 
-template <typename T>
-Image<T>::~Image()
+Image::~Image()
 {
-    for (size_t i = 0; i < m_height; ++i)
-    {
-        delete[] m_pixels[i];
-    }
-
+    std::cout << "dtor\n";
     delete[] m_pixels;
 }
 
-template <typename T>
-Image<T>::Image(Image<T> const& a_src)
+Image::Image(Image const& a_src)
 : m_width(a_src.m_width)
 , m_height(a_src.m_height)
 , m_colorScale(a_src.m_colorScale)
+, m_type(a_src.m_type)
+, m_pixels(new int[a_src.m_width * a_src.m_height])
 {
-    m_pixels = new T * [a_width];
-    for(auto row : m_pixels)
-    {
-        row = new T[a_height];
-        std::copy(a_src.m_pixels[i], a_src.m_pixels[i] + m_height, m_pixels[i]);
-    }
+    std::cout << "cctor\n";
+    size_t sourceSize = a_src.m_width * a_src.m_height;
+    std::copy(a_src.m_pixels, a_src.m_pixels + sourceSize, m_pixels);
 }
 
-template <typename T>
-Image<T>::Image(Image&& a_src)
+Image::Image(Image&& a_src)
 : m_width(a_src.m_width)
 , m_height(a_src.m_height)
 , m_colorScale(a_src.m_colorScale)
+, m_type(a_src.m_type)
 , m_pixels(a_src.m_pixels)
 {
-   a_src.m_pixels = nullptr;
+    std::cout << "move cctor\n";
+    a_src.m_pixels = nullptr;
+    a_src.m_width = 0;
+    a_src.m_height = 0;
 }
 
-template <typename T>
-Image<T>& Image<T>::operator=(Image<T> const& a_src)
+Image& Image::operator=(Image const& a_src)
 {
-    if(this != &a_source)
+    if(this != &a_src)
     {
-        Image img(a_source);
-        std::swap(m_pixels, img);
+        std::cout << "copy assignment ctor\n";
+        Image img(a_src);
+        std::swap(*this, img);
     }
     return *this;
 }
 
-template <typename T>
-Image<T>& operator=(Image<T>&& a_src)
+Image& Image::operator=(Image&& a_src)
 {
-    if(this != &a_source)
+    if(this != &a_src)
     {
-        Image img(a_source);
-        std::swap(m_pixels, img);
+        std::cout << "move assignment ctor\n";
+        Image img(a_src);
+        std::swap(*this, a_src);
     }
 
     a_src.m_pixels = nullptr;
     return *this; 
 }
 
-// template <typename T>
-// void brighten(Image<T> a_source);
-
-template <typename T>
-Image<T>& read(std::string a_path, Image<T>& a_destImg)
+Image read(std::ifstream& a_inputFile)
 {
-    size_t width, height;
+    // if (!a_inputFile.is_open())
+    // {
+    //     throw std::runtime_error("unable to open file");
+    // }
+    size_t scale, val, width, height;
     std::string type;
-    std::ifstream file;
-    file.open(a_path, std::ios::in | std::ios::binary);
-    file.seekg(0, std::ios::beg);
-    for (size_t row = 0; row < a_destImg.getWidth(); ++row)
+    a_inputFile >> type >> width >> height >> scale;
+    Image img(width, height, type, scale);
+    while (!a_inputFile.fail())
     {
-        for (size_t col = 0; col < a_destImg.getHeight(); ++col)
+        for (size_t height = 0; height < img.getHeight(); ++height)
         {
-            file.read(reinterpret_cast<char*>(m_pixels[row][col]), a_destImg.getWidth());
+            for (size_t width = 0; width < img.getWidth(); ++width)
+            {
+                a_inputFile >> val;
+                img.setPixel(width, height, val);
+            }
+            
         }
     }
-    file.close();
+    return img;
 }
 
-template <typename T>
-Image<T>& save(Image<T>& a_src, std::ofstream &outputFile)
+Image save(Image& a_src, std::ofstream& a_outputFile)
 {
-    
-    std::ostream outputFile;
-    outputFile.open(a_path, std::ios::out | std::ios::binary | std::ios::trunc);
-    std::string type;
-    outputFile << type;
-    outputFile << a_src.getWidth();
-    outputFile << a_src.getHeight();
-    outputFile << a_src.getScale();
-    file.seekg(0, std::ios::beg);
-    for (size_t row = 0; row < a_destImg.getWidth(); ++row)
+    // if (!a_outputFile.is_open())
+    // {
+    //     throw std::runtime_error("unable to open file");
+    // }
+    a_outputFile << a_src.getType();
+    a_outputFile << a_src.getWidth();
+    a_outputFile << a_src.getHeight();
+    a_outputFile << a_src.getScale();
+
+    for (size_t height = 0; height < a_src.getHeight(); ++height)
     {
-        for (size_t col = 0; col < a_destImg.getHeight(); ++col)
+        for (size_t width = 0; width < a_src.getWidth(); ++width)
         {
-            outputFile.write(reinterpret_cast<char*>(m_pixels[row][col]), a_destImg.getWidth());
+            a_outputFile << a_src.getPixel(width, height) << " ";
+        }
+        a_outputFile << std::endl;
+    }
+
+    return a_src;
+}
+
+size_t Image::getWidth() const
+{
+    return m_width;
+}
+
+size_t Image::getHeight() const
+{
+    return m_height;
+}
+
+int Image::getScale() const
+{
+    return m_colorScale;
+}
+
+std::string Image::getType() const
+{
+    return m_type;
+}
+
+void Image::setWidth(size_t a_width)
+{
+    m_width = a_width;
+}
+
+void Image::setHeight(size_t a_height)
+{
+    m_height = a_height;
+}
+// 1 2 3 // 2 * 3
+// 4 5 6
+// 1 1 --> 5
+// 1 2 3 4 5 6
+// 3 * 1 + 1
+int Image::getPixel(size_t a_width, size_t a_height) const
+{
+    if(a_width >= m_width || a_height >= m_height)
+    {
+        return NOT_IN_RANGE;
+    }
+    if(a_height == 0)
+    {
+        return m_pixels[a_width];
+    }
+    return m_pixels[m_width * (a_height - 1) + a_width];  
+}
+
+void Image::setPixel(size_t a_width, size_t a_height, int a_val) const
+{
+    if(a_width >= m_width || a_height >= m_height)
+    {
+        return;
+    }
+    if(a_height == 0)
+    {
+        m_pixels[a_width] = a_val;
+        return;
+    }
+    if(m_pixels[m_width * (a_height - 1) + a_width] - a_val < 0)
+    {
+        m_pixels[m_width * (a_height - 1) + a_width] = 0; 
+    }
+
+    m_pixels[m_width * (a_height - 1) + a_width] = a_val;
+}
+
+void brighten(Image& a_src, int a_factor)
+{
+    size_t width = a_src.getWidth();
+    size_t height = a_src.getHeight();
+    for(size_t i = 0; i < width; ++i)
+    {
+        for(size_t j = 0; j < height; ++j)
+        {
+            a_src.setPixel(i, j, a_factor);
         }
     }
-    file.close();
 }
 
-// template <typename T>
-// size_t Image<T>::operator[](size_t a_index)
+bool Image::operator==(Image const& a_src)
+{
+    return m_pixels == a_src.m_pixels;
+}
+
+// size_t Image::operator[](size_t a_index)
 // {
 //     return m_pixels[a_size]
 // }
 
-// template <typename T>
-// void Image<T>::print(std::string a_separator, std::ostream& a_os) const
+// void Image::print(std::string a_separator, std::ostream& a_os) const
 // {
 //     for (auto const& row : m_img)
 //     {            
@@ -137,60 +220,5 @@ Image<T>& save(Image<T>& a_src, std::ofstream &outputFile)
 //     a_os << "\n";
 //     return;
 // }
-
-template <typename T>
-size_t Image<T>::getWidth() const
-{
-    return m_width;
-}
-
-template <typename T>
-size_t Image<T>::getHeight() const
-{
-    return m_height;
-}
-
-template <typename T>
-int Image<T>::getScale() const
-{
-    return m_colorScale;
-}
-
-template <typename T>
-T Image<T>::getPixel(size_t a_width, size_t a_height) const
-{
-    if(a_width >= m_width || a_height >= m_height)
-    {
-        std::cout << "not in rage" << std::endl;
-        return m_pixels[m_width - 1][m_height - 1];
-    }
-
-    return m_pixels[a_width][a_height]; 
-}
-
-template <typename T>
-void Image<T>::setPixel(size_t a_width, size_t a_height, T a_factor) const
-{
-    if(a_width >= m_width || a_height >= m_height)
-    {
-        std::cout << "not in rage" << std::endl;
-        return;
-    }
-    m_pixels[a_width][a_height] = getPixel(a_width, a_height) - a_factor;
-}
-
-template<typename T>
-void brighten(Image<T>& a_src, T a_factor)
-{
-    size_t width = getWidth();
-    size_t height = getHeight();
-    for(size_t i = 0; i < width; ++i)
-    {
-        for(size_t j = 0; j < height; ++j)
-        {
-            a_src.setPixel(i, j, a_factor);
-        }
-    }
-}
 
 } // namespace advcpp
