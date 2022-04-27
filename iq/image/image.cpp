@@ -1,4 +1,5 @@
 #include "image.hpp"
+#include <array>
 
 #define NOT_IN_RANGE -1;
 
@@ -200,6 +201,21 @@ void brighten(Image& a_src, int a_factor)
 bool Image::operator==(Image const& a_src)
 {
     return m_pixels == a_src.m_pixels;
+}
+
+void sharp(Image& a_src)
+{
+    std::array<int, 9> sharp = {-1,-1,-1,-1,9,-1,-1,-1,-1};
+
+    for (size_t h = 0; h < a_src.getHeight(); ++h)
+    {
+        for (size_t w = 0; w < a_src.getWidth(); ++w)
+        {
+            /* code */
+        }
+        
+    }
+    
 }
 
 // size_t Image::operator[](size_t a_index)

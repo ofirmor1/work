@@ -38,6 +38,8 @@ public:
 
     bool operator==(Image const& a_src);
 
+    void sharp(Image& a_src);
+
 private:
     size_t m_width;
     size_t m_height;

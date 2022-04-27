@@ -10,8 +10,8 @@ using namespace advcpp;
     std::string imageFilpath = "cat.pgm";
     std::ifstream file(imageFilpath);
     Image image(width, height, "p2", 15);
-    read(file);
-    save(image, outputFile);
+    Image temp = read(file);
+    save(temp, outputFile);
     ASSERT_PASS();
 END_TEST
 
