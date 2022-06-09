@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Contact Me</title>
+  </head>
+  <body>
+    <h1>My Contact Details</h1>
+    <p>Petah-Tikva, Israel</p>
+    <p>0504328070</p>
+    <p>ofirmor1991@gmail.com</p>
+
+    <form action=mailto:ofirmor1991@gmail.com method="post" enctype="text/plain">
+      <lable>Your Name:</lable>
+      <input type="text" name="yourName" value=""><br>
+      <lable>Your Email:</lable>
+      <input type="text" name="yourEmail" value=""><br>
+      <lable>Your Message:</lable><br>
+      <textarea name="yourMessage" rows="10" cols="30"></textarea><br>
+      <input type="submit" name="" value="submit">
+    </form>
+  </body>
+</html>
