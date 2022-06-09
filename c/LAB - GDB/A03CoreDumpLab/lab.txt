@@ -1,0 +1,13 @@
+
+goto the DevideByZero folder
+make the app
+ulimit -c unlimited
+run ./DevideByZero
+analyze the core using gdb ./DevideByZero core
+
+go to the SimpleDebugging folder
+ulimit -c unlimited
+run ./SimpleDebugging
+create a core dump using Ctl+\
+analyze the core using gdb ./SimpleDebugging core
+

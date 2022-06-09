@@ -1,0 +1,138 @@
+==27000== Memcheck, a memory error detector
+==27000== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==27000== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
+==27000== Command: ./HeartsGame.out
+==27000== Parent PID: 25465
+==27000== 
+--27000-- 
+--27000-- Valgrind options:
+--27000--    -v
+--27000--    --log-file=V2.log
+--27000--    --leak-check=full
+--27000--    --track-origins=yes
+--27000-- Contents of /proc/version:
+--27000--   Linux version 5.11.0-43-generic (buildd@lcy02-amd64-036) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #47~20.04.2-Ubuntu SMP Mon Dec 13 11:06:56 UTC 2021
+--27000-- 
+--27000-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-rdrand
+--27000-- Page sizes: currently 4096, max supported 4096
+--27000-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
+--27000-- Reading syms from /home/ofir/Downloads/heartgameproject/HeartsGame.out
+--27000-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.31.so
+--27000--   Considering /usr/lib/x86_64-linux-gnu/ld-2.31.so ..
+--27000--   .. CRC mismatch (computed 975d0390 wanted 30bd717f)
+--27000--   Considering /lib/x86_64-linux-gnu/ld-2.31.so ..
+--27000--   .. CRC mismatch (computed 975d0390 wanted 30bd717f)
+--27000--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.31.so ..
+--27000--   .. CRC is valid
+--27000-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
+--27000--    object doesn't have a symbol table
+--27000--    object doesn't have a dynamic symbol table
+--27000-- Scheduler: using generic scheduler lock implementation.
+--27000-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
+==27000== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-27000-by-ofir-on-???
+==27000== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-27000-by-ofir-on-???
+==27000== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-27000-by-ofir-on-???
+==27000== 
+==27000== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==27000== don't want to do, unless you know exactly what you're doing,
+==27000== or are doing some strange experiment):
+==27000==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=27000 ...command...
+==27000== 
+==27000== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==27000==   /path/to/gdb ./HeartsGame.out
+==27000== and then give GDB the following command
+==27000==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=27000
+==27000== --pid is optional if only one valgrind process is running
+==27000== 
+--27000-- REDIR: 0x4022e10 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9ce2 (???)
+--27000-- REDIR: 0x4022be0 (ld-linux-x86-64.so.2:index) redirected to 0x580c9cfc (???)
+--27000-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
+--27000--    object doesn't have a symbol table
+--27000-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
+--27000--    object doesn't have a symbol table
+==27000== WARNING: new redirection conflicts with existing -- ignoring it
+--27000--     old: 0x04022e10 (strlen              ) R-> (0000.0) 0x580c9ce2 ???
+--27000--     new: 0x04022e10 (strlen              ) R-> (2007.0) 0x0483f060 strlen
+--27000-- REDIR: 0x401f5f0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ffd0 (strcmp)
+--27000-- REDIR: 0x4023370 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4843a20 (mempcpy)
+--27000-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.31.so
+--27000--   Considering /usr/lib/x86_64-linux-gnu/libc-2.31.so ..
+--27000--   .. CRC mismatch (computed 86b78530 wanted e380f01c)
+--27000--   Considering /lib/x86_64-linux-gnu/libc-2.31.so ..
+--27000--   .. CRC mismatch (computed 86b78530 wanted e380f01c)
+--27000--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.31.so ..
+--27000--   .. CRC is valid
+--27000-- REDIR: 0x48fe600 (libc.so.6:memmove) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd900 (libc.so.6:strncpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe930 (libc.so.6:strcasecmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd220 (libc.so.6:strcat) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd960 (libc.so.6:rindex) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48ffdd0 (libc.so.6:rawmemchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x491ae60 (libc.so.6:wmemchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x491a9a0 (libc.so.6:wcscmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe760 (libc.so.6:mempcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe590 (libc.so.6:bcmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd890 (libc.so.6:strncmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd2d0 (libc.so.6:strcmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe6c0 (libc.so.6:memset) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x491a960 (libc.so.6:wcschr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd7f0 (libc.so.6:strnlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd3b0 (libc.so.6:strcspn) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe980 (libc.so.6:strncasecmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd350 (libc.so.6:strcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fead0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x491c0d0 (libc.so.6:wcsnlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x491a9e0 (libc.so.6:wcscpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd9a0 (libc.so.6:strpbrk) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd280 (libc.so.6:index) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fd7b0 (libc.so.6:strlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x4906d20 (libc.so.6:memrchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe9d0 (libc.so.6:strcasecmp_l) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe550 (libc.so.6:memchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x491aab0 (libc.so.6:wcslen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fdc60 (libc.so.6:strspn) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe8d0 (libc.so.6:stpncpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fe870 (libc.so.6:stpcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48ffe10 (libc.so.6:strchrnul) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x48fea20 (libc.so.6:strncasecmp_l) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27000-- REDIR: 0x49e6490 (libc.so.6:__strrchr_avx2) redirected to 0x483ea10 (rindex)
+--27000-- REDIR: 0x48f8260 (libc.so.6:malloc) redirected to 0x483b780 (malloc)
+--27000-- REDIR: 0x48f9c90 (libc.so.6:calloc) redirected to 0x483dce0 (calloc)
+--27000-- REDIR: 0x49e7ba0 (libc.so.6:__strcpy_avx2) redirected to 0x483f090 (strcpy)
+--27000-- REDIR: 0x49e6b20 (libc.so.6:__strcat_avx2) redirected to 0x483ec20 (strcat)
+--27000-- REDIR: 0x48f8850 (libc.so.6:free) redirected to 0x483c9d0 (free)
+--27000-- REDIR: 0x49e62a0 (libc.so.6:__strchrnul_avx2) redirected to 0x4843540 (strchrnul)
+--27000-- REDIR: 0x49e9650 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4843660 (mempcpy)
+--27000-- REDIR: 0x49e6660 (libc.so.6:__strlen_avx2) redirected to 0x483ef40 (strlen)
+==27000== 
+==27000== Process terminating with default action of signal 2 (SIGINT)
+==27000==    at 0x496C142: read (read.c:26)
+==27000==    by 0x48EED1E: _IO_file_underflow@@GLIBC_2.2.5 (fileops.c:517)
+==27000==    by 0x48F0105: _IO_default_uflow (genops.c:362)
+==27000==    by 0x48C23FF: __vfscanf_internal (vfscanf-internal.c:627)
+==27000==    by 0x48C12E1: __isoc99_scanf (isoc99_scanf.c:30)
+==27000==    by 0x10AF10: UIChooseCard (ui.c:187)
+==27000==    by 0x109C2B: GetCardByRule (round.c:163)
+==27000==    by 0x109E37: PlayerChooseCard (round.c:226)
+==27000==    by 0x10A820: PlayerThrowCard (players.c:154)
+==27000==    by 0x10998F: Trick (round.c:102)
+==27000==    by 0x109843: StartRound (round.c:72)
+==27000==    by 0x1094D2: StartGame (game.c:69)
+==27000== 
+==27000== HEAP SUMMARY:
+==27000==     in use at exit: 616 bytes in 14 blocks
+==27000==   total heap usage: 18 allocs, 4 frees, 2,920 bytes allocated
+==27000== 
+==27000== Searching for pointers to 14 not-freed blocks
+==27000== Checked 75,248 bytes
+==27000== 
+==27000== LEAK SUMMARY:
+==27000==    definitely lost: 0 bytes in 0 blocks
+==27000==    indirectly lost: 0 bytes in 0 blocks
+==27000==      possibly lost: 0 bytes in 0 blocks
+==27000==    still reachable: 616 bytes in 14 blocks
+==27000==         suppressed: 0 bytes in 0 blocks
+==27000== Reachable blocks (those to which a pointer was found) are not shown.
+==27000== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==27000== 
+==27000== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

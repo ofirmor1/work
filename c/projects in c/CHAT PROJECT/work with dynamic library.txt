@@ -1,0 +1,26 @@
+
+compile and make files.o:
+gcc -ansi -g -pedantic -c -fPIC file1.c file2.c file3.c file4.c file5.c file6.c file7.c
+
+create dynamic library from the file.o files
+gcc -shared -o libGenDS.so file1.o file2.o file3.o file4.o file5.o file6.o file7.o 
+
+compile the file.c to file.out with the library:
+gcc -ansi -pedantic file.c -o file.out -L. -lGenDC
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+export LD_LIBRARY_PATH
+./file.out
+
+if the library and h files in differnt directory:
+
+SERVER:
+gcc -ansi -pedantic -I./genLibraryDS Protocols.c User.c UserManager.c Group.c GroupsManager.c IP.c GenericServer.c ServerManager.c -o runS.out -L./genLibraryDS -lGenDS
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./genLibraryDS
+export LD_LIBRARY_PATH
+
+CLIENT:
+gcc -ansi -pedantic -I./genLibraryDS Protocols.c clientNet.c clientUI.c clientManager.c -o runC.out -L./genLibraryDS -lGenDS
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./genLibraryDS
+export LD_LIBRARY_PATH
+
+

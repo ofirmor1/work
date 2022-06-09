@@ -1,0 +1,14 @@
+valgrind  --help
+
+http://valgrind.org/
+
+-q
+-v
+--leak-check=full
+--show-leak-kinds=all
+--log-file=<Your_Log_File_Name>
+
+valgrind --log-file=V1.log ./MemoryLeak 
+valgrind --log-file=V2.log --leak-check=full --track-origins=yes ./MemoryLeak 
+valgrind --log-file=V3.log --leak-check=full --track-origins=yes -s ./MemoryLeak 
+

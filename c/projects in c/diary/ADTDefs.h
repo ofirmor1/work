@@ -1,0 +1,23 @@
+#ifndef __ADTDEFS_H__
+#define __ADTDEFS_H__
+
+typedef enum
+{
+    /* General ADT Errors */
+    ERR_OK =0,
+    ERR_NOT_INITIALIZED,
+    ERR_ALLOCATION_FAILED,
+    ERR_REALLOCATION_FAILED,
+    ERR_UNDERFLOW,
+    ERR_OVERFLOW,
+    ERR_WRONG_INDEX,
+    /*Diary possible errors*/
+	ERR_INVALID_START_TIME,
+	ERR_INVALID_END_TIME,
+	ERR_INVALID_TIME,
+	ERR_OVERLAP,
+	ERR_NO_MEETINGS_TODAY,
+	ERR_MEETING_NOT_FOUND
+} ADTErr;
+
+#endif /*#ifndef __ADTDEFS_H__*/
