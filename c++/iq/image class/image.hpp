@@ -13,7 +13,7 @@ class Image
 public:
     Image() = default;
     Image(size_t a_width, size_t a_height, std::string a_type, int a_colorScale);
-    
+
     ~Image();
     Image(Image const& a_src);
     Image& operator=(Image const& a_src);
@@ -32,8 +32,8 @@ public:
     void setWidth(size_t a_width);
     void setHeight(size_t a_height);
     
-    int getPixel(size_t a_width, size_t a_height) const;
-    void setPixel(size_t a_width, size_t a_height, int a_factor) const;
+    int getPixel(size_t a_x, size_t a_y) const;
+    void setPixel(size_t a_x, size_t a_y, int a_value);
     // void setPixel(size_t a_width, size_t a_height, int a_factor) const;
 
     bool operator==(Image const& a_src);

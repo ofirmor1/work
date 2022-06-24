@@ -1,5 +1,6 @@
 #include "image.hpp"
 #include <array>
+#include <sstream>
 
 #define NOT_IN_RANGE -1;
 
@@ -73,6 +74,7 @@ Image& Image::operator=(Image&& a_src)
 
 Image read(std::ifstream& a_inputFile)
 {
+
     // if (!a_inputFile.is_open())
     // {
     //     throw std::runtime_error("unable to open file");
@@ -83,14 +85,13 @@ Image read(std::ifstream& a_inputFile)
     Image img(width, height, type, scale);
     while (!a_inputFile.fail())
     {
-        for (size_t height = 0; height < img.getHeight(); ++height)
+        for (size_t i = 0; i < img.getHeight(); ++i)
         {
-            for (size_t width = 0; width < img.getWidth(); ++width)
+            for (size_t j = 0; j < img.getWidth(); ++j)
             {
                 a_inputFile >> val;
-                img.setPixel(width, height, val);
+                img.setPixel(i, j, val);
             }
-            
         }
     }
     return img;
@@ -102,21 +103,46 @@ Image save(Image& a_src, std::ofstream& a_outputFile)
     // {
     //     throw std::runtime_error("unable to open file");
     // }
-    a_outputFile << a_src.getType();
-    a_outputFile << a_src.getWidth();
-    a_outputFile << a_src.getHeight();
-    a_outputFile << a_src.getScale();
-
-    for (size_t height = 0; height < a_src.getHeight(); ++height)
+    a_outputFile << a_src.getType() << std::endl;
+    a_outputFile << a_src.getWidth() << ' ';
+    a_outputFile << a_src.getHeight() << std::endl;
+    a_outputFile << a_src.getScale() << std::endl;
+    for (size_t i = 0; i < a_src.getHeight(); ++i)
     {
-        for (size_t width = 0; width < a_src.getWidth(); ++width)
+        for (size_t j = 0; j < a_src.getWidth(); ++j)
         {
-            a_outputFile << a_src.getPixel(width, height) << " ";
+            if(a_src.getPixel(i, j) != 255)
+            {
+                std::cout << a_src.getPixel(i, j) << ' ';
+            }
+            
+            a_outputFile << a_src.getPixel(i, j) << " ";
         }
         a_outputFile << std::endl;
     }
 
     return a_src;
+}
+
+int Image::getPixel(size_t a_x, size_t a_y) const
+{
+    if(a_x >= m_width || a_y >= m_height)
+    {
+        return 0;
+    }
+    
+    return m_pixels[m_width * (a_y) + a_x];
+}
+
+
+void Image::setPixel(size_t a_x, size_t a_y, int a_value)
+{
+    if(a_x >= m_width || a_y >= m_height)
+    {
+       return;
+    }
+    
+   m_pixels[m_width * (a_y) + a_x] = a_value;
 }
 
 size_t Image::getWidth() const
@@ -149,38 +175,6 @@ void Image::setHeight(size_t a_height)
     m_height = a_height;
 }
 
-int Image::getPixel(size_t a_width, size_t a_height) const
-{
-    if(a_width >= m_width || a_height >= m_height)
-    {
-        return NOT_IN_RANGE;
-    }
-    if(a_height == 0)
-    {
-        return m_pixels[a_width];
-    }
-    return m_pixels[m_width * (a_height - 1) + a_width];  
-}
-
-void Image::setPixel(size_t a_width, size_t a_height, int a_val) const
-{
-    if(a_width >= m_width || a_height >= m_height)
-    {
-        return;
-    }
-    if(a_height == 0)
-    {
-        m_pixels[a_width] = a_val;
-        return;
-    }
-    if(m_pixels[m_width * (a_height - 1) + a_width] - a_val < 0)
-    {
-        m_pixels[m_width * (a_height - 1) + a_width] = 0; 
-    }
-
-    m_pixels[m_width * (a_height - 1) + a_width] = a_val;
-}
-
 void brighten(Image& a_src, int a_factor)
 {
     size_t width = a_src.getWidth();
@@ -199,20 +193,20 @@ bool Image::operator==(Image const& a_src)
     return m_pixels == a_src.m_pixels;
 }
 
-void sharp(Image& a_src)
-{
-    std::array<int, 9> sharp = {-1,-1,-1,-1,9,-1,-1,-1,-1};
+// void sharp(Image& a_src)
+// {
+//     std::array<int, 9> sharp = {-1,-1,-1,-1,9,-1,-1,-1,-1};
 
-    for (size_t h = 0; h < a_src.getHeight(); ++h)
-    {
-        for (size_t w = 0; w < a_src.getWidth(); ++w)
-        {
-            /* code */
-        }
+//     for (size_t h = 0; h < a_src.getHeight(); ++h)
+//     {
+//         for (size_t w = 0; w < a_src.getWidth(); ++w)
+//         {
+//             /* code */
+//         }
         
-    }
+//     }
     
-}
+// }
 
 // size_t Image::operator[](size_t a_index)
 // {

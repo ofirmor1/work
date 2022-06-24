@@ -2,18 +2,18 @@
 #include "image.hpp"
 #include <iostream>
 
-BEGIN_TEST(test)
 using namespace advcpp;
-    size_t width = 300;
-    size_t height = 300;
-    std::ofstream outputFile;
-    std::string imageFilpath = "cat.pgm";
-    std::ifstream file(imageFilpath);
-    Image image(width, height, "p2", 15);
-    Image temp = read(file);
-    save(temp, outputFile);
+
+BEGIN_TEST(test)
+    std::ofstream outputFile("cat2.ppm");
+    std::ifstream originalImage("cat.ppm");
+    Image img = read(originalImage);
+    save(img, outputFile);
     ASSERT_PASS();
 END_TEST
+
+// BEGIN_TEST(brighten)
+
 
 BEGIN_SUITE(iq_tests)
     TEST(test)
