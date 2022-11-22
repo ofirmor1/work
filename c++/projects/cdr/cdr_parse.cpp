@@ -1,6 +1,6 @@
 #include "cdr_parse.hpp"
 #include "blocking_queue.hpp"
-#include "thread_pool.hpp"
+#include "ThreadPool/ThreadPool.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -40,15 +40,15 @@ std::vector<Cdr> CdrParse::fileParser(const std::string& a_path) const
     
     std::string line;
     std::ifstream file(a_path);
-    mt::ThreadPool pool(NUM_OF_THREADS);
+    ThreadPool pool(NUM_OF_THREADS);
     std::getline(file, line);
 
     while(std::getline(file, line)) 
     {
-        cdrsQueue.enqueue(this->lineParser(line));
+        // cdrsQueue.enqueue(this->lineParser(line));
         pool.enqueue([task]{return task;});
     }
-    
+    std::cout << cdrsQueue.size() <<std::endl;
     while(!cdrsQueue.isEmpty()) 
     {
         Cdr pCdr = cdrsQueue.dequeue();

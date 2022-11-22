@@ -1,0 +1,28 @@
+[temperature-1-a-2]
+type = sensor
+field = temperature
+room = room_1_a
+floor = a8
+config = units: F; lower: -5; upper: 55; period: 3;
+
+[light-1-a-2]
+type = sensor
+field = lights
+room = room_1_a
+floor = a8
+config = iot:1003,sat:242,brigh:154,hue:8200
+
+[smoke-1-a-2]
+type = sensor
+field = fire
+room = room_1_a
+floor = a8
+
+
+
+
+
+
+
+
+

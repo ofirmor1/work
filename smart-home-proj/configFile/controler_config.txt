@@ -1,0 +1,35 @@
+[temperature-1-a-2]
+type = controller
+field = temperature
+room = room_1_a
+floor = 1
+config = units: F; lower: -5; upper: 55; period: 1;
+
+[light-1-a-2]
+type = controller
+field = lights
+room = room_1_a
+floor = 1
+config = iot:1003,sat:242, brigh:154, hue:8200
+
+[room-1-a-fire]
+type = hybrid
+field = fire
+room = room_1_a
+floor = 1
+config = Fire_Detected; SIGUSER2
+
+[room-1-a-alarm]
+type = controller
+field = alarm
+room = room_1_a
+floor = 1
+config = Fire_Detected; SIGUSER2
+
+
+
+
+
+
+
+
